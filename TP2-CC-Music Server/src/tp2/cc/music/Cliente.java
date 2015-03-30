@@ -14,7 +14,7 @@ public class Cliente {
     private String nome;
     private String alcunha;
     private String pass;
-    private ;
+    //private ;
 
     public Cliente(String n, String a, String p) {
         nome = n;
