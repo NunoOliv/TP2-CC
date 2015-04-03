@@ -5,6 +5,8 @@
  */
 package tp2.cc.music;
 
+import java.net.InetAddress;
+
 /**
  *
  * @author Rafael
@@ -14,6 +16,7 @@ public class Cliente {
     private String nome;
     private String alcunha;
     private String pass;
+    private InetAddress enderecoIP;
     //private ;
 
     public Cliente(String n, String a, String p) {
