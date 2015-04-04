@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class ServerUDP {
 
-    private final int portSend = 9876;
+    private int portSend = 9876;
     private final int portReceive = 9877;
     private DatagramPacket receivePacket;
     private DatagramPacket sendPacket;
@@ -37,7 +37,8 @@ public class ServerUDP {
 
     public void start() {
         int i = 0;
-
+        
+        //iniciar os sockets 
         try {
             serverSocketReceive = new DatagramSocket(portReceive);
             serverSocketSend = new DatagramSocket(portSend);
@@ -45,11 +46,12 @@ public class ServerUDP {
             System.out.println("Socket em utilização!");
             System.exit(0);
         }
-
+        
         while (true) {
             receiveData = new byte[255];
             sendData = new byte[255];
             receivePacket = new DatagramPacket(receiveData, receiveData.length);
+            //fica à espera de receber um pedido
             try {
                 serverSocketReceive.receive(receivePacket);
             } catch (IOException ex) {
@@ -57,6 +59,7 @@ public class ServerUDP {
                 System.exit(0);
             }
             IPAddress = receivePacket.getAddress();
+            portSend=receivePacket.getPort();
             System.out.println("**Pacote de dados nº" + i + " recebido do IP: " + IPAddress + " **");
             System.out.println();
 
@@ -71,18 +74,15 @@ public class ServerUDP {
             for (j = 0; j < 255 - 8; j++) {
                 aux[j] = sendData[j + 8];
             }
-
             String resp = new String(aux);
-
             System.out.println("Resposta a enviar: " + resp);
-            
-            
-            
-            
+           
+            //criar datagramPacket
             sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
             if (sendPacket == null) {
                 continue;
             }
+            //enviar resposta
             try {
                 serverSocketSend.send(sendPacket);
                 System.out.println("Resposta enviada!");
@@ -94,10 +94,6 @@ public class ServerUDP {
             System.out.println();
             System.out.println("**Pacote de dados nº" + i + " tratado **");
             i++;
-            receiveData = null;
-            receivePacket = null;
-            sendData = null;
-            sendPacket = null;
         }
     }
 

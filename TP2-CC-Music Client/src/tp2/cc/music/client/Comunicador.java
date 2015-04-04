@@ -14,8 +14,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -23,12 +21,10 @@ import java.util.logging.Logger;
  */
 public class Comunicador {
 
-    private final int portReceive = 9876;
     private final int portSend = 9877;
     private BufferedReader in;
     private InetAddress IPAddress;
-    private DatagramSocket clientSocketSend;
-    private DatagramSocket clientSocketReceive;
+    private DatagramSocket clientSocket;
     private DatagramPacket receivePacket;
     private DatagramPacket sendPacket;
     private byte[] sendData = new byte[255];
@@ -45,8 +41,7 @@ public class Comunicador {
         in = new BufferedReader(new InputStreamReader(System.in));
 
         try {
-            clientSocketSend = new DatagramSocket();
-            clientSocketReceive = new DatagramSocket();
+            clientSocket = new DatagramSocket();
         } catch (SocketException ex) {
             System.out.println("Fatal Error: "+ex.toString());
             System.exit(0);
@@ -62,13 +57,13 @@ public class Comunicador {
         buildHello(sendData, label);
 
         sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
-
+       
         try {
-            clientSocketSend.send(sendPacket);
+            clientSocket.send(sendPacket);
             System.out.println("Hello Enviado!");
 
             receivePacket = new DatagramPacket(receiveData, receiveData.length);
-            clientSocketReceive.receive(receivePacket);
+            clientSocket.receive(receivePacket);
             System.out.println("Resposta recebida!");
         } catch (IOException ex) {
             System.out.println("Fatal Error!");
@@ -85,8 +80,7 @@ public class Comunicador {
         String resp = new String(aux);
 
         System.out.println("Resposta: " + resp);
-        clientSocketReceive.close();
-        clientSocketSend.close();
+        clientSocket.close();
     }
 
     private static void buildHello(byte[] sendData, short label) {
