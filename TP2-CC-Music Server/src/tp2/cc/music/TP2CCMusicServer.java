@@ -23,8 +23,8 @@ public class TP2CCMusicServer {
      */
     public static void main(String[] args) throws SocketException, IOException {
         serverUDP=new ServerUDP();
-        serverUDP.start();
         clientes= new HashSet<>();
+        serverUDP.start();
         //serverUDP.stop();
     }
 

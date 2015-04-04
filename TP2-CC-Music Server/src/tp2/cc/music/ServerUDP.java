@@ -12,8 +12,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.HashSet;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -22,10 +20,12 @@ import java.util.logging.Logger;
  */
 public class ServerUDP {
 
-    private final int port = 9876;
+    private final int portSend = 9876;
+    private final int portReceive = 9877;
     private DatagramPacket receivePacket;
     private DatagramPacket sendPacket;
-    private DatagramSocket serverSocket = null;
+    private DatagramSocket serverSocketSend = null;
+    private DatagramSocket serverSocketReceive = null;
     private byte[] receiveData;
     private byte[] sendData;
     private InetAddress IPAddress;
@@ -39,16 +39,19 @@ public class ServerUDP {
         int i = 0;
 
         try {
-            serverSocket = new DatagramSocket(port);
+            serverSocketReceive = new DatagramSocket(portReceive);
+            serverSocketSend = new DatagramSocket(portSend);
         } catch (SocketException ex) {
             System.out.println("Socket em utilização!");
             System.exit(0);
         }
 
         while (true) {
+            receiveData = new byte[255];
+            sendData = new byte[255];
             receivePacket = new DatagramPacket(receiveData, receiveData.length);
             try {
-                serverSocket.receive(receivePacket);
+                serverSocketReceive.receive(receivePacket);
             } catch (IOException ex) {
                 System.out.println("Socket em utilização!");
                 System.exit(0);
@@ -56,23 +59,51 @@ public class ServerUDP {
             IPAddress = receivePacket.getAddress();
             System.out.println("**Pacote de dados nº" + i + " recebido do IP: " + IPAddress + " **");
             System.out.println();
+
             receiveData = receivePacket.getData();
-            sendData=buildPDU(receiveData);
+            sendData = buildPDU(receiveData);
+            
+            
+            
+             //teste resposta
+            int j;
+            byte[] aux = new byte[255];
+            for (j = 0; j < 255 - 8; j++) {
+                aux[j] = sendData[j + 8];
+            }
+
+            String resp = new String(aux);
+
+            System.out.println("Resposta a enviar: " + resp);
+            
+            
+            
+            
+            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
+            if (sendPacket == null) {
+                continue;
+            }
+            try {
+                serverSocketSend.send(sendPacket);
+                System.out.println("Resposta enviada!");
+            } catch (IOException ex) {
+                System.out.println("Socket em utilização!");
+                System.exit(0);
+            }
+           
             System.out.println();
             System.out.println("**Pacote de dados nº" + i + " tratado **");
             i++;
-
-
-            /*Codigo para enviar para os clientes....
-             sendData = ....
-             sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
-             serverSocket.send(sendPacket);
-             */
+            receiveData = null;
+            receivePacket = null;
+            sendData = null;
+            sendPacket = null;
         }
     }
 
     public void stop() {
-        serverSocket.close();
+        serverSocketSend.close();
+        serverSocketReceive.close();
     }
 
     private byte[] buildPDU(byte[] receiveData) {
@@ -97,8 +128,8 @@ public class ServerUDP {
         switch (receiveData[4]) {
             case (1):
                 //Hello
-                //System.out.println("Tipo: HELLO");
-                Hello h=new Hello(receiveData);
+                System.out.println("Tipo: HELLO");
+                Hello h = new Hello(receiveData);
                 return h.getResposta();
             case (2):
                 //Register
@@ -149,25 +180,25 @@ public class ServerUDP {
                 System.out.println("Tipo: LIST_RANKING");
                 break;
             default:
-                System.out.println("Tipo irreconhecível. Pacote ignorado.");
+                System.out.println("Tipo irreconhecível. Pacote ignorado: " + receiveData[4]);
                 return null;
         }
-/*
-        //Nº Campos Seguintes 5
-        if (receiveData[5] < 1) {
-            System.out.println("Sem campos adicionais");
-            return;
-        } else {
-            System.out.println("Numero de campos seguintes: " + receiveData[5]);
-        }
+        /*
+         //Nº Campos Seguintes 5
+         if (receiveData[5] < 1) {
+         System.out.println("Sem campos adicionais");
+         return;
+         } else {
+         System.out.println("Numero de campos seguintes: " + receiveData[5]);
+         }
 
-        //Tamanho Lista de campos 6-7
-        byte[] sizeBytes = {receiveData[6], receiveData[7]};
-        short size = ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getShort();
-        System.out.println("Tamanho dos restantes campos: " + size);
+         //Tamanho Lista de campos 6-7
+         byte[] sizeBytes = {receiveData[6], receiveData[7]};
+         short size = ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getShort();
+         System.out.println("Tamanho dos restantes campos: " + size);
 
-        //Lista de campos Seguintes 8-255
-        */
+         //Lista de campos Seguintes 8-255
+         */
         return null;
     }
 }
