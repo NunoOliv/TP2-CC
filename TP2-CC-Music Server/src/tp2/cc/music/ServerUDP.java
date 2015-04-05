@@ -5,6 +5,10 @@
  */
 package tp2.cc.music;
 
+import DataBase.Cliente;
+import DataBase.UserDB;
+import CalculadoresResposta.Register;
+import CalculadoresResposta.Hello;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -12,13 +16,16 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
  * @author Rafael
  */
 public class ServerUDP {
+
+    private UserDB db;
 
     private int portSend = 9876;
     private final int portReceive = 9877;
@@ -33,11 +40,13 @@ public class ServerUDP {
     public ServerUDP() {
         receiveData = new byte[255];
         sendData = new byte[255];
+        db = new UserDB();
+        //inicialize();//para testes
     }
 
     public void start() {
         int i = 0;
-        
+
         //iniciar os sockets 
         try {
             serverSocketReceive = new DatagramSocket(portReceive);
@@ -46,7 +55,7 @@ public class ServerUDP {
             System.out.println("Socket em utilização!");
             System.exit(0);
         }
-        
+
         while (true) {
             receiveData = new byte[255];
             sendData = new byte[255];
@@ -59,24 +68,22 @@ public class ServerUDP {
                 System.exit(0);
             }
             IPAddress = receivePacket.getAddress();
-            portSend=receivePacket.getPort();
+            portSend = receivePacket.getPort();
             System.out.println("**Pacote de dados nº" + i + " recebido do IP: " + IPAddress + " **");
             System.out.println();
 
             receiveData = receivePacket.getData();
             sendData = buildPDU(receiveData);
-            
-            
-            
-             //teste resposta
-            int j;
-            byte[] aux = new byte[255];
-            for (j = 0; j < 255 - 8; j++) {
-                aux[j] = sendData[j + 8];
-            }
-            String resp = new String(aux);
-            System.out.println("Resposta a enviar: " + resp);
-           
+
+            //teste resposta para o hello
+            /*int j;
+             byte[] aux = new byte[255];
+             for (j = 0; j < 255 - 8; j++) {
+             aux[j] = sendData[j + 8];
+             }
+             String resp = new String(aux);
+             System.out.println("Resposta a enviar: " + resp);
+             */
             //criar datagramPacket
             sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
             if (sendPacket == null) {
@@ -90,7 +97,7 @@ public class ServerUDP {
                 System.out.println("Socket em utilização!");
                 System.exit(0);
             }
-           
+
             System.out.println();
             System.out.println("**Pacote de dados nº" + i + " tratado **");
             i++;
@@ -102,6 +109,12 @@ public class ServerUDP {
         serverSocketReceive.close();
     }
 
+    public short getLabel(byte[] data) {
+        byte[] labelBytes = {data[2], data[3]};
+        short label = ByteBuffer.wrap(labelBytes).order(ByteOrder.BIG_ENDIAN).getShort();
+        return label;
+    }
+
     private byte[] buildPDU(byte[] receiveData) {
 
         //Versão 0
@@ -109,6 +122,7 @@ public class ServerUDP {
             System.out.println("Versão incorreta. Pacote ignorado.");
             return null;
         }
+
         //Segurança 1
         System.out.println("Versão correta.");
         if (receiveData[1] == 0) {
@@ -116,10 +130,10 @@ public class ServerUDP {
         } else {
             System.out.println("Com segurança.");
         }
+
         //Label 2-3
-        byte[] labelBytes = {receiveData[2], receiveData[3]};
-        short label = ByteBuffer.wrap(labelBytes).order(ByteOrder.BIG_ENDIAN).getShort();
-        System.out.println("Label: " + label);
+        System.out.println("Label: " + getLabel(receiveData));
+
         //Tipo 4
         switch (receiveData[4]) {
             case (1):
@@ -130,7 +144,8 @@ public class ServerUDP {
             case (2):
                 //Register
                 System.out.println("Tipo: REGISTER");
-                break;
+                Register r = new Register(receiveData);
+                return r.getResposta();
             case (3):
                 //Login
                 System.out.println("Tipo: LOGIN");
@@ -196,5 +211,25 @@ public class ServerUDP {
          //Lista de campos Seguintes 8-255
          */
         return null;
+    }
+
+    private void inicialize() {
+        Cliente c = new Cliente("Nome5", "Alcunha", "123");
+        c.setPontuacao(5);
+        db.addClient(c);
+        c = new Cliente("Nome20", "Alcunha", "123");
+        c.setPontuacao(20);
+        db.addClient(c);
+        c = new Cliente("Nome15", "Alcunha", "123");
+        c.setPontuacao(15);
+        db.addClient(c);
+
+        ArrayList<Cliente> users = db.topRanked();
+        Iterator<Cliente> ite = users.iterator();
+        while (ite.hasNext()) {
+            c = ite.next();
+            System.out.println(c.getPontuacao());
+        }
+
     }
 }

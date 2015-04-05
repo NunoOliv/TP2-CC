@@ -5,25 +5,20 @@
  */
 package tp2.cc.music;
 
-import java.io.IOException;
-import java.net.SocketException;
-import java.util.HashSet;
-
 /**
  *
  * @author Rafael
  */
 public class TP2CCMusicServer {
 
-    private static HashSet<Cliente> clientes;
+    //private static HashSet<Cliente> clientes;
     private static ServerUDP serverUDP;
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws SocketException, IOException {
-        serverUDP=new ServerUDP();
-        clientes= new HashSet<>();
+    public static void main(String[] args) {
+        serverUDP = new ServerUDP();
         serverUDP.start();
         //serverUDP.stop();
     }

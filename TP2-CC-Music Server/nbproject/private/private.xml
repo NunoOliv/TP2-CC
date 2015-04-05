@@ -3,10 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Rafa/Escola/GitHub/TP2-CC/TP2-CC-Music%20Server/src/tp2/cc/music/Hello.java</file>
+            <file>file:/D:/Rafa/Escola/GitHub/TP2-CC/TP2-CC-Music%20Server/src/DataBase/UserDB.java</file>
             <file>file:/D:/Rafa/Escola/GitHub/TP2-CC/TP2-CC-Music%20Server/src/tp2/cc/music/TP2CCMusicServer.java</file>
             <file>file:/D:/Rafa/Escola/GitHub/TP2-CC/TP2-CC-Music%20Server/src/tp2/cc/music/ServerUDP.java</file>
-            <file>file:/D:/Rafa/Escola/GitHub/TP2-CC/TP2-CC-Music%20Server/src/tp2/cc/music/Cliente.java</file>
+            <file>file:/D:/Rafa/Escola/GitHub/TP2-CC/TP2-CC-Music%20Server/src/CalculadoresResposta/Register.java</file>
+            <file>file:/D:/Rafa/Escola/GitHub/TP2-CC/TP2-CC-Music%20Server/src/DataBase/Cliente.java</file>
+            <file>file:/D:/Rafa/Escola/GitHub/TP2-CC/TP2-CC-Music%20Server/src/CalculadoresResposta/Hello.java</file>
+            <file>file:/D:/Rafa/Escola/GitHub/TP2-CC/TP2-CC-Music%20Server/src/CalculadoresResposta/CalcResp.java</file>
         </group>
     </open-files>
 </project-private>
