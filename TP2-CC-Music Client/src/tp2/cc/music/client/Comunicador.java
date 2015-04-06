@@ -1,10 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tp2.cc.music.client;
 
+import Build.Hello;
+import Exception.NotOkException;
+import Exception.UnknownTypeException;
+import Exception.VersionMissmatchException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,8 +11,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,30 +25,33 @@ import java.nio.ByteBuffer;
 public class Comunicador {
 
     private final int portSend = 9877;
-    private BufferedReader in;
+    private Scanner in;
     private InetAddress IPAddress;
     private DatagramSocket clientSocket;
     private DatagramPacket receivePacket;
     private DatagramPacket sendPacket;
     private byte[] sendData = new byte[255];
     private byte[] receiveData = new byte[255];
+    private Interpretador inter;
 
-    public Comunicador() {
-
+    public Comunicador(Interpretador i) {
+        inter = i;
     }
 
     public void start() {
         short label = 1;
         int i;
 
-        in = new BufferedReader(new InputStreamReader(System.in));
+        in = new Scanner(System.in);
 
         try {
             clientSocket = new DatagramSocket();
+            clientSocket.setSoTimeout(10000);//5 segundos
         } catch (SocketException ex) {
-            System.out.println("Fatal Error: "+ex.toString());
+            System.out.println("Fatal Error: " + ex.toString());
             System.exit(0);
         }
+
         try {
             IPAddress = InetAddress.getByName("localhost");
         } catch (UnknownHostException ex) {
@@ -54,78 +60,58 @@ public class Comunicador {
         }
         System.out.println("IP: " + IPAddress.toString());
 
-        buildHello(sendData, label);
+        Hello h = new Hello();
+        sendData = h.generate();
 
-        sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
-       
+        receiveData = send(sendData);
+
         try {
-            clientSocket.send(sendPacket);
-            System.out.println("Hello Enviado!");
-
-            receivePacket = new DatagramPacket(receiveData, receiveData.length);
-            clientSocket.receive(receivePacket);
-            System.out.println("Resposta recebida!");
-        } catch (IOException ex) {
-            System.out.println("Fatal Error!");
+            inter.checkOK(sendData);
+        } catch (UnknownTypeException ex) {
+            System.out.println("Fatal Error: UnknownTypeException");
+            System.exit(0);
+        } catch (VersionMissmatchException ex) {
+            System.out.println("Fatal Error: VersionMissmatchException");
+            System.exit(0);
+        } catch (NotOkException ex) {
+            System.out.println("Fatal Error: NotOkException");
             System.exit(0);
         }
+    }
 
-        //get String
-        byte[] aux = new byte[255];
-        receiveData = receivePacket.getData();
-        for (i = 0; i < 255 - 8; i++) {
-            aux[i] = receiveData[i + 8];
+    public byte[] send(byte[] send) {
+        sendData = send;
+        sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
+        while (true) {
+            try {
+                clientSocket.send(sendPacket);
+                System.out.println("Enviado!");
+
+                receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                clientSocket.receive(receivePacket);
+                System.out.println("Resposta recebida!");
+                break;
+            } catch (SocketTimeoutException e) {
+                System.out.println("Timeout!\nTentar novamente? (Y|N)");
+                char c = in.nextLine().charAt(0);
+                if (c == 'N' || c == 'n') {
+                    System.exit(0);
+                }
+                if (c != 'Y' && c != 'y') {
+                    System.out.println("Opção Introduzida inválida!");
+                    System.exit(0);
+                }
+            } catch (IOException ex) {
+                System.out.println("Fatal Error!");
+                System.exit(0);
+            }
         }
 
-        String resp = new String(aux);
+        return receivePacket.getData();
+    }
 
-        System.out.println("Resposta: " + resp);
+    public void end() {
         clientSocket.close();
-    }
-
-    private static void buildHello(byte[] sendData, short label) {
-        //Versão
-        sendData[0] = 0;
-        //Segurança
-        sendData[1] = 0;
-        //Label
-        fillLabel(sendData, label);
-        //Tipo
-        sendData[4] = 1;
-        //N campos seguintes
-        sendData[5] = 0;
-        //Tamanho campos Segintes
-        fillSize(sendData, (short) 0);
-
-    }
-
-    private static void fillLabel(byte[] sendData, short label) {
-        byte[] bytes = ByteBuffer.allocate(2).putShort(label).array();
-        sendData[2] = bytes[0];
-        sendData[3] = bytes[1];
-    }
-
-    private static void fillSize(byte[] sendData, short size) {
-        byte[] bytes = ByteBuffer.allocate(2).putShort(size).array();
-        sendData[6] = bytes[0];
-        sendData[7] = bytes[1];
-    }
-
-    private static void buildLogin(byte[] sendData) {
-        short label = 1;
-        short size = 0;
-        //Versão
-        sendData[0] = 0;
-        //Segurança
-        sendData[1] = 0;
-        //Label
-        fillLabel(sendData, label);
-        //Tipo
-        sendData[4] = 1;
-        //N campos seguintes
-        sendData[5] = 1;
-        //Tamanho campos Segintes
-        fillSize(sendData, size);
-        //Campos seguintes
+        System.exit(0);
     }
 }

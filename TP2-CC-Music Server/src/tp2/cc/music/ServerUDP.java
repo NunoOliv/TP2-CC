@@ -190,6 +190,10 @@ public class ServerUDP {
                 //List Ranking
                 System.out.println("Tipo: LIST_RANKING");
                 break;
+            case (14):
+                //Info
+                System.out.println("Tipo: INFO");
+                break;
             default:
                 System.out.println("Tipo irreconhecível. Pacote ignorado: " + receiveData[4]);
                 return null;
@@ -204,8 +208,7 @@ public class ServerUDP {
          }
 
          //Tamanho Lista de campos 6-7
-         byte[] sizeBytes = {receiveData[6], receiveData[7]};
-         short size = ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getShort();
+         size=getSize(receiveData);
          System.out.println("Tamanho dos restantes campos: " + size);
 
          //Lista de campos Seguintes 8-255
