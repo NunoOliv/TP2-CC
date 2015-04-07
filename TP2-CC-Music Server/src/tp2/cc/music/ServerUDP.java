@@ -90,6 +90,9 @@ public class ServerUDP {
                 continue;
             }
             //enviar resposta
+            /*for (i = 0; i < 200; i++) {
+                System.out.print("'"+sendData[i]);
+            }*/
             try {
                 serverSocketSend.send(sendPacket);
                 System.out.println("Resposta enviada!");

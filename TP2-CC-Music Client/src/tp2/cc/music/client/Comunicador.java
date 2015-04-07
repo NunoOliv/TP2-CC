@@ -4,19 +4,14 @@ import Build.Hello;
 import Exception.NotOkException;
 import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -66,7 +61,7 @@ public class Comunicador {
         receiveData = send(sendData);
 
         try {
-            inter.checkOK(sendData);
+            inter.checkOK(receiveData);
         } catch (UnknownTypeException ex) {
             System.out.println("Fatal Error: UnknownTypeException");
             System.exit(0);

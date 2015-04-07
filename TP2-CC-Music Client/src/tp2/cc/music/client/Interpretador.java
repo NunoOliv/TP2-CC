@@ -22,7 +22,14 @@ public class Interpretador {
     }
 
     public void checkOK(byte[] data) throws UnknownTypeException, VersionMissmatchException, NotOkException {
-        //Versão 0
+        int i;
+/*
+        for (i = 0; i < 200; i++) {
+            System.out.print(data[i]);
+        }
+        System.out.println("");
+*/
+//Versão 0
         if (data[0] != 0) {
             //System.out.println("Versão incorreta. Pacote ignorado.");
             throw new VersionMissmatchException();
@@ -42,12 +49,13 @@ public class Interpretador {
 
         //Tipo 4
         if (data[4] != 0) {
+
             throw new UnknownTypeException();
         }
 
         //Nº Campos Seguintes 5
         if (data[5] < 1) {
-            //System.out.println("Sem campos adicionais");
+            //System.out.println("É ESTE");
             throw new NotOkException();
         } else {
             int nCampos = data[5];
@@ -61,16 +69,16 @@ public class Interpretador {
         //Lista de campos Seguintes 8-255
         //255 - 8 = 247
         int j;
-        byte[] aux = new byte[247];
-        for (j = 0; j < 247; j++) {
+        byte[] aux = new byte[size];
+        for (j = 0; j < size; j++) {
             aux[j] = data[j + 8];
         }
         String resp = new String(aux);
-        if (resp.equals("OK")) {
-            //all is good
-        }else{
+        //System.out.println(resp);
+        if (!resp.equals("OK")) {
+            System.out.println("É ESTE!!!!!");
             throw new NotOkException();
-        }
+        } 
         //System.out.println("Resposta a enviar: " + resp);
 
     }

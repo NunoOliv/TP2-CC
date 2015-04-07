@@ -11,8 +11,8 @@ public class Hello extends CalcResp {
         String ok = "OK";
         int i;
 
-        resposta[0] = super.pdu[0];//versao
-        resposta[1] = super.pdu[1];//segurança
+        resposta[0] = 0;//versao
+        resposta[1] = 0;//segurança
         resposta[2] = 0;// label
         resposta[3] = 0;// label
         resposta[4] = 0;// tipo=REPLY
