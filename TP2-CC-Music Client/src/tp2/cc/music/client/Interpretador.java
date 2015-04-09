@@ -76,7 +76,7 @@ public class Interpretador {
         String resp = new String(aux);
         //System.out.println(resp);
         if (!resp.equals("OK")) {
-            System.out.println("É ESTE!!!!!");
+            //System.out.println("É ESTE!!!!!");
             throw new NotOkException();
         } 
         //System.out.println("Resposta a enviar: " + resp);

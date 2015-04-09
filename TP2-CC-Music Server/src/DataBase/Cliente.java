@@ -21,6 +21,7 @@ public class Cliente {
     public int pontuacao;
     public short nMensagensRecebidas;
     public short nMensagensEnviadas;
+    //private short label=0;
     //private ;
 
     public Cliente(String n, String a, String p) {
