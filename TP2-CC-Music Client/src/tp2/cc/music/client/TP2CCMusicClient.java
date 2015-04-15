@@ -20,8 +20,7 @@ public class TP2CCMusicClient {
         System.out.println("A tentar comunicar com o servidor...");
         com.start();
         System.out.println("Servidor encontrado!");
-        in.nextLine();
-
+        
         menu.start();
 
         com.end();

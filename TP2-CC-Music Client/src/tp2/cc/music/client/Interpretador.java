@@ -23,13 +23,7 @@ public class Interpretador {
 
     public void checkOK(byte[] data) throws UnknownTypeException, VersionMissmatchException, NotOkException {
         int i;
-/*
-        for (i = 0; i < 200; i++) {
-            System.out.print(data[i]);
-        }
-        System.out.println("");
-*/
-//Versão 0
+
         if (data[0] != 0) {
             //System.out.println("Versão incorreta. Pacote ignorado.");
             throw new VersionMissmatchException();
@@ -54,12 +48,8 @@ public class Interpretador {
         }
 
         //Nº Campos Seguintes 5
-        if (data[5] < 1) {
-            //System.out.println("É ESTE");
+        if (data[5] != 1) {
             throw new NotOkException();
-        } else {
-            int nCampos = data[5];
-            //System.out.println("Numero de campos seguintes: " + nCampos);
         }
 
         //Tamanho Lista de campos 6-7
@@ -68,19 +58,23 @@ public class Interpretador {
 
         //Lista de campos Seguintes 8-255
         //255 - 8 = 247
-        int j;
-        byte[] aux = new byte[size];
-        for (j = 0; j < size; j++) {
-            aux[j] = data[j + 8];
+        
+        //System.out.println("data[8]: " + (data[8]& 0xff));
+        if ((data[8]& 0xff) == 255) {
+            int j;
+            byte[] aux = new byte[size];
+            for (j = 0; j < size; j++) {
+                aux[j] = data[j + 9];
+            }
+            String resp = new String(aux);
+            System.out.println("Erro: " + resp);
+            return;
         }
-        String resp = new String(aux);
-        //System.out.println(resp);
-        if (!resp.equals("OK")) {
-            //System.out.println("É ESTE!!!!!");
-            throw new NotOkException();
-        } 
-        //System.out.println("Resposta a enviar: " + resp);
+        if (data[8] == 0) {
+            System.out.println("OK!");
+        }
 
+        //System.out.println(resp);
     }
 
     public short getLabel(byte[] data) {

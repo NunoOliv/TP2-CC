@@ -28,9 +28,20 @@ public class Cliente {
         nome = n;
         alcunha = a;
         pass = p;
-        pontuacao=0;
-        nMensagensRecebidas=0;
-        nMensagensEnviadas=0;
+        pontuacao = 0;
+        nMensagensRecebidas = 0;
+        nMensagensEnviadas = 0;
+    }
+
+    public Cliente(String alcunha, String pass, String nome, InetAddress ip, int port) {
+        this.nome = nome;
+        this.alcunha = alcunha;
+        this.pass = pass;
+        this.enderecoIP=ip;
+        this.port=port;
+        pontuacao = 0;
+        nMensagensRecebidas = 0;
+        nMensagensEnviadas = 0;
     }
 
     /**
@@ -116,7 +127,5 @@ public class Cliente {
     public void setPontuacao(int pontuacao) {
         this.pontuacao = pontuacao;
     }
-
-
 
 }

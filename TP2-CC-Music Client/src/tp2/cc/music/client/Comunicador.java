@@ -59,6 +59,7 @@ public class Comunicador {
         sendData = h.generate();
 
         receiveData = send(sendData);
+        
 
         try {
             inter.checkOK(receiveData);

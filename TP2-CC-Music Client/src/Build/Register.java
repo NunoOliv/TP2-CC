@@ -45,7 +45,7 @@ public class Register {
             pdu[i] = pass[i - 8 - 75];
         }
         //meter nome
-        for (i = 8 + 75 + 75; (i < 8 + 75 + 75 && i < nome.length + 8 + 75 + 75); i++) {
+        for (i = 8 + 75 + 75; (i < 8 + 75 + 75 + 75 && i < nome.length + 8 + 75 + 75); i++) {
             pdu[i] = nome[i - 8 - 75 - 75];
         }
 

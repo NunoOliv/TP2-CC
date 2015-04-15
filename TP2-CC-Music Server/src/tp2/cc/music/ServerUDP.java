@@ -75,15 +75,6 @@ public class ServerUDP {
             receiveData = receivePacket.getData();
             sendData = buildPDU(receiveData);
 
-            //teste resposta para o hello
-            /*int j;
-             byte[] aux = new byte[255];
-             for (j = 0; j < 255 - 8; j++) {
-             aux[j] = sendData[j + 8];
-             }
-             String resp = new String(aux);
-             System.out.println("Resposta a enviar: " + resp);
-             */
             //criar datagramPacket
             sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
             if (sendPacket == null) {
@@ -91,8 +82,8 @@ public class ServerUDP {
             }
             //enviar resposta
             /*for (i = 0; i < 200; i++) {
-                System.out.print("'"+sendData[i]);
-            }*/
+             System.out.print("'"+sendData[i]);
+             }*/
             try {
                 serverSocketSend.send(sendPacket);
                 System.out.println("Resposta enviada!");
@@ -142,12 +133,12 @@ public class ServerUDP {
             case (1):
                 //Hello
                 System.out.println("Tipo: HELLO");
-                Hello h = new Hello(receiveData);
+                Hello h = new Hello();
                 return h.getResposta();
             case (2):
                 //Register
                 System.out.println("Tipo: REGISTER");
-                Register r = new Register(receiveData);
+                Register r = new Register(receiveData,db,IPAddress,portSend);
                 return r.getResposta();
             case (3):
                 //Login

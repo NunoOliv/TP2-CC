@@ -6,8 +6,6 @@ import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
 import java.io.PrintStream;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -160,6 +158,7 @@ public class Menu {
         Register r = new Register(alcunha, pass, nome, label);
         byte[] data = r.generate();
         data = com.send(data);
+        label++;
         try {
             inter.checkOK(data);
         } catch (UnknownTypeException ex) {

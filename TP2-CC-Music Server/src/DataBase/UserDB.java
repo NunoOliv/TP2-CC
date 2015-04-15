@@ -5,9 +5,9 @@
  */
 package DataBase;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.TreeMap;
 
 /**
  *
@@ -21,8 +21,22 @@ public class UserDB {
         clientes = new HashSet<>();
     }
 
-    public void addClient(Cliente c) {
+    public boolean addClient(Cliente c) {
+        if (clientes.contains(c)) {
+            return false;
+        }
         clientes.add(c);
+        return true;
+    }
+
+    public boolean addCliente(String alcunha, String pass, String nome, InetAddress ip, int port) {
+        for (Cliente c : clientes) {
+            if (c.getAlcunha().equals(alcunha)) {
+                return false;
+            }
+        }
+        clientes.add(new Cliente(alcunha, pass, nome, ip, port));
+        return true;
     }
 
     public ArrayList topRanked() {
@@ -31,8 +45,8 @@ public class UserDB {
         Cliente max = null;
 
         for (i = 0; i < clientes.size(); i++) {
-            p=0;
-            max=null;
+            p = 0;
+            max = null;
             for (Cliente c : clientes) {
                 if (r.contains(c)) {
                     continue;
@@ -41,7 +55,7 @@ public class UserDB {
                     p = c.getPontuacao();
                     max = c;
                 }
-                
+
             }
             r.add(max);
         }

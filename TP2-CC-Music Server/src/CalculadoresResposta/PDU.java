@@ -7,7 +7,6 @@ package CalculadoresResposta;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.HashMap;
 
 /**
  *
@@ -15,7 +14,6 @@ import java.util.HashMap;
  */
 public class PDU {
 
-    //private byte[] pdu;
     private byte versao;
     private byte seguranca;
     private short label;
@@ -23,7 +21,7 @@ public class PDU {
     private byte nCampos;
     private short tamanho;
     private byte[] lista;
-    //private HashMap<Byte, Campo> campos;
+
 
     public PDU(byte[] pdu) {
         versao = pdu[0];
@@ -44,7 +42,6 @@ public class PDU {
         this.nCampos = nCampos;
         this.tamanho = tamanho;
         this.lista = lista;
-        //this.campos = campos;
     }
 
     public PDU() {
@@ -55,14 +52,8 @@ public class PDU {
         this.nCampos = 0;
         this.tamanho = 0;
         this.lista = new byte[247];
-        //this.campos = new HashMap<>();
     }
 
-    public byte[] generatePDU() {
-        return new byte[255];
-    }
-
-    String s = new String(lista);
 
     public short getLabel(byte[] data) {
         byte[] labelBytes = {data[2], data[3]};
@@ -116,11 +107,6 @@ public class PDU {
         return lista;
     }
 
-    
-    public String getS() {
-        return s;
-    }
-
     public void setVersao(byte versao) {
         this.versao = versao;
     }
@@ -153,10 +139,6 @@ public class PDU {
         this.lista = new byte[247];
     }
 
-   
-    public void setS(String s) {
-        this.s = s;
-    }
 
     public byte[] pduToLista(byte[] pdu) {
         int i;
@@ -174,7 +156,7 @@ public class PDU {
         }
     }
 
-    public byte[] getResposta() {
+    public byte[] generatePDU() {
         byte[] resposta = new byte[255];
         int i;
 
