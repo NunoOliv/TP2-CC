@@ -7,21 +7,22 @@ package CalculadoresResposta;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 /**
  *
  * @author Rafael
  */
 public class PDU {
-
+    //private byte[] pdu;
     private byte versao;
     private byte seguranca;
     private short label;
     private byte tipo;
     private byte nCampos;
-    private short tamanho;
-    private byte[] lista;
-
+    private short tamanho;/* max size = 2^16 - 1 = 65535 (~64 kBytes)*/
+    private byte[] lista; /* tamanho variável!*/
+    //private HashMap<Byte, Campo> campos;
 
     public PDU(byte[] pdu) {
         versao = pdu[0];
@@ -30,8 +31,19 @@ public class PDU {
         tipo = pdu[4];
         nCampos = pdu[5];
         tamanho = getSize(pdu);
-        lista = pduToLista(pdu);
-
+        lista = new byte[this.tamanho];
+        /*copia conteudo do pdu desde a pos.8 adiante*/
+        System.arraycopy(pdu, 8, this.lista, 0, this.tamanho);
+    }
+    
+    public PDU(PDU pdu){
+        this.versao = pdu.getVersao();
+        this.seguranca = pdu.getSeguranca();
+        this.label = pdu.getLabel();
+        this.tipo = pdu.getTipo();
+        this.nCampos = pdu.getnCampos();
+        this.tamanho = pdu.getTamanho();
+        this.lista = pdu.getLista();
     }
 
     public PDU(byte versao, byte seguranca, short label, byte tipo, byte nCampos, short tamanho, byte[] lista) {
@@ -41,7 +53,8 @@ public class PDU {
         this.tipo = tipo;
         this.nCampos = nCampos;
         this.tamanho = tamanho;
-        this.lista = lista;
+        this.lista = new byte[tamanho];
+        System.arraycopy(lista, 0, this.lista, 0, tamanho);
     }
 
     public PDU() {
@@ -51,11 +64,36 @@ public class PDU {
         this.tipo = 0;
         this.nCampos = 0;
         this.tamanho = 0;
-        this.lista = new byte[247];
+        this.lista = null;/*não é conhecido o tamanho*/
     }
+    
 
+/* Meti em comentário para conseguir correr o programa, devido a 2 entradas de generate PD...
+    public byte[] generatePDU() {
+         byte[] res = new byte[8+getTamanho()];
+         res[0] = getVersao();
+         res[1] = getSeguranca();
+         
+         /*conversao da label em byte[]*/
+         /*ByteBuffer resLabel = ByteBuffer.allocate(2);
+         resLabel.putShort(getLabel());
+         System.arraycopy(resLabel.array(), 0, res, 2, 2);
+         
+         res[4] = getTipo();
+         res[5] = getnCampos();
+         
+         /*conversao do tamanho em byte[]*/    
+         /*ByteBuffer resTamanho = ByteBuffer.allocate(2);
+         resTamanho.putShort(getTamanho());
+         System.arraycopy(resTamanho.array(), 0, res, 6, 2);
+         
+         /*conversao dos bytes da lista*/
+         /*System.arraycopy(this.lista, 0, res, 8, getTamanho());
+         
+         return res;
+    }*/
 
-    public short getLabel(byte[] data) {
+    private short getLabel(byte[] data) {
         byte[] labelBytes = {data[2], data[3]};
         short label = ByteBuffer.wrap(labelBytes).order(ByteOrder.BIG_ENDIAN).getShort();
         return label;
@@ -67,7 +105,7 @@ public class PDU {
         data[3] = bytes[1];
     }
 
-    public short getSize(byte[] data) {
+    private short getSize(byte[] data) {
         byte[] sizeBytes = {data[6], data[7]};
         short size = ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getShort();
         return size;
@@ -104,7 +142,9 @@ public class PDU {
     }
 
     public byte[] getLista() {
-        return lista;
+        byte[] l = new byte[this.tamanho];
+        System.arraycopy(this.lista, 0, l, 0, tamanho);
+        return l;
     }
 
     public void setVersao(byte versao) {
@@ -131,24 +171,67 @@ public class PDU {
         this.tamanho = tamanho;
     }
 
-    public void setLista(byte[] lista) {
-        this.lista = lista;
+    public void setLista(byte[] a){
+        this.lista=a;
+    }
+    
+    public void setLista(byte[] list, int size) {
+        this.lista = new byte[size];
+        System.arraycopy(list, 0, this.lista, 0, size);
     }
 
-    public void setLista() {
-        this.lista = new byte[247];
+    /*empty list*/
+    public void setLista(int size) {
+        this.lista = new byte[size];
     }
 
+    @Override
+    public String toString() {
+        return "PDU{" + "versao=" + versao + ", seguranca=" + seguranca + ", "
+                + "label=" + label + ", tipo=" + tipo + ", nCampos=" + nCampos 
+                + ", tamanho=" + tamanho + ", lista=" + Arrays.toString(lista) 
+                + '}';
+    }
 
-    public byte[] pduToLista(byte[] pdu) {
+    @Override
+    public boolean equals (Object obj){
+        if(this == obj) return true; 
+        if((obj == null) || (this.getClass() != obj.getClass())) return false;
+        PDU e = (PDU) obj;
+        boolean cond; 
+        cond = (this.seguranca == e.getSeguranca())&& 
+               (this.versao == e.getVersao())&&
+               (this.label == e.getLabel())&&
+               (this.tipo == e.getTipo())&&
+               (this.nCampos == e.getnCampos())&&
+               (this.tamanho == e.getTamanho())&&
+               (Arrays.equals(this.lista, e.getLista()));
+        return cond;
+    }
+    
+    
+
+    @Override
+    public PDU clone() {
+        return new PDU(this); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+    
+   
+
+    /*deprecated? -> use system.arraycopy*/
+    private byte[] pduToLista(byte[] pdu) {
         int i;
-        byte[] resp = new byte[247];
-        for (i = 0; i < 247; i++) {
+        int n = getSize(pdu);
+        byte[] resp = new byte[n];
+        for (i = 0; i < n; i++) {
             resp[i] = pdu[i + 8];
         }
         return resp;
     }
-
+   
+    /*deprecated? -> use system.arraycopy*/
     public void listaToPDU(byte[] data) {
         int i;
         for (i = 0; i < 247; i++) {
