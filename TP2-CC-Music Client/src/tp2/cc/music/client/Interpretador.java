@@ -21,14 +21,58 @@ public class Interpretador {
 
     }
 
-    public void checkOK(byte[] data) throws UnknownTypeException, VersionMissmatchException, NotOkException {
-        int i;
-
+    public boolean checkLogin(byte[] data) throws VersionMissmatchException, UnknownTypeException, NotOkException {
         if (data[0] != 0) {
-            //System.out.println("Versão incorreta. Pacote ignorado.");
             throw new VersionMissmatchException();
         }
-        //System.out.println("Versão correta.");
+
+        //Segurança 1
+        if (data[1] == 0) {
+            //System.out.println("Sem segurança.");
+        } else {
+            //System.out.println("Com segurança.");
+        }
+
+        short label = getLabel(data);
+
+        if (data[4] != 0) {
+            throw new UnknownTypeException();
+        }
+
+        if (data[5] != 1) {
+            throw new NotOkException();
+        }
+
+        short size = getSize(data);
+
+        if ((data[8] & 0xff) == 255) {
+            int j;
+            byte[] aux = new byte[size];
+            for (j = 0; j < size; j++) {
+                aux[j] = data[j + 9];
+            }
+            String resp = new String(aux);
+            System.out.println("Erro: " + resp);
+            return false;
+        }
+        if (data[8] == 0) {
+            int j;
+            byte[] aux = new byte[size];
+            for (j = 0; j < size; j++) {
+                aux[j] = data[j + 9];
+            }
+            String resp = new String(aux);
+            System.out.println("Bem vindo " + resp+"!");
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkOK(byte[] data) throws UnknownTypeException, VersionMissmatchException, NotOkException {
+
+        if (data[0] != 0) {
+            throw new VersionMissmatchException();
+        }
 
         //Segurança 1
         if (data[1] == 0) {
@@ -43,7 +87,6 @@ public class Interpretador {
 
         //Tipo 4
         if (data[4] != 0) {
-
             throw new UnknownTypeException();
         }
 
@@ -58,9 +101,8 @@ public class Interpretador {
 
         //Lista de campos Seguintes 8-255
         //255 - 8 = 247
-        
         //System.out.println("data[8]: " + (data[8]& 0xff));
-        if ((data[8]& 0xff) == 255) {
+        if ((data[8] & 0xff) == 255) {
             int j;
             byte[] aux = new byte[size];
             for (j = 0; j < size; j++) {
@@ -68,13 +110,14 @@ public class Interpretador {
             }
             String resp = new String(aux);
             System.out.println("Erro: " + resp);
-            return;
+            return false;
         }
         if (data[8] == 0) {
             System.out.println("OK!");
+            return true;
         }
 
-        //System.out.println(resp);
+        return false;
     }
 
     public short getLabel(byte[] data) {

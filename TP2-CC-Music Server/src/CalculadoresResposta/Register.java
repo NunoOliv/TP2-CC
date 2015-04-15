@@ -70,7 +70,7 @@ public class Register {
             pdu.setLista(list);
             //System.out.println("data[8]: " + list[0]);
         }
-        //System.out.println(alcunha+"\n"+pass+"\n"+nome); all is good here
+        //System.out.println(alcunha+"\n"+pass+"\n"+nome); //all is good here
     }
 
     public byte[] getResposta() {

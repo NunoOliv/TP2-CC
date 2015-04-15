@@ -62,4 +62,21 @@ public class UserDB {
         return r;
     }
 
+    public Cliente login(String alcunha, String pass) {
+        for (Cliente c : clientes) {
+            if (c.getAlcunha().equals(alcunha)&&c.getPass().equals(pass)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public String getNome(String alcunha){
+        for (Cliente c : clientes) {
+            if (c.getAlcunha().equals(alcunha)) {
+                return c.getNome();
+            }
+        }
+        return null;
+    }
 }

@@ -68,7 +68,7 @@ public class PDU {
     }
     
 
-/* Meti em comentário para conseguir correr o programa, devido a 2 entradas de generate PD...
+/* Meti em comentário para conseguir correr o programa, devido a 2 entradas de generate PDU...
     public byte[] generatePDU() {
          byte[] res = new byte[8+getTamanho()];
          res[0] = getVersao();
@@ -215,8 +215,6 @@ public class PDU {
     public PDU clone() {
         return new PDU(this); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
     
    
 

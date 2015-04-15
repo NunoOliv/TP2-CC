@@ -37,8 +37,8 @@ public class Cliente {
         this.nome = nome;
         this.alcunha = alcunha;
         this.pass = pass;
-        this.enderecoIP=ip;
-        this.port=port;
+        this.enderecoIP = ip;
+        this.port = port;
         pontuacao = 0;
         nMensagensRecebidas = 0;
         nMensagensEnviadas = 0;
@@ -126,6 +126,30 @@ public class Cliente {
      */
     public void setPontuacao(int pontuacao) {
         this.pontuacao = pontuacao;
+    }
+
+    public short getnMensagensRecebidas() {
+        return nMensagensRecebidas;
+    }
+
+    public void setnMensagensRecebidas(short nMensagensRecebidas) {
+        this.nMensagensRecebidas = nMensagensRecebidas;
+    }
+
+    public short getnMensagensEnviadas() {
+        return nMensagensEnviadas;
+    }
+
+    public void setnMensagensEnviadas(short nMensagensEnviadas) {
+        this.nMensagensEnviadas = nMensagensEnviadas;
+    }
+
+    public void incrementaMensagensEnviadas() {
+        this.nMensagensEnviadas++;
+    }
+
+    public void incrementaMensagensRecebidas() {
+        this.nMensagensRecebidas++;
     }
 
 }

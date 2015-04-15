@@ -11,19 +11,17 @@ import java.nio.ByteBuffer;
  *
  * @author Rafael
  */
-public class Register {
+public class Login {
 
     byte[] pdu;
-    byte[] nome;
     byte[] alcunha;
     byte[] pass;
     short label;
 
-    public Register(String alcunha, String pass, String nome, short label) {
+    public Login(String alcunha, String pass, short label) {
         pdu = new byte[255];
         this.alcunha = alcunha.getBytes();
         this.pass = pass.getBytes();
-        this.nome = nome.getBytes();
         this.label = label;
     }
 
@@ -31,9 +29,9 @@ public class Register {
         pdu[0] = 0;//versao
         pdu[1] = 0;//segurança
         setLabel(pdu, label);
-        pdu[4] = 2;//tipo=REGISTER;
-        pdu[5] = 3;//nCampos
-        setSize(pdu, (short) 225);
+        pdu[4] = 3;//tipo=LOGIN;
+        pdu[5] = 2;//nCampos
+        setSize(pdu, (short) 150);
 
         int i;
         //meter alcunha
@@ -43,10 +41,6 @@ public class Register {
         //meter pass
         for (i = 8 + 75; (i < 8 + 75 + 75 && i < pass.length + 8 + 75); i++) {
             pdu[i] = pass[i - 8 - 75];
-        }
-        //meter nome
-        for (i = 8 + 75 + 75; (i < 8 + 75 + 75 + 75 && i < nome.length + 8 + 75 + 75); i++) {
-            pdu[i] = nome[i - 8 - 75 - 75];
         }
 
         return pdu;
@@ -63,4 +57,5 @@ public class Register {
         data[6] = bytes[0];
         data[7] = bytes[1];
     }
+
 }

@@ -9,6 +9,7 @@ import DataBase.Cliente;
 import DataBase.UserDB;
 import CalculadoresResposta.Register;
 import CalculadoresResposta.Hello;
+import CalculadoresResposta.Login;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -143,7 +144,8 @@ public class ServerUDP {
             case (3):
                 //Login
                 System.out.println("Tipo: LOGIN");
-                break;
+                Login l = new Login(receiveData,db);
+                return l.getResposta();
             case (4):
                 //Logout
                 System.out.println("Tipo: LOGOUT");
