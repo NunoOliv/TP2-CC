@@ -1,11 +1,14 @@
 package CalculadoresResposta;
 
+
 public class Hello {
 
     PDU pdu;
+    ListaCampos lc;
 
     public Hello() {
         pdu = new PDU();
+        lc = new ListaCampos();
         incia();
     }
 
@@ -14,13 +17,15 @@ public class Hello {
         pdu.setSeguranca((byte) 0);
         pdu.setLabel((short) 0);
         pdu.setTipo((byte) 0);
-        pdu.setnCampos((byte) 1);
-        pdu.setTamanho((short) 1);
-
-        byte[] list = new byte[247];
-        list[0] = 0;
-
-        pdu.setLista(list);
+        
+        
+        lc.addCampo(new Campo (0, 0, null));
+        
+        pdu.setnCampos(lc.getNCampos());
+        pdu.setTamanho(lc.getTotalSize());
+        pdu.setLista(lc.generate());
+        
+        //byte[] lc.gerate()
     }
 
     public byte[] getResposta() {

@@ -68,30 +68,23 @@ public class PDU {
     }
     
 
-/* Meti em comentário para conseguir correr o programa, devido a 2 entradas de generate PDU...
+
     public byte[] generatePDU() {
          byte[] res = new byte[8+getTamanho()];
          res[0] = getVersao();
          res[1] = getSeguranca();
-         
-         /*conversao da label em byte[]*/
-         /*ByteBuffer resLabel = ByteBuffer.allocate(2);
-         resLabel.putShort(getLabel());
-         System.arraycopy(resLabel.array(), 0, res, 2, 2);
-         
+
+         setLabel(res, getLabel());
+
          res[4] = getTipo();
          res[5] = getnCampos();
          
-         /*conversao do tamanho em byte[]*/    
-         /*ByteBuffer resTamanho = ByteBuffer.allocate(2);
-         resTamanho.putShort(getTamanho());
-         System.arraycopy(resTamanho.array(), 0, res, 6, 2);
-         
-         /*conversao dos bytes da lista*/
-         /*System.arraycopy(this.lista, 0, res, 8, getTamanho());
+         setSize(res, getTamanho());
+
+         System.arraycopy(this.lista, 0, res, 8, getTamanho());
          
          return res;
-    }*/
+    }
 
     private short getLabel(byte[] data) {
         byte[] labelBytes = {data[2], data[3]};
@@ -235,21 +228,6 @@ public class PDU {
         for (i = 0; i < 247; i++) {
             data[i + 8] = lista[i];
         }
-    }
-
-    public byte[] generatePDU() {
-        byte[] resposta = new byte[255];
-        int i;
-
-        resposta[0] = versao;//versao
-        resposta[1] = seguranca;//segurança
-        setLabel(resposta, label);// label
-        resposta[4] = tipo;// tipo=REPLY
-        resposta[5] = nCampos;// campos seguintes
-        setSize(resposta, tamanho);
-        listaToPDU(resposta);
-                
-        return resposta;
     }
 
 }

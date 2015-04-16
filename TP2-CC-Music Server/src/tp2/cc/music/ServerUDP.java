@@ -74,8 +74,10 @@ public class ServerUDP {
             System.out.println();
 
             receiveData = receivePacket.getData();
-            sendData = buildPDU(receiveData);
-
+            //inacabado
+            //if (receiveData[4] != 1) {
+                sendData = buildPDU(receiveData);
+            //}
             //criar datagramPacket
             sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
             if (sendPacket == null) {
@@ -139,12 +141,12 @@ public class ServerUDP {
             case (2):
                 //Register
                 System.out.println("Tipo: REGISTER");
-                Register r = new Register(receiveData,db,IPAddress,portSend);
+                Register r = new Register(receiveData, db, IPAddress, portSend);
                 return r.getResposta();
             case (3):
                 //Login
                 System.out.println("Tipo: LOGIN");
-                Login l = new Login(receiveData,db);
+                Login l = new Login(receiveData, db);
                 return l.getResposta();
             case (4):
                 //Logout
@@ -213,13 +215,13 @@ public class ServerUDP {
     }
 
     private void inicialize() {
-        Cliente c = new Cliente("Nome5", "Alcunha", "123");
+        Cliente c = new Cliente("Nome5", "rafa", "123");
         c.setPontuacao(5);
         db.addClient(c);
-        c = new Cliente("Nome20", "Alcunha", "123");
+        c = new Cliente("Nome20", "nuno", "123");
         c.setPontuacao(20);
         db.addClient(c);
-        c = new Cliente("Nome15", "Alcunha", "123");
+        c = new Cliente("Nome15", "rui", "123");
         c.setPontuacao(15);
         db.addClient(c);
 

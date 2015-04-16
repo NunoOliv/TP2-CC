@@ -62,11 +62,10 @@ public class Campo {
         System.arraycopy(dados, 0, this.dados, 0, size);
         this.dados = dados;
     }
-    
-    public short getTotalSize(){
-        return (short) (this.size+3);
-    }
 
+    public short getTotalSize() {
+        return (short) (this.size + 3);
+    }
 
     public byte[] generate() {
         byte[] resp = new byte[this.size + 3];
@@ -74,9 +73,10 @@ public class Campo {
         byte[] buff = shortToByte(this.size);
         resp[1] = buff[0];
         resp[2] = buff[1];
-        System.arraycopy(this.dados, 0, resp, 3, this.size);
-        
-       return resp;
+        if (this.dados != null) {
+            System.arraycopy(this.dados, 0, resp, 3, this.size);
+        }
+        return resp;
     }
 
     public byte[] shortToByte(short size) {
