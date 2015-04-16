@@ -1,7 +1,7 @@
 package Build;
 
 public class Hello {
-    // teste de coisas
+
     byte[] pdu;
 
     public Hello() {
