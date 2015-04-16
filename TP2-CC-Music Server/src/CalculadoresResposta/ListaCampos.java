@@ -1,19 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package CalculadoresResposta;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 
-/**
- *
- * @author Rafael
- */
 public class ListaCampos {
-    private final ArrayList<Campo> lista;
-    private short totalSize;
+
+    private ArrayList<Campo> lista;
+    //private short totalSize;
 
     public ListaCampos(ArrayList<Campo> lista) {
         this.lista = lista;
@@ -22,32 +16,120 @@ public class ListaCampos {
     public ListaCampos() {
         this.lista = new ArrayList<>();
     }
-    
+
+    public ListaCampos(byte[] data, short nCampos) {
+        lista = new ArrayList<>();
+        int i = 0;
+
+        byte campo;
+        short size;
+        byte[] dados;
+        byte[] aux = new byte[2];
+
+        while (i < nCampos) {
+
+            campo = data[i];
+
+            System.arraycopy(data, i + 1, aux, 0, 2);
+            size = byteToShort(aux);
+
+            if (size > 0) {
+                dados = new byte[size];
+                System.arraycopy(data, i + 3, dados, 0, size);
+
+                addCampo(new Campo(campo, size, dados));
+            } else {
+                addCampo(new Campo(campo));
+            }
+
+            i += size + 3;
+        }
+    }
+
+    public ArrayList<Campo> getCampos() {
+        return (ArrayList<Campo>) lista.clone();
+    }
+
+    public Campo getCampo(int posicao) throws ArrayIndexOutOfBoundsException {
+        if (lista.size() < posicao) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        return lista.get(posicao);
+    }
+
     public boolean addCampo(Campo campo) {
-        totalSize += campo.getTotalSize();
+        //totalSize += campo.getTotalSize();
         return this.lista.add(campo);
     }
 
     public short getTotalSize() {
-        return totalSize;
-    }
-    
-    public byte getNCampos() {
-        return (byte)lista.size();
-    }
-    
-    public byte[] generate() {
-        byte[] ret = new byte[totalSize];
-        int currentSize = 0;
-        
-        for(Campo campo : lista ) {
-            System.arraycopy(campo.generate(), 0, ret, currentSize, campo.getTotalSize() );
-            currentSize = currentSize+campo.getTotalSize();
+        short t = 0;
+        for (Campo c : lista) {
+            t += c.getTotalSize();
         }
-        return ret; 
+        return t;
     }
-    
-    
-    
-    
+
+    public byte getNCampos() {
+        return (byte) lista.size();
+    }
+
+    public byte[] generate() {
+        byte[] ret = new byte[getTotalSize()];
+        int currentSize = 0;
+
+        for (Campo campo : lista) {
+            System.arraycopy(campo.generate(), 0, ret, currentSize, campo.getTotalSize());
+            currentSize = currentSize + campo.getTotalSize();
+        }
+        return ret;
+    }
+
+    public byte[] shortToByte(short size) {
+        byte[] bytes = ByteBuffer.allocate(2).putShort(size).array();
+        return bytes;
+    }
+
+    public short byteToShort(byte[] data) {
+        byte[] sizeBytes = {data[0], data[1]};
+        return ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getShort();
+    }
+
+    @Override
+    public String toString() {
+        return "ListaCampos{" + "lista=" + lista + '}';
+    }
+
+    @Override
+    protected ListaCampos clone() throws CloneNotSupportedException {
+        return (ListaCampos) this.lista.clone();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof ListaCampos) {
+            ListaCampos lc = (ListaCampos) o;
+
+            if (lc.getNCampos() != this.getNCampos()) {
+                return false;
+            }
+
+            if (lc.getTotalSize() != this.getTotalSize()) {
+                return false;
+            }
+
+            for (int i = 0; i < lc.getNCampos(); i++) {
+                try {
+                    if (!lc.getCampo(i).equals(this.lista.get(i))) {
+                        return false;
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
 }

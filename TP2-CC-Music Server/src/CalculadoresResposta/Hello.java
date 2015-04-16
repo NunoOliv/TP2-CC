@@ -19,13 +19,12 @@ public class Hello {
         pdu.setTipo((byte) 0);
         
         
-        lc.addCampo(new Campo ((byte)0, (short)0, (byte[]) null));
+        lc.addCampo(new Campo ((byte)0));
         
         pdu.setnCampos(lc.getNCampos());
         pdu.setTamanho(lc.getTotalSize());
         pdu.setLista(lc.generate());
         
-        //byte[] lc.gerate()
     }
 
     public byte[] getResposta() {
