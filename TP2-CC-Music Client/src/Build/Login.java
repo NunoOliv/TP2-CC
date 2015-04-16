@@ -13,49 +13,29 @@ import java.nio.ByteBuffer;
  */
 public class Login {
 
-    byte[] pdu;
-    byte[] alcunha;
-    byte[] pass;
-    short label;
+    private PDU pdu;
+    private ListaCampos lc;
+    private short label;
 
     public Login(String alcunha, String pass, short label) {
-        pdu = new byte[255];
-        this.alcunha = alcunha.getBytes();
-        this.pass = pass.getBytes();
+        pdu = new PDU();
+        lc = new ListaCampos();
         this.label = label;
+
+        lc.addCampo(new Campo((byte) 2, (short) alcunha.length(), alcunha));
+        lc.addCampo(new Campo((byte) 3, (short) pass.length(), pass));
     }
 
     public byte[] generate() {
-        pdu[0] = 0;//versao
-        pdu[1] = 0;//segurança
-        setLabel(pdu, label);
-        pdu[4] = 3;//tipo=LOGIN;
-        pdu[5] = 2;//nCampos
-        setSize(pdu, (short) 150);
+        pdu.setVersao((byte) 0);
+        pdu.setSeguranca((byte) 0);
+        pdu.setLabel(label);
+        pdu.setTipo((byte) 3);
+        pdu.setnCampos(lc.getNCampos());
+        pdu.setTamanho(lc.getTotalSize());
+        pdu.setLista(lc.generate());
 
-        int i;
-        //meter alcunha
-        for (i = 8; (i < 8 + 75 && i < alcunha.length + 8); i++) {
-            pdu[i] = alcunha[i - 8];
-        }
-        //meter pass
-        for (i = 8 + 75; (i < 8 + 75 + 75 && i < pass.length + 8 + 75); i++) {
-            pdu[i] = pass[i - 8 - 75];
-        }
-
-        return pdu;
-    }
-
-    public void setLabel(byte[] data, short label) {
-        byte[] bytes = ByteBuffer.allocate(2).putShort(label).array();
-        data[2] = bytes[0];
-        data[3] = bytes[1];
-    }
-
-    public void setSize(byte[] data, short size) {
-        byte[] bytes = ByteBuffer.allocate(2).putShort(size).array();
-        data[6] = bytes[0];
-        data[7] = bytes[1];
+        return pdu.generatePDU();
     }
 
 }

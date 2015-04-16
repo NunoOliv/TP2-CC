@@ -14,48 +14,54 @@ import java.nio.ByteOrder;
  */
 public class Campo {
 
-    private byte campo;
+    private byte tag;
     private short size;
     private byte[] dados;
 
     public Campo() {
-        this.campo = -1;
+        this.tag = -1;
         this.size = 0;
         this.dados = null;
     }
 
     public Campo(byte campo) {
-        this.campo = campo;
+        this.tag = campo;
         this.size = 0;
         this.dados = null;
     }
 
     public Campo(byte campo, short size, String dados) {
-        this.campo = campo;
+        this.tag = campo;
         this.size = size;
         System.arraycopy(dados.getBytes(), 0, this.dados, 0, size);
     }
 
     public Campo(byte campo, short size, byte[] dados) {
-        this.campo = campo;
+        this.tag = campo;
         this.size = size;
         System.arraycopy(dados, 0, this.dados, 0, size);
     }
 
     public Campo(byte[] data) {
-        this.campo = data[0];
+        this.tag = data[0];
         byte[] aux = new byte[2];
         System.arraycopy(data, 1, aux, 0, 2);
         this.size = byteToShort(aux);
         System.arraycopy(data, 3, this.dados, 0, size);
     }
 
-    public byte getCampo() {
-        return campo;
+    public Campo(Campo c) {
+        this.tag=c.getTag();
+        this.size=c.getSize();
+        this.dados=c.getDados();
     }
 
-    public void setCampo(byte campo) {
-        this.campo = campo;
+    public byte getTag() {
+        return tag;
+    }
+
+    public void setTag(byte campo) {
+        this.tag = campo;
     }
 
     public short getSize() {
@@ -84,7 +90,7 @@ public class Campo {
 
     public byte[] generate() {
         byte[] resp = new byte[this.size + 3];
-        resp[0] = this.campo;
+        resp[0] = this.tag;
         byte[] buff = shortToByte(this.size);
         resp[1] = buff[0];
         resp[2] = buff[1];
@@ -104,34 +110,27 @@ public class Campo {
         return ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getShort();
     }
 
-    @Override
+    
     public String toString() {
-        return "Campo{" + "campo=" + campo + ", size=" + size + ", dados=" + dados + '}';
+        return "Campo{" + "campo=" + tag + ", size=" + size + ", dados=" + dados + '}';
     }
 
- 
-    @Override
+    
     public Campo clone() {
-        Campo resp;
-        if (size > 0) {
-            resp = new Campo(this.campo);
-        }else{
-            resp = new Campo(this.campo,this.size,this.dados);
-        }
-        return resp;
+        return new Campo(this);
     }
 
-    @Override
+    
     public boolean equals(Object o) {
-        if(o instanceof Campo){
+        if (o instanceof Campo) {
             Campo c = (Campo) o;
-            if(this.campo!=c.getCampo()){
+            if (this.tag != c.getTag()) {
                 return false;
             }
-            if(this.size!=c.getSize()){
+            if (this.size != c.getSize()) {
                 return false;
             }
-            if(this.dados.equals(c.getDados())){
+            if (this.dados.equals(c.getDados())) {
                 return true;
             }
         }

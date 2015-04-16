@@ -2,23 +2,22 @@ package Build;
 
 public class Hello {
 
-    byte[] pdu;
+    private PDU pdu;
 
     public Hello() {
-        pdu = new byte[255];
+        pdu = new PDU();
     }
 
     public byte[] generate() {
-        pdu[0] = 0;
-        pdu[1] = 0;
-        pdu[2] = 0;
-        pdu[3] = 0;
-        pdu[4] = 1;
-        pdu[5] = 0;
-        pdu[6] = 0;
-        pdu[7] = 0;
+        pdu.setVersao((byte)0);
+        pdu.setSeguranca((byte)0);
+        pdu.setLabel((byte) 0);
+        pdu.setTipo((byte)1);
+        pdu.setnCampos((byte) 0);
+        pdu.setTamanho((short) 0);
+        pdu.setLista(null);
         
-        return pdu;
+        return pdu.generatePDU();
     }
 
 }

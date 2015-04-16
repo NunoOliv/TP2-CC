@@ -18,11 +18,13 @@ public class Login {
     private String pass;
 
     private PDU pdu;
+    private ListaCampos lc;
     private UserDB users;
 
     public Login(byte[] pdu, UserDB users) {
         this.users = users;
         this.pdu = new PDU(pdu);
+        this.lc = new ListaCampos(this.pdu.getLista(), this.pdu.getnCampos());
 
         inicia();
     }
@@ -32,20 +34,13 @@ public class Login {
     }
 
     private void inicia() {
-        byte[] al = new byte[75];
-        byte[] pa = new byte[75];
 
-        byte[] lista = pdu.getLista();
-
-        System.arraycopy(lista, 0, al, 0, 74);
-        System.arraycopy(lista, 75, pa, 0, 74);
-
-        alcunha = new String(al).trim();
-        pass = new String(pa).trim();
+        alcunha = new String(lc.getCampoByTag((byte) 2).getDados());
+        pass = new String(lc.getCampoByTag((byte) 3).getDados());
 
         Cliente c = users.login(alcunha, pass);
         if (c != null) {
-            //System.out.println("    Novo utilizador:\n      Alcunha: "+alcunha+"\n      Pass: "+pass+"\n      Nome: "+nome);
+            System.out.println("    Login:\n      Alcunha: " + alcunha + "\n      Pass: " + pass);
             c.incrementaMensagensRecebidas();
 
             pdu.setVersao((byte) 0);
@@ -53,36 +48,33 @@ public class Login {
             c.incrementaMensagensEnviadas();
             pdu.setLabel(c.getnMensagensEnviadas());
             pdu.setTipo((byte) 0);
-            pdu.setnCampos((byte) 1);
-      
-            byte[] list = new byte[247];
-            byte[] aux = c.getNome().getBytes();
-            short size = (short) aux.length;
 
-            list[0] = 0;
-            System.arraycopy(aux, 0, list, 1, size);
-            
-            pdu.setTamanho((short) (size + 1));
-            pdu.setLista(list);
+            lc = new ListaCampos();
+            Campo campo = new Campo((byte) 1);
+            campo.setSize((short) c.getNome().length());
+            campo.setDados(c.getNome().getBytes(), campo.getSize());
+            lc.addCampo(campo);
+
+            pdu.setnCampos(lc.getNCampos());
+            pdu.setTamanho(lc.getTotalSize());
+            pdu.setLista(lc.generate());
         } else {
-            //System.out.println("    Registo falhou:\n      Alcunha: " + alcunha + "\n      Pass: " + pass + "\n      Nome: " + nome);
+            System.out.println("    Login falhou:\n      Alcunha: " + alcunha + "\n      Pass: " + pass);
             pdu.setVersao((byte) 0);
             pdu.setSeguranca((byte) 0);
-            c.incrementaMensagensEnviadas();
-            pdu.setLabel(c.getnMensagensEnviadas());
+            pdu.setLabel((byte) 1);
             pdu.setTipo((byte) 0);
-            pdu.setnCampos((byte) 1);
 
-            short size;
-            byte[] list = new byte[247];
-            byte[] aux = "Login failed!".getBytes();
-            size = (short) aux.length;
+            lc = new ListaCampos();
+            Campo campo = new Campo((byte) 255);
+            String err = "Login failed!";
+            campo.setSize((short) err.length());
+            campo.setDados(err.getBytes(), campo.getSize());
+            lc.addCampo(campo);
 
-            list[0] = (byte) 255;
-            System.arraycopy(aux, 0, list, 1, size);
-
-            pdu.setTamanho((short) (size + 1));
-            pdu.setLista(list);
+            pdu.setnCampos(lc.getNCampos());
+            pdu.setTamanho(lc.getTotalSize());
+            pdu.setLista(lc.generate());
             //System.out.println("data[8]: " + list[0]);
         }
         //System.out.println(alcunha+"\n"+pass+"\n"+nome); all is good here

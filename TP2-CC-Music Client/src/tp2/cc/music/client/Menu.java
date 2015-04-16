@@ -110,7 +110,7 @@ public class Menu {
             switch (opcao) {
                 case (0):
                     logout();
-                    break;
+                    return;
                 case (1):
                     //login();
                     break;
@@ -183,22 +183,22 @@ public class Menu {
 
         out.print("Nickname: ");
         alcunha = in.nextLine();
-        if (alcunha.length() > 75) {
-            out.print("Nickname muito grande, não pode exceder 75 carateres");
+        if (alcunha.length() > 255) {
+            out.print("Nickname muito grande, não pode exceder 255 carateres");
             return;
         }
 
         out.print("Password: ");
         pass = in.nextLine();
-        if (pass.length() > 75) {
-            out.print("Password muito grande, não pode exceder 75 carateres");
+        if (pass.length() > 255) {
+            out.print("Password muito grande, não pode exceder 255 carateres");
             return;
         }
 
         out.print("Nome: ");
         nome = in.nextLine();
-        if (nome.length() > 75) {
-            out.print("Nome muito grande, não pode exceder 75 carateres");
+        if (nome.length() > 255) {
+            out.print("Nome muito grande, não pode exceder 255 carateres");
             return;
         }
 
