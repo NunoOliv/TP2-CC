@@ -109,7 +109,7 @@ public class Menu {
 
             switch (opcao) {
                 case (0):
-                    //logout();
+                    logout();
                     break;
                 case (1):
                     //login();
@@ -215,5 +215,9 @@ public class Menu {
         } catch (NotOkException ex) {
             out.println("Fatal Eror: NotOkException");
         }
+    }
+
+    private void logout() {
+       
     }
 }
