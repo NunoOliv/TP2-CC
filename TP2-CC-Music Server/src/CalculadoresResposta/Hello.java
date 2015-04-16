@@ -19,7 +19,7 @@ public class Hello {
         pdu.setTipo((byte) 0);
         
         
-        lc.addCampo(new Campo (0, 0, null));
+        lc.addCampo(new Campo ((byte)0, (short)0, (byte[]) null));
         
         pdu.setnCampos(lc.getNCampos());
         pdu.setTamanho(lc.getTotalSize());
