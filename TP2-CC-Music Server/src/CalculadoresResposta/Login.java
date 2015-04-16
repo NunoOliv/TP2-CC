@@ -41,6 +41,7 @@ public class Login {
         Cliente c = users.login(alcunha, pass);
         if (c != null) {
             System.out.println("    Login:\n      Alcunha: " + alcunha + "\n      Pass: " + pass);
+            c.incrementaMensagensEnviadas();
             c.incrementaMensagensRecebidas();
 
             pdu.setVersao((byte) 0);
@@ -58,6 +59,8 @@ public class Login {
             pdu.setnCampos(lc.getNCampos());
             pdu.setTamanho(lc.getTotalSize());
             pdu.setLista(lc.generate());
+            
+            c.setSessaoAtiva(true);
         } else {
             System.out.println("    Login falhou:\n      Alcunha: " + alcunha + "\n      Pass: " + pass);
             pdu.setVersao((byte) 0);

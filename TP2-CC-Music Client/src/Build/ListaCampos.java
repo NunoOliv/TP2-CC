@@ -19,16 +19,16 @@ public class ListaCampos {
 
     public ListaCampos(byte[] data, short nCampos) {
         lista = new ArrayList<>();
-        int i = 0;
+        int i = 0, j = 0;
 
-        byte campo;
+        byte tag;
         short size;
         byte[] dados;
         byte[] aux = new byte[2];
 
-        while (i < nCampos) {
+        while (j < nCampos) {
 
-            campo = data[i];
+            tag = data[i];
 
             System.arraycopy(data, i + 1, aux, 0, 2);
             size = byteToShort(aux);
@@ -37,12 +37,13 @@ public class ListaCampos {
                 dados = new byte[size];
                 System.arraycopy(data, i + 3, dados, 0, size);
 
-                addCampo(new Campo(campo, size, dados));
+                addCampo(new Campo(tag, size, dados));
             } else {
-                addCampo(new Campo(campo));
+                addCampo(new Campo(tag));
             }
 
             i += size + 3;
+            j++;
         }
     }
 
@@ -93,7 +94,7 @@ public class ListaCampos {
 
         for (Campo campo : lista) {
             System.arraycopy(campo.generate(), 0, ret, currentSize, campo.getTotalSize());
-            currentSize = currentSize + campo.getTotalSize();
+            currentSize += campo.getTotalSize();
         }
         return ret;
     }

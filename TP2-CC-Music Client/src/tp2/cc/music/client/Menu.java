@@ -1,6 +1,7 @@
 package tp2.cc.music.client;
 
 import Build.Login;
+import Build.Logout;
 import Build.Register;
 import Exception.NotOkException;
 import Exception.UnknownTypeException;
@@ -135,7 +136,7 @@ public class Menu {
         String user;
         String pass;
 
-        //clearScreen();
+        clearScreen();
         out.println("*** Login ***");
         out.println();
         out.print("\nNickname: ");
@@ -176,7 +177,7 @@ public class Menu {
         String alcunha;
         String pass;
 
-        //clearScreen();
+        clearScreen();
         out.println("*** Registar ***");
         out.println();
         out.println("Introduza os seus dados:");
@@ -218,6 +219,18 @@ public class Menu {
     }
 
     private void logout() {
-       
+        Logout l=new Logout(label);
+        byte[] data = l.generate();
+        data = com.send(data);
+        label++;
+        try {
+            inter.checkOK(data);
+        } catch (UnknownTypeException ex) {
+            out.println("Fatal Eror: UnknownTypeException");
+        } catch (VersionMissmatchException ex) {
+            out.println("Fatal Eror: VersionMissmatchException");
+        } catch (NotOkException ex) {
+            out.println("Fatal Eror: NotOkException");
+        }
     }
 }

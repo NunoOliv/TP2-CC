@@ -33,12 +33,14 @@ public class Campo {
     public Campo(byte campo, short size, String dados) {
         this.tag = campo;
         this.size = size;
+        this.dados = new byte[size];
         System.arraycopy(dados.getBytes(), 0, this.dados, 0, size);
     }
 
     public Campo(byte campo, short size, byte[] dados) {
         this.tag = campo;
         this.size = size;
+        this.dados = new byte[size];
         System.arraycopy(dados, 0, this.dados, 0, size);
     }
 
@@ -47,13 +49,14 @@ public class Campo {
         byte[] aux = new byte[2];
         System.arraycopy(data, 1, aux, 0, 2);
         this.size = byteToShort(aux);
+        this.dados = new byte[size];
         System.arraycopy(data, 3, this.dados, 0, size);
     }
 
     public Campo(Campo c) {
-        this.tag=c.getTag();
-        this.size=c.getSize();
-        this.dados=c.getDados();
+        this.tag = c.getTag();
+        this.size = c.getSize();
+        this.dados = c.getDados();
     }
 
     public byte getTag() {
@@ -73,6 +76,9 @@ public class Campo {
     }
 
     public byte[] getDados() {
+        if (this.dados == null) {
+            return null;
+        }
         byte[] resp = new byte[this.size];
         System.arraycopy(this.dados, 0, resp, 0, this.size);
         return resp;
@@ -80,6 +86,7 @@ public class Campo {
 
     public void setDados(byte[] dados, short size) {
         setSize(size);
+        this.dados = new byte[size];
         System.arraycopy(dados, 0, this.dados, 0, size);
         this.dados = dados;
     }
@@ -110,17 +117,14 @@ public class Campo {
         return ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getShort();
     }
 
-    
     public String toString() {
         return "Campo{" + "campo=" + tag + ", size=" + size + ", dados=" + dados + '}';
     }
 
-    
     public Campo clone() {
         return new Campo(this);
     }
 
-    
     public boolean equals(Object o) {
         if (o instanceof Campo) {
             Campo c = (Campo) o;

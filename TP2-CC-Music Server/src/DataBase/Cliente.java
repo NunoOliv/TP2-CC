@@ -21,16 +21,18 @@ public class Cliente {
     public int pontuacao;
     public short nMensagensRecebidas;
     public short nMensagensEnviadas;
+    public boolean sessaoAtiva;
     //private short label=0;
     //private ;
 
     public Cliente(String n, String a, String p) {
-        nome = n;
-        alcunha = a;
-        pass = p;
-        pontuacao = 0;
-        nMensagensRecebidas = 0;
-        nMensagensEnviadas = 0;
+        this.nome = n;
+        this.alcunha = a;
+        this.pass = p;
+        this.pontuacao = 0;
+        this.nMensagensRecebidas = 0;
+        this.nMensagensEnviadas = 1;
+        this.sessaoAtiva = false;
     }
 
     public Cliente(String alcunha, String pass, String nome, InetAddress ip, int port) {
@@ -39,9 +41,10 @@ public class Cliente {
         this.pass = pass;
         this.enderecoIP = ip;
         this.port = port;
-        pontuacao = 0;
-        nMensagensRecebidas = 0;
-        nMensagensEnviadas = 0;
+        this.pontuacao = 0;
+        this.nMensagensRecebidas = 0;
+        this.nMensagensEnviadas = 1;
+        this.sessaoAtiva = false;
     }
 
     /**
@@ -56,6 +59,14 @@ public class Cliente {
      */
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public boolean isSessaoAtiva() {
+        return sessaoAtiva;
+    }
+
+    public void setSessaoAtiva(boolean sessaoAtiva) {
+        this.sessaoAtiva = sessaoAtiva;
     }
 
     /**

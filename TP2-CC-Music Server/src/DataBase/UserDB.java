@@ -79,4 +79,11 @@ public class UserDB {
         }
         return null;
     }
+
+    public Cliente getCliente(InetAddress ip, int port) {
+        for(Cliente c:clientes){
+            if(c.getEnderecoIP().equals(ip)&&c.getPort()==port) return c;
+        }
+        return null;
+    }
 }

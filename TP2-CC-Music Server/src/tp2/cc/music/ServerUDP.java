@@ -10,6 +10,7 @@ import DataBase.UserDB;
 import CalculadoresResposta.Register;
 import CalculadoresResposta.Hello;
 import CalculadoresResposta.Login;
+import CalculadoresResposta.Logout;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -84,9 +85,6 @@ public class ServerUDP {
                 continue;
             }
             //enviar resposta
-            /*for (i = 0; i < 200; i++) {
-             System.out.print("'"+sendData[i]);
-             }*/
             try {
                 serverSocketSend.send(sendPacket);
                 System.out.println("Resposta enviada!");
@@ -151,7 +149,8 @@ public class ServerUDP {
             case (4):
                 //Logout
                 System.out.println("Tipo: LOGOUT");
-                break;
+                Logout logout = new Logout(receiveData,db,IPAddress,portSend);
+                return logout.getResposta();
             case (5):
                 //Quit
                 System.out.println("Tipo: QUIT");

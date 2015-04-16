@@ -10,7 +10,11 @@ public class Register {
         pdu = new PDU();
         lc = new ListaCampos();
         this.label = label;
-
+        
+        /*System.out.println("nome.length: "+nome.length());
+        System.out.println("alcunha.length: "+alcunha.length());
+        System.out.println("pass.length: "+pass.length());*/
+        
         lc.addCampo(new Campo((byte) 1, (short) nome.length(), nome));
         lc.addCampo(new Campo((byte) 2, (short) alcunha.length(), alcunha));
         lc.addCampo(new Campo((byte) 3, (short) pass.length(), pass));
@@ -24,6 +28,8 @@ public class Register {
         pdu.setnCampos(lc.getNCampos());
         pdu.setTamanho(lc.getTotalSize());
         pdu.setLista(lc.generate());
+        
+        System.out.println(lc.toString());
 
         return pdu.generatePDU();
     }

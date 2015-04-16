@@ -18,8 +18,9 @@ public class Register {
     public Register(byte[] pdu, UserDB users, InetAddress ip, int port) {
         this.users = users;
         this.pdu = new PDU(pdu);
+        
         this.lc = new ListaCampos(this.pdu.getLista(), this.pdu.getnCampos());
-
+        System.out.println(lc.toString());
         this.ipAddress = ip;
         this.port = port;
 

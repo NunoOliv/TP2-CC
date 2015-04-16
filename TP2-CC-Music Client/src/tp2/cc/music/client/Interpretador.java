@@ -11,8 +11,6 @@ import Build.PDU;
 import Exception.NotOkException;
 import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Arrays;
 
 /**
@@ -46,13 +44,13 @@ public class Interpretador {
         }
 
         // (unsignedByte & 0xff) como ler unsigned byte.
-        Campo c = lista.getCampo(1);
+        Campo c = lista.getCampo(0);
         if ((c.getTag() & 0xff) == 255) {
-            System.out.println("Erro: " + Arrays.toString(c.getDados()));
+            System.out.println("Erro: " + new String(c.getDados()));
             return false;
         }
         if (c.getTag() == 1) {
-            System.out.println("Bem vindo " + Arrays.toString(c.getDados()) + "!");
+            System.out.println("Bem vindo " + new String(c.getDados()) + "!");
             return true;
         }
         return false;
@@ -74,8 +72,8 @@ public class Interpretador {
         if (pdu.getnCampos() != 1) {
             throw new NotOkException();
         }
-
-        Campo c = lista.getCampo(1);
+        System.out.println(lista.toString());
+        Campo c = lista.getCampo(0);
         if ((c.getTag() & 0xff) == 255) {
             System.out.println("Erro: " + Arrays.toString(c.getDados()));
             return false;
