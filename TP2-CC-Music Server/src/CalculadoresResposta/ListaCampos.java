@@ -1,8 +1,14 @@
 package CalculadoresResposta;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ListaCampos {
 
@@ -109,6 +115,24 @@ public class ListaCampos {
         return ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getShort();
     }
 
+    public byte[][] splitFile(File source, int splitSize) throws IOException{
+        long totSize = source.length();
+        int nParts = (int)(totSize / splitSize) + 1; //ex: splitSize = 48kBytes = 48*1024
+        byte[][] ret = new byte[nParts][splitSize];
+        InputStream input = null;
+        int i = 0;
+        
+        try {
+            input = new FileInputStream(source);
+            while(input.read(ret[i], 0, splitSize) > 0)
+                i++;
+        }
+        finally{
+            input.close();
+        }
+        return ret;
+    }
+    
     @Override
     public String toString() {
         return "ListaCampos{" + "lista=" + lista + '}';
