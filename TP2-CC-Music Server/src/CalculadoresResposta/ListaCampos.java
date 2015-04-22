@@ -115,7 +115,9 @@ public class ListaCampos {
         return ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getShort();
     }
 
-    public byte[][] splitFile(File source, int splitSize) throws IOException{
+    //falta introduzir dados dos campos (cabeçalho)
+    public byte[][] splitFile(String filePath, int splitSize) throws IOException{
+        File source = new File(filePath);
         long totSize = source.length();
         int nParts = (int)(totSize / splitSize) + 1; //ex: splitSize = 48kBytes = 48*1024
         byte[][] ret = new byte[nParts][splitSize];
