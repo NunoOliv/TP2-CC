@@ -25,7 +25,11 @@ public class Split {
         nPacotes=0;
         inicialize();
     }
-
+    
+    public short getNPacotes(){
+        return this.nPacotes;
+    }
+    
     private void inicialize() {
         PDU pdu;
         ListaCampos lc;

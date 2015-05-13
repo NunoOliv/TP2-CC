@@ -48,7 +48,9 @@ public class ServerUDP {
     }
 
     public void start() {
-        int i = 0;
+        int i = 0, j = 0;
+        short nPacotes;
+        byte[][] aux;
 
         //iniciar os sockets 
         try {
@@ -76,29 +78,41 @@ public class ServerUDP {
             System.out.println();
 
             receiveData = receivePacket.getData();
-            
-            sendData = buildPDU(receiveData);
-            if(sendData.length>48*1024){
-                Split s=new Split(sendData);
-                
-            }
-            //criar datagramPacket
-            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
-            if (sendPacket == null) {
-                continue;
-            }
-            //enviar resposta
-            try {
-                serverSocketSend.send(sendPacket);
-                System.out.println("Resposta enviada!");
-            } catch (IOException ex) {
-                System.out.println("Socket em utilização!");
-                System.exit(0);
-            }
 
+            sendData = buildPDU(receiveData);
+            if (sendData.length > 48 * 1024) {
+                Split s = new Split(sendData);
+                nPacotes = s.getNPacotes();
+                aux = s.generate();
+                j = 0;
+                while (j < nPacotes) {
+                    send(aux[j], IPAddress, portSend);
+                    j++;
+                }
+
+            } else {
+                send(sendData, IPAddress, portSend);
+            }
+            System.out.println("Resposta enviada!");
             System.out.println();
             System.out.println("**Pacote de dados nº" + i + " tratado **");
             i++;
+        }
+    }
+
+    private void send(byte[] sendData, InetAddress ip, int portSend) {
+        //criar datagramPacket
+        sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
+        if (sendPacket == null) {
+            return;
+        }
+        //enviar resposta
+        try {
+            serverSocketSend.send(sendPacket);
+
+        } catch (IOException ex) {
+            System.out.println("Socket em utilização!");
+            System.exit(0);
         }
     }
 
@@ -152,7 +166,7 @@ public class ServerUDP {
             case (4):
                 //Logout
                 System.out.println("Tipo: LOGOUT");
-                Logout logout = new Logout(receiveData,db,IPAddress,portSend);
+                Logout logout = new Logout(receiveData, db, IPAddress, portSend);
                 return logout.getResposta();
             case (5):
                 //Quit
