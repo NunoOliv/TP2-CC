@@ -82,7 +82,7 @@ public class Group {
     /**
      * Devolve uma lista com os número dos pacotes que faltam, se não se souber
      * quantos pacotes são, devolve apenas o primeiro que se sabe que falta.
-     * @return 
+     * @return Lista com o número das peças que faltam.
      */
     public ArrayList<Integer> getMissingPieces() {
         ArrayList<Integer> resp = new ArrayList<>();

@@ -72,7 +72,7 @@ public class Interpretador {
         if (pdu.getnCampos() != 1) {
             throw new NotOkException();
         }
-        System.out.println(lista.toString());
+        //System.out.println(lista.toString());
         Campo c = lista.getCampo(0);
         if ((c.getTag() & 0xff) == 255) {
             System.out.println("Erro: " + Arrays.toString(c.getDados()));

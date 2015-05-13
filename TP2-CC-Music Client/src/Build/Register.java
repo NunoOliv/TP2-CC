@@ -29,7 +29,7 @@ public class Register {
         pdu.setTamanho(lc.getTotalSize());
         pdu.setLista(lc.generate());
         
-        System.out.println(lc.toString());
+        //System.out.println(lc.toString());
 
         return pdu.generatePDU();
     }
