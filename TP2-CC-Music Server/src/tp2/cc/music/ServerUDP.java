@@ -109,7 +109,6 @@ public class ServerUDP {
         //enviar resposta
         try {
             serverSocketSend.send(sendPacket);
-
         } catch (IOException ex) {
             System.out.println("Socket em utilização!");
             System.exit(0);
