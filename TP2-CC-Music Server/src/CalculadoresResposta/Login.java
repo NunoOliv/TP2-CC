@@ -5,7 +5,7 @@
  */
 package CalculadoresResposta;
 
-import DataBase.Cliente;
+import DataBase.User;
 import DataBase.UserDB;
 
 /**
@@ -38,7 +38,7 @@ public class Login {
         alcunha = new String(lc.getCampoByTag((byte) 2).getDados());
         pass = new String(lc.getCampoByTag((byte) 3).getDados());
 
-        Cliente c = users.login(alcunha, pass);
+        User c = users.login(alcunha, pass);
         if (c != null) {
             System.out.println("    Login:\n      Alcunha: " + alcunha + "\n      Pass: " + pass);
             c.incrementaMensagensEnviadas();

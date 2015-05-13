@@ -11,7 +11,7 @@ import java.net.InetAddress;
  *
  * @author Rafael
  */
-public class Cliente {
+public class User {
 
     public String nome;
     public String alcunha;
@@ -25,7 +25,7 @@ public class Cliente {
     //private short label=0;
     //private ;
 
-    public Cliente(String n, String a, String p) {
+    public User(String n, String a, String p) {
         this.nome = n;
         this.alcunha = a;
         this.pass = p;
@@ -35,7 +35,7 @@ public class Cliente {
         this.sessaoAtiva = false;
     }
 
-    public Cliente(String alcunha, String pass, String nome, InetAddress ip, int port) {
+    public User(String alcunha, String pass, String nome, InetAddress ip, int port) {
         this.nome = nome;
         this.alcunha = alcunha;
         this.pass = pass;

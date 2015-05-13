@@ -5,12 +5,13 @@
  */
 package tp2.cc.music;
 
-import DataBase.Cliente;
+import DataBase.User;
 import DataBase.UserDB;
 import CalculadoresResposta.Register;
 import CalculadoresResposta.Hello;
 import CalculadoresResposta.Login;
 import CalculadoresResposta.Logout;
+import CalculadoresResposta.Split;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -75,10 +76,12 @@ public class ServerUDP {
             System.out.println();
 
             receiveData = receivePacket.getData();
-            //inacabado
-            //if (receiveData[4] != 1) {
-                sendData = buildPDU(receiveData);
-            //}
+            
+            sendData = buildPDU(receiveData);
+            if(sendData.length>48*1024){
+                Split s=new Split(sendData);
+                
+            }
             //criar datagramPacket
             sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
             if (sendPacket == null) {
@@ -195,37 +198,22 @@ public class ServerUDP {
                 System.out.println("Tipo irreconhecível. Pacote ignorado: " + receiveData[4]);
                 return null;
         }
-        /*
-         //Nº Campos Seguintes 5
-         if (receiveData[5] < 1) {
-         System.out.println("Sem campos adicionais");
-         return;
-         } else {
-         System.out.println("Numero de campos seguintes: " + receiveData[5]);
-         }
-
-         //Tamanho Lista de campos 6-7
-         size=getSize(receiveData);
-         System.out.println("Tamanho dos restantes campos: " + size);
-
-         //Lista de campos Seguintes 8-255
-         */
         return null;
     }
 
     private void inicialize() {
-        Cliente c = new Cliente("Nome5", "rafa", "123");
+        User c = new User("Nome5", "rafa", "123");
         c.setPontuacao(5);
         db.addClient(c);
-        c = new Cliente("Nome20", "nuno", "123");
+        c = new User("Nome20", "nuno", "123");
         c.setPontuacao(20);
         db.addClient(c);
-        c = new Cliente("Nome15", "rui", "123");
+        c = new User("Nome15", "rui", "123");
         c.setPontuacao(15);
         db.addClient(c);
 
-        ArrayList<Cliente> users = db.topRanked();
-        Iterator<Cliente> ite = users.iterator();
+        ArrayList<User> users = db.topRanked();
+        Iterator<User> ite = users.iterator();
         while (ite.hasNext()) {
             c = ite.next();
             System.out.println(c.getPontuacao());

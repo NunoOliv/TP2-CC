@@ -1,6 +1,6 @@
 package CalculadoresResposta;
 
-import DataBase.Cliente;
+import DataBase.User;
 import DataBase.UserDB;
 import java.net.InetAddress;
 
@@ -23,7 +23,7 @@ public class Logout {
     }
 
     private void incia() {
-        Cliente c = users.getCliente(ip, port);
+        User c = users.getCliente(ip, port);
         if (c != null && c.isSessaoAtiva()) {
             c.setnMensagensRecebidas((short) 0);
             c.setSessaoAtiva(false);
