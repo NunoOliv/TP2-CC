@@ -13,15 +13,15 @@ import java.net.InetAddress;
  */
 public class User {
 
-    public String nome;
-    public String alcunha;
-    public String pass;
-    public InetAddress enderecoIP;
-    public int port;
-    public int pontuacao;
-    public short nMensagensRecebidas;
-    public short nMensagensEnviadas;
-    public boolean sessaoAtiva;
+    private String nome;
+    private String alcunha;
+    private String pass;
+    private InetAddress enderecoIP;
+    private int port;
+    private int pontuacao;
+    private short nMensagensRecebidas;
+    private short nMensagensEnviadas;
+    private boolean sessaoAtiva;
     //private short label=0;
     //private ;
 

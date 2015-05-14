@@ -33,7 +33,9 @@ public class Desafio {
     public ArrayList<Pergunta> getPerguntas() {
         return perguntas;
     }
-    
-    
+
+    public int getNPerguntas() {
+        return perguntas.size();
+    }
 
 }
