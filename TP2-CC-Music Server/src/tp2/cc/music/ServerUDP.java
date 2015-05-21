@@ -5,6 +5,7 @@
  */
 package tp2.cc.music;
 
+import DataBase.Desafio;
 import DataBase.User;
 import DataBase.UserDB;
 import CalculadoresResposta.Register;
@@ -82,7 +83,7 @@ public class ServerUDP {
             receiveData = receivePacket.getData();
 
             sendData = buildPDU(receiveData);
-            if (sendData.length > 48 * 1024) {
+            if (sendData.length > 48 * 1024) { //alterar para mandar 5 de cada vez, e esperar confirmação
                 Split s = new Split(sendData);
                 nPacotes = s.getNPacotes();
                 aux = s.generate();
