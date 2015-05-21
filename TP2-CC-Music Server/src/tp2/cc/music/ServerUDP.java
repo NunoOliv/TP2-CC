@@ -29,6 +29,7 @@ import java.util.Iterator;
 public class ServerUDP {
 
     private UserDB db;
+    private ArrayList<Desafio> desafios;
 
     private int portSend = 9876;
     private final int portReceive = 9877;
@@ -44,6 +45,7 @@ public class ServerUDP {
         receiveData = new byte[255];
         sendData = new byte[255];
         db = new UserDB();
+        desafios=new ArrayList<>();
         //inicialize();//para testes
     }
 
