@@ -2,6 +2,7 @@ package tp2.cc.music.client;
 
 import Build.Login;
 import Build.Logout;
+import Build.MakeChallenge;
 import Build.Register;
 import Exception.NotOkException;
 import Exception.UnknownTypeException;
@@ -87,7 +88,7 @@ public class Menu {
             out.println();
             out.println("*** Menu Principal ***");
             out.println();
-            out.println("1-XXXXXXXX");
+            out.println("1-Criar novo desafio");
             out.println("2-XXXXXXXX");
             out.println("0-Sair\n");
 
@@ -113,10 +114,12 @@ public class Menu {
                     logout();
                     return;
                 case (1):
-                    //login();
+                    makeChallenge();
+                    in.nextLine();
+                    clearScreen();
                     break;
                 case (2):
-                    //register();
+                //register();
             }
         }
     }
@@ -185,21 +188,21 @@ public class Menu {
         out.print("Nickname: ");
         alcunha = in.nextLine();
         if (alcunha.length() > 255) {
-            out.print("Nickname muito grande, não pode exceder 255 carateres");
+            out.println("Nickname muito grande, não pode exceder 255 carateres");
             return;
         }
 
         out.print("Password: ");
         pass = in.nextLine();
         if (pass.length() > 255) {
-            out.print("Password muito grande, não pode exceder 255 carateres");
+            out.println("Password muito grande, não pode exceder 255 carateres!");
             return;
         }
 
         out.print("Nome: ");
         nome = in.nextLine();
         if (nome.length() > 255) {
-            out.print("Nome muito grande, não pode exceder 255 carateres");
+            out.println("Nome muito grande, não pode exceder 255 carateres!");
             return;
         }
 
@@ -219,7 +222,7 @@ public class Menu {
     }
 
     private void logout() {
-        Logout l=new Logout(label);
+        Logout l = new Logout(label);
         byte[] data = l.generate();
         data = com.send(data);
         label++;
@@ -232,5 +235,53 @@ public class Menu {
         } catch (NotOkException ex) {
             out.println("Fatal Eror: NotOkException");
         }
+    }
+
+    private void makeChallenge() {
+        String nome;
+        String data;
+        String hora;
+
+        out.println("*** Criar novo desafio ***");
+        out.println();
+        out.print("Introduza o nome do desafio: ");
+        nome = in.nextLine();
+        if (nome.length() > 255) {
+            out.println("Nome muito grande, não pode exceder 255 carateres!");
+            return;
+        }
+
+        out.print("Introduza a data (AAMMDD): ");
+        data = in.nextLine();
+        if (data.length() != 6) {
+            out.println("Formato inválido!");
+            return;
+        }
+        try {
+            Integer.parseInt(data);
+        } catch (NumberFormatException e) {
+            out.println("Carateres inválidos introduzidos!");
+            return;
+        }
+
+        out.print("Introduza a hora (HHMMSS): ");
+        hora = in.nextLine();
+        if (hora.length() != 6) {
+            out.println("Formato inválido!");
+            return;
+        }
+        try {
+            Integer.parseInt(hora);
+        } catch (NumberFormatException e) {
+            out.println("Carateres inválidos introduzidos!");
+            return;
+        }
+
+        MakeChallenge mkC = new MakeChallenge(nome, data, hora, label);
+        byte[] dados = mkC.generate();
+        dados = com.send(dados);
+        label++;
+        
+        //falta acabar
     }
 }
