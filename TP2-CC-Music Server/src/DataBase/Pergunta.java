@@ -25,14 +25,6 @@ class Pergunta {
         this.musica = null;
         this.imagem = null;
     }
-    
-    public Pergunta() {
-        this.pergunta = null;
-        this.respostas = new ArrayList<>(3);
-        this.respCerta = -1;
-        this.musica = null;
-        this.imagem = null;
-    }
 
     public String getPergunta() {
         return pergunta;
@@ -78,10 +70,6 @@ class Pergunta {
 
     public boolean testaResposta(int tentativa) {
         return (tentativa == this.respCerta);
-    }
-    
-    public void addResposta(String r){
-        this.respostas.add(r);
     }
 
 }

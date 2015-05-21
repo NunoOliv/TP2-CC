@@ -20,7 +20,7 @@ public class Register {
         this.pdu = new PDU(pdu);
         
         this.lc = new ListaCampos(this.pdu.getLista(), this.pdu.getnCampos());
-        System.out.println(lc.toString());
+        //System.out.println(lc.toString());
         this.ipAddress = ip;
         this.port = port;
 

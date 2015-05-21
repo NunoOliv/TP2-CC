@@ -1,6 +1,5 @@
 package DataBase;
 
-import DataBase.User;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -10,6 +9,7 @@ import java.util.TreeMap;
 
 public class Desafio {
 
+    private String nome;
     private ArrayList<Pergunta> perguntas;
     private GregorianCalendar hora;
     private TreeMap<String, User> jogadores;
@@ -43,6 +43,15 @@ public class Desafio {
     public ArrayList<Pergunta> getPerguntas() {
         return perguntas;
     }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+   
 
     public GregorianCalendar getHora() {
         return hora;

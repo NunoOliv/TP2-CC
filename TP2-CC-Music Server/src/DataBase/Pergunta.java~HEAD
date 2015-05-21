@@ -1,4 +1,4 @@
-package tp2.cc.music;
+package DataBase;
 
 import java.util.ArrayList;
 
@@ -20,6 +20,14 @@ class Pergunta {
 
     public Pergunta(String pergunta) {
         this.pergunta = pergunta;
+        this.respostas = new ArrayList<>(3);
+        this.respCerta = -1;
+        this.musica = null;
+        this.imagem = null;
+    }
+    
+    public Pergunta() {
+        this.pergunta = null;
         this.respostas = new ArrayList<>(3);
         this.respCerta = -1;
         this.musica = null;
@@ -70,6 +78,10 @@ class Pergunta {
 
     public boolean testaResposta(int tentativa) {
         return (tentativa == this.respCerta);
+    }
+    
+    public void addResposta(String r){
+        this.respostas.add(r);
     }
 
 }
