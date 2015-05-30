@@ -14,8 +14,6 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -29,6 +27,7 @@ public class MakeChallenge {
     private int port;
     private UserDB users;
     private ArrayList<Desafio> desafios;
+    User u;
 
     private String nome;
     private GregorianCalendar data;
@@ -36,6 +35,7 @@ public class MakeChallenge {
     public MakeChallenge(byte[] pdu, UserDB users, ArrayList<Desafio> desafios, InetAddress ip, int port) {
         this.pdu = new PDU(pdu);
         this.lc = new ListaCampos(this.pdu.getLista(), this.pdu.getnCampos());
+        this.u = null;
 
         this.users = users;
         this.desafios = desafios;
@@ -49,14 +49,22 @@ public class MakeChallenge {
     private void inicia() {
         String aux;
         int ano, mes, dia, hora, min, seg;
-        User u = users.getCliente(ipAddress, port);
+        u = users.getCliente(ipAddress, port);
         if (u == null) {//cliente não existe
             System.out.println("Um cliente tentou criar um desafio sem estar registado!");
+            generateError("Tentou criar um desafio sem estar registado!");
             return;
         }
-
+        u.incrementaMensagensRecebidas();
         Campo c = lc.getCampoByTag((byte) 7);//nome
         nome = new String(c.getDados());
+
+        for (Desafio d : desafios) {
+            if (d.getNome().equals(nome)) {
+                generateError("Nome do desafio já está em uso!");
+                return;
+            }
+        }
 
         c = lc.getCampoByTag((byte) 4);//dia
         if (c == null) {
@@ -79,33 +87,63 @@ public class MakeChallenge {
         //teste:
         System.out.println("ano: " + ano + "mes: " + mes + "dia: " + dia + "hora: " + hora + "min: " + min + "seg: " + seg);
         data.set(ano, mes, dia, hora, min, seg);
-                
-        Random r=new Random();
+
+        Random r = new Random();
         Parser p = new Parser();
-        int max=1,minimo=1;
+        int max = 1, minimo = 1;
         int nDesafio = r.nextInt((max - minimo) + 1) + minimo;
-        System.out.println("Desafio escolhido: "+nDesafio);
-        
+        System.out.println("Desafio escolhido: " + nDesafio);
+
         try {
             p.parseDesafioWnum(nDesafio);
         } catch (IOException ex) {
-            System.out.println("Fatal Error: Alguma coisa correu mal ao ler o ficheiro.\n"+ex.getMessage()+"\n");
+            System.out.println("Fatal Error: Alguma coisa correu mal ao ler o ficheiro.\n" + ex.getMessage() + "\n");
             System.exit(0);
         }
         Desafio desafio = new Desafio(p.getPerguntas());
         desafio.setNome(nome);
         desafio.setHora(data);
         desafio.addJogador(u);
+        desafios.add(desafio);
+
+        //*****************
+        //generateResposta
+        //*****************
         
-        generateResposta();
+        pdu.setVersao((byte) 0);
+        pdu.setSeguranca((byte) 0);
+        pdu.setLabel((short) (u.getnMensagensEnviadas() + 1));
+        u.incrementaMensagensEnviadas();
+        pdu.setTipo((byte) 0);
+        //mantém-se a mesma lista de campos.
+        pdu.setnCampos(lc.getNCampos());
+        pdu.setTamanho(lc.getTotalSize());
+        pdu.setLista(lc.generate());
     }
 
     public byte[] getResposta() {
         return pdu.generatePDU();
     }
 
-    private void generateResposta() {
-        
+    private void generateError(String erro) {
+
+        lc = new ListaCampos();
+
+        pdu.setVersao((byte) 0);
+        pdu.setSeguranca((byte) 0);
+        pdu.setLabel((short) (u.getnMensagensEnviadas() + 1));
+        u.incrementaMensagensEnviadas();
+        pdu.setTipo((byte) 0);
+
+        Campo campo = new Campo((byte) 255);
+        campo.setSize((short) erro.length());
+        campo.setDados(erro.getBytes(), campo.getSize());
+        lc.addCampo(campo);
+
+        pdu.setnCampos(lc.getNCampos());
+        pdu.setTamanho(lc.getTotalSize());
+        pdu.setLista(lc.generate());
+
     }
 
 }

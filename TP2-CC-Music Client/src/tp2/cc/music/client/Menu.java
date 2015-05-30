@@ -8,6 +8,8 @@ import Exception.NotOkException;
 import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
 import java.io.PrintStream;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 /**
@@ -82,27 +84,19 @@ public class Menu {
 
         out.println();
         while (true) {
-            in.nextLine();
-            clearScreen();
             out.println("*** CC-Music ***");
             out.println();
             out.println("*** Menu Principal ***");
             out.println();
             out.println("1-Criar novo desafio");
-            out.println("2-XXXXXXXX");
+            out.println("2-Listar os desafios atuais");
+            out.println("3-Entrar num desafio");
             out.println("0-Sair\n");
 
             out.print("Opção: ");
             try {
                 opcao = Integer.parseInt(in.nextLine());
             } catch (Exception e) {
-                out.println("Intruduza uma opção válida!");
-                in.nextLine();
-                clearScreen();
-                continue;
-            }
-
-            if (opcao > 2 || opcao < 0) {
                 out.println("Intruduza uma opção válida!");
                 in.nextLine();
                 clearScreen();
@@ -119,7 +113,19 @@ public class Menu {
                     clearScreen();
                     break;
                 case (2):
-                //register();
+                    out.println("Unsupported!");
+                    in.nextLine();
+                    clearScreen();
+                    break;
+                case (3):
+                    out.println("Unsupported!");
+                    in.nextLine();
+                    clearScreen();
+                    break;
+                default:
+                    out.println("Intruduza uma opção válida!");
+                    in.nextLine();
+                    clearScreen();
             }
         }
     }
@@ -132,9 +138,6 @@ public class Menu {
         }
     }
 
-    /**
-     *
-     */
     private void login() {
         String user;
         String pass;
@@ -241,6 +244,7 @@ public class Menu {
         String nome;
         String data;
         String hora;
+        int ano, mes, dia, hour, min, seg;
 
         out.println("*** Criar novo desafio ***");
         out.println();
@@ -257,9 +261,16 @@ public class Menu {
             out.println("Formato inválido!");
             return;
         }
+
         try {
             Integer.parseInt(data);
-        } catch (NumberFormatException e) {
+            ano = 2000 + Integer.parseInt(data.substring(0, 2));
+            mes = Integer.parseInt(data.substring(2, 4));
+            dia = Integer.parseInt(data.substring(4));
+            if (ano < 2015 || mes < 0 || dia < 0 || mes > 12 || dia > 31) {
+                throw new Exception("Parâmetros inválidos!");
+            }
+        } catch (Exception e) {
             out.println("Carateres inválidos introduzidos!");
             return;
         }
@@ -272,16 +283,22 @@ public class Menu {
         }
         try {
             Integer.parseInt(hora);
-        } catch (NumberFormatException e) {
+            hour = Integer.parseInt(hora.substring(0, 2));
+            min = Integer.parseInt(hora.substring(2, 4));
+            seg = Integer.parseInt(hora.substring(4));
+            if (hour < 0||hour>24 || min < 0 || seg < 0 || min > 60 || seg > 60) {
+                throw new Exception("Parâmetros inválidos!");
+            }
+        } catch (Exception e) {
             out.println("Carateres inválidos introduzidos!");
             return;
         }
-
+  
         MakeChallenge mkC = new MakeChallenge(nome, data, hora, label);
         byte[] dados = mkC.generate();
         dados = com.send(dados);
         label++;
-        
+
         //falta acabar
     }
 }
