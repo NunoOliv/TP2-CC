@@ -79,13 +79,14 @@ public class Parser {
         }
         f = f.concat(n);
         f = f.concat(".txt");
-
+        
         parseDesafioWfp(f);
 
     }
 
     public void parseDesafioWfp(String fileName) throws FileNotFoundException, IOException {
 
+        System.out.println("A ler o ficheiro "+fileName);
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         String sCurrentLine;
 
@@ -94,17 +95,21 @@ public class Parser {
 
             if (sCurrentLine.contains("music_DIR=")) {
                 setMusicDir(sCurrentLine.substring(11));
+                continue;
             }
             if (sCurrentLine.contains("images_DIR=")) {
                 setImageDir(sCurrentLine.substring(12));
+                continue;
             }
             if (sCurrentLine.contains("questions_#=")) {
                 setnQuestions(Integer.parseInt(sCurrentLine.substring(13)));
+                continue;
             }
             if (!sCurrentLine.equals("")) {
                 perguntas.add(parseLine(sCurrentLine));
             }
         }
+        System.out.println("Ficheiro lido com sucesso!");
 
     }
 
@@ -131,8 +136,12 @@ public class Parser {
         lstRespostas.add(tokens[3]);
         lstRespostas.add(tokens[4]);
         lstRespostas.add(tokens[5]);
-        
+
         int respCerta = Integer.parseInt(tokens[6]);
+        
+        //teste
+        //System.out.println("musica: "+music+" imagem: "+image+" pergunta: "+pergunta+" resposta1: "+lstRespostas.get(0)+
+         //       " resposta2: "+lstRespostas.get(1)+" resposta3: "+lstRespostas.get(2)+" resposta Certa: "+respCerta);
         p=new Pergunta(pergunta, lstRespostas, respCerta, music, image);
         
         return p;

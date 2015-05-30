@@ -22,6 +22,8 @@ public class Desafio {
 
     public Desafio(ArrayList<Pergunta> perguntas) {
         this.perguntas = perguntas;
+        this.jogadores = new TreeMap<>();
+        hora = new GregorianCalendar();
     }
 
     public Desafio(int nMaxPerguntas) {
@@ -30,6 +32,8 @@ public class Desafio {
         } else {
             perguntas = new ArrayList<>(nMaxPerguntas);
         }
+        this.jogadores = new TreeMap<>();
+        hora = new GregorianCalendar();
     }
 
     public boolean addPergunta(Pergunta p) {
@@ -51,7 +55,6 @@ public class Desafio {
     public void setNome(String nome) {
         this.nome = nome;
     }
-   
 
     public GregorianCalendar getHora() {
         return hora;
@@ -84,12 +87,12 @@ public class Desafio {
         }
         return jogadores.get(alcunha);
     }
-    
-    public int getNjogadores(){
+
+    public int getNjogadores() {
         return jogadores.size();
     }
-    
-    public int getNPerguntas(){
+
+    public int getNPerguntas() {
         return perguntas.size();
     }
 

@@ -12,6 +12,7 @@ import CalculadoresResposta.Register;
 import CalculadoresResposta.Hello;
 import CalculadoresResposta.Login;
 import CalculadoresResposta.Logout;
+import CalculadoresResposta.MakeChallenge;
 import CalculadoresResposta.Split;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -185,7 +186,8 @@ public class ServerUDP {
             case (8):
                 //Make chalenge
                 System.out.println("Tipo: MAKE_CHALLENGE");
-                break;
+                MakeChallenge mkC = new MakeChallenge(receiveData, db, desafios, IPAddress, portSend);
+                return mkC.getResposta();
             case (9):
                 //Accept Chalenge
                 System.out.println("Tipo: ACCEPT_CHALLENGE");

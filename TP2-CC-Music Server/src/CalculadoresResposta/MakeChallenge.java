@@ -34,6 +34,7 @@ public class MakeChallenge {
 
     public MakeChallenge(byte[] pdu, UserDB users, ArrayList<Desafio> desafios, InetAddress ip, int port) {
         this.pdu = new PDU(pdu);
+
         this.lc = new ListaCampos(this.pdu.getLista(), this.pdu.getnCampos());
         this.u = null;
 
@@ -42,6 +43,8 @@ public class MakeChallenge {
 
         this.ipAddress = ip;
         this.port = port;
+        
+        this.data=new GregorianCalendar();
 
         inicia();
     }
@@ -61,6 +64,7 @@ public class MakeChallenge {
 
         for (Desafio d : desafios) {
             if (d.getNome().equals(nome)) {
+                System.out.println("Um cliente usou um nome de um desafio já em uso!");
                 generateError("Nome do desafio já está em uso!");
                 return;
             }
@@ -71,21 +75,22 @@ public class MakeChallenge {
             return;
         }
         aux = new String(c.getDados()); //formato AAMMDD
-        ano = aux.codePointAt(0) * 10 + aux.codePointAt(1);
-        mes = aux.codePointAt(2) * 10 + aux.codePointAt(3);
-        dia = aux.codePointAt(4) * 10 + aux.codePointAt(5);
+        ano = 2000 + Integer.parseInt(aux.substring(0, 2));
+        mes = Integer.parseInt(aux.substring(2, 4));
+        dia = Integer.parseInt(aux.substring(4));
 
         c = lc.getCampoByTag((byte) 5);//hora
         if (c == null) {
             return;
         }
         aux = new String(c.getDados()); //formato HHMMSS
-        hora = aux.codePointAt(0) * 10 + aux.codePointAt(1);
-        min = aux.codePointAt(2) * 10 + aux.codePointAt(3);
-        seg = aux.codePointAt(4) * 10 + aux.codePointAt(5);
+        hora = Integer.parseInt(aux.substring(0, 2));
+        min = Integer.parseInt(aux.substring(2, 4));
+        seg = Integer.parseInt(aux.substring(4));
 
         //teste:
-        System.out.println("ano: " + ano + "mes: " + mes + "dia: " + dia + "hora: " + hora + "min: " + min + "seg: " + seg);
+        //System.out.println("ano: " + ano + " mes: " + mes + " dia: " + dia + " hora: " + hora + " min: " + min + " seg: " + seg);
+        data.clear();
         data.set(ano, mes, dia, hora, min, seg);
 
         Random r = new Random();
@@ -105,7 +110,8 @@ public class MakeChallenge {
         desafio.setHora(data);
         desafio.addJogador(u);
         desafios.add(desafio);
-
+        System.out.println("Novo desafio criado: "+nome);
+        
         //*****************
         //generateResposta
         //*****************
@@ -119,6 +125,8 @@ public class MakeChallenge {
         pdu.setnCampos(lc.getNCampos());
         pdu.setTamanho(lc.getTotalSize());
         pdu.setLista(lc.generate());
+        
+        
     }
 
     public byte[] getResposta() {
@@ -131,13 +139,12 @@ public class MakeChallenge {
 
         pdu.setVersao((byte) 0);
         pdu.setSeguranca((byte) 0);
-        pdu.setLabel((short) (u.getnMensagensEnviadas() + 1));
-        u.incrementaMensagensEnviadas();
+        pdu.setLabel((short) 0); //visto q não se conhece o user
         pdu.setTipo((byte) 0);
 
         Campo campo = new Campo((byte) 255);
         campo.setSize((short) erro.length());
-        campo.setDados(erro.getBytes(), campo.getSize());
+        campo.setDados(erro.getBytes(), campo.getTotalSize());
         lc.addCampo(campo);
 
         pdu.setnCampos(lc.getNCampos());

@@ -5,6 +5,8 @@
  */
 package Build;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Rafael
@@ -52,7 +54,10 @@ public class MakeChallenge {
         pdu.setLabel(label);
         pdu.setTipo((byte) 8);
         pdu.setnCampos(lc.getNCampos());
+        pdu.setTamanho(lc.getTotalSize());
         pdu.setLista(lc.generate());
+
+        //System.out.println("Lista: " + Arrays.toString(lc.generate()) + "\nPDU com Lista: " + Arrays.toString(pdu.generatePDU()));
     }
 
     public byte[] generate() {

@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ListaCampos {
 
@@ -33,7 +31,6 @@ public class ListaCampos {
         byte[] aux = new byte[2];
 
         while (j < nCampos) {
-
             tag = data[i];
 
             System.arraycopy(data, i + 1, aux, 0, 2);
@@ -116,25 +113,25 @@ public class ListaCampos {
     }
 
     //falta introduzir dados dos campos (cabeçalho)
-    public byte[][] splitFile(String filePath, int splitSize) throws IOException{
+    public byte[][] splitFile(String filePath, int splitSize) throws IOException {
         File source = new File(filePath);
         long totSize = source.length();
-        int nParts = (int)(totSize / splitSize) + 1; //ex: splitSize = 48kBytes = 48*1024
+        int nParts = (int) (totSize / splitSize) + 1; //ex: splitSize = 48kBytes = 48*1024
         byte[][] ret = new byte[nParts][splitSize];
         InputStream input = null;
         int i = 0;
-        
+
         try {
             input = new FileInputStream(source);
-            while(input.read(ret[i], 0, splitSize) > 0)
+            while (input.read(ret[i], 0, splitSize) > 0) {
                 i++;
-        }
-        finally{
+            }
+        } finally {
             input.close();
         }
         return ret;
     }
-    
+
     @Override
     public String toString() {
         return "ListaCampos{" + "lista=" + lista + '}';

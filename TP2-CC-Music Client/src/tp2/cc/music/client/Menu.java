@@ -8,8 +8,6 @@ import Exception.NotOkException;
 import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
 import java.io.PrintStream;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 /**
@@ -54,15 +52,11 @@ public class Menu {
                 opcao = Integer.parseInt(in.nextLine());
             } catch (Exception e) {
                 out.println("Intruduza uma opção válida!");
-                in.nextLine();
-                clearScreen();
                 continue;
             }
 
             if (opcao > 2 || opcao < 0) {
                 out.println("Intruduza uma opção válida!");
-                in.nextLine();
-                clearScreen();
                 continue;
             }
 
@@ -84,6 +78,8 @@ public class Menu {
 
         out.println();
         while (true) {
+            in.nextLine();
+            clearScreen();
             out.println("*** CC-Music ***");
             out.println();
             out.println("*** Menu Principal ***");
@@ -98,8 +94,6 @@ public class Menu {
                 opcao = Integer.parseInt(in.nextLine());
             } catch (Exception e) {
                 out.println("Intruduza uma opção válida!");
-                in.nextLine();
-                clearScreen();
                 continue;
             }
 
@@ -109,23 +103,15 @@ public class Menu {
                     return;
                 case (1):
                     makeChallenge();
-                    in.nextLine();
-                    clearScreen();
                     break;
                 case (2):
                     out.println("Unsupported!");
-                    in.nextLine();
-                    clearScreen();
                     break;
                 case (3):
                     out.println("Unsupported!");
-                    in.nextLine();
-                    clearScreen();
                     break;
                 default:
                     out.println("Intruduza uma opção válida!");
-                    in.nextLine();
-                    clearScreen();
             }
         }
     }
@@ -148,14 +134,24 @@ public class Menu {
         out.print("\nNickname: ");
         user = in.nextLine();
         if (user.length() > 75) {
-            out.print("Nickname muito grande, não pode exceder 75 carateres");
+            out.print("Nickname muito grande, não pode exceder 75 carateres!");
+            return;
+        }
+
+        if (user.length() < 1) {
+            out.print("Nickname inválido!");
             return;
         }
 
         out.print("Password: ");
         pass = in.nextLine();
         if (pass.length() > 75) {
-            out.print("Password muito grande, não pode exceder 75 carateres");
+            out.print("Password muito grande, não pode exceder 75 carateres!");
+            return;
+        }
+
+        if (pass.length() < 1) {
+            out.print("Password inválida!");
             return;
         }
 
@@ -246,12 +242,18 @@ public class Menu {
         String hora;
         int ano, mes, dia, hour, min, seg;
 
+        clearScreen();
         out.println("*** Criar novo desafio ***");
         out.println();
         out.print("Introduza o nome do desafio: ");
         nome = in.nextLine();
         if (nome.length() > 255) {
             out.println("Nome muito grande, não pode exceder 255 carateres!");
+            return;
+        }
+
+        if (nome.length() < 1) {
+            out.print("Nome Inválido!");
             return;
         }
 
@@ -286,19 +288,29 @@ public class Menu {
             hour = Integer.parseInt(hora.substring(0, 2));
             min = Integer.parseInt(hora.substring(2, 4));
             seg = Integer.parseInt(hora.substring(4));
-            if (hour < 0||hour>24 || min < 0 || seg < 0 || min > 60 || seg > 60) {
+            if (hour < 0 || hour > 24 || min < 0 || seg < 0 || min > 60 || seg > 60) {
                 throw new Exception("Parâmetros inválidos!");
             }
         } catch (Exception e) {
             out.println("Carateres inválidos introduzidos!");
             return;
         }
-  
+
         MakeChallenge mkC = new MakeChallenge(nome, data, hora, label);
         byte[] dados = mkC.generate();
         dados = com.send(dados);
         label++;
 
-        //falta acabar
+        try {
+            if (inter.checkMkChallenge(dados)) {
+                out.println("Desafio criado!");
+                return;
+            }
+            out.println("Desafio não foi criado!");
+        } catch (UnknownTypeException ex) {
+            out.println("Fatal Eror: UnknownTypeException");
+        } catch (VersionMissmatchException ex) {
+            out.println("Fatal Eror: VersionMissmatchException");
+        }
     }
 }

@@ -11,7 +11,6 @@ import Build.PDU;
 import Exception.NotOkException;
 import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
-import java.util.Arrays;
 
 /**
  *
@@ -75,7 +74,7 @@ public class Interpretador {
         //System.out.println(lista.toString());
         Campo c = lista.getCampo(0);
         if ((c.getTag() & 0xff) == 255) {
-            System.out.println("Erro: " + Arrays.toString(c.getDados()));
+            System.out.println("Erro: " + new String(c.getDados()));
             return false;
         }
         if (c.getTag() == 0) {
@@ -84,6 +83,39 @@ public class Interpretador {
         }
 
         return false;
+    }
+
+    public boolean checkMkChallenge(byte[] dados) throws VersionMissmatchException, UnknownTypeException {
+
+        pdu = new PDU(dados);
+        lista = new ListaCampos(pdu.getLista(), pdu.getnCampos());
+
+        if (pdu.getVersao() != 0) {
+            throw new VersionMissmatchException();
+        }
+
+        if (pdu.getTipo() != 0) {
+            throw new UnknownTypeException();
+        }
+
+        Campo c = lista.getCampo(0);
+        if ((c.getTag() & 0xff) == 255) {
+            System.out.println("Erro: " + new String(c.getDados()));
+            return false;
+        }
+        int i = 0;
+        while (i < lista.getNCampos()) {
+            c = lista.getCampo(i);
+            if (c.getTag() == 7 || c.getTag() == 4 || c.getTag() == 5) {
+                //all is good
+            }else{
+                //unexpected field
+                System.out.println("Erro: Recebido campo inesperado");
+                return false;
+            }
+        }
+
+        return true;
     }
     /*
      public short getLabel(byte[] data) {
