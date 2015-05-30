@@ -9,6 +9,14 @@ class Pergunta {
     private int respCerta;
     private String musica; //path para a musica
     private String imagem; //path para a imagem
+    
+    public Pergunta(){
+        this.pergunta = "";
+        this.respostas = new ArrayList<>(3);
+        this.respCerta = -1;
+        this.musica = null;
+        this.imagem = null;
+    }
 
     public Pergunta(String pergunta, ArrayList<String> respostas, int respCerta, String musica, String imagem) {
         this.pergunta = pergunta;

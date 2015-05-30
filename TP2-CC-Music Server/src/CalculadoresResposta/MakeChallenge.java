@@ -6,11 +6,16 @@
 package CalculadoresResposta;
 
 import DataBase.Desafio;
+import DataBase.Parser;
 import DataBase.User;
 import DataBase.UserDB;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -74,17 +79,33 @@ public class MakeChallenge {
         //teste:
         System.out.println("ano: " + ano + "mes: " + mes + "dia: " + dia + "hora: " + hora + "min: " + min + "seg: " + seg);
         data.set(ano, mes, dia, hora, min, seg);
-
-        Desafio d = new Desafio();
-        d.setNome(nome);
-        d.setHora(data);
-
-        //Parser p = new Parser();
-        //continuar
+                
+        Random r=new Random();
+        Parser p = new Parser();
+        int max=1,minimo=1;
+        int nDesafio = r.nextInt((max - minimo) + 1) + minimo;
+        System.out.println("Desafio escolhido: "+nDesafio);
+        
+        try {
+            p.parseDesafioWnum(nDesafio);
+        } catch (IOException ex) {
+            System.out.println("Fatal Error: Alguma coisa correu mal ao ler o ficheiro.\n"+ex.getMessage()+"\n");
+            System.exit(0);
+        }
+        Desafio desafio = new Desafio(p.getPerguntas());
+        desafio.setNome(nome);
+        desafio.setHora(data);
+        desafio.addJogador(u);
+        
+        generateResposta();
     }
 
     public byte[] getResposta() {
         return pdu.generatePDU();
+    }
+
+    private void generateResposta() {
+        
     }
 
 }
