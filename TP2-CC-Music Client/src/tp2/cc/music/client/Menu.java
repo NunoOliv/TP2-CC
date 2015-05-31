@@ -1,5 +1,6 @@
 package tp2.cc.music.client;
 
+import Build.ListChallenge;
 import Build.Login;
 import Build.Logout;
 import Build.MakeChallenge;
@@ -8,6 +9,7 @@ import Exception.NotOkException;
 import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -105,7 +107,7 @@ public class Menu {
                     makeChallenge();
                     break;
                 case (2):
-                    out.println("Unsupported!");
+                    listChallenge();
                     break;
                 case (3):
                     out.println("Unsupported!");
@@ -312,5 +314,19 @@ public class Menu {
         } catch (VersionMissmatchException ex) {
             out.println("Fatal Eror: VersionMissmatchException");
         }
+    }
+
+    private void listChallenge() {
+        clearScreen();
+        out.println("*** Lista de Desafios ***");
+        out.println();
+        
+        ListChallenge lc=new ListChallenge(label);
+        label++;
+        byte[] dados = lc.generate();
+        dados=com.send(dados);
+        ArrayList<Desafio> desafios;
+        
+        desafios=inter.checkLstChallenge(dados); //acabar...
     }
 }

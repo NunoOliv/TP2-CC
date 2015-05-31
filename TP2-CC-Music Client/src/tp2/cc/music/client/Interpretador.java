@@ -11,6 +11,7 @@ import Build.PDU;
 import Exception.NotOkException;
 import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
+import java.util.ArrayList;
 
 /**
  *
@@ -143,5 +144,9 @@ public class Interpretador {
      data[6] = bytes[0];
      data[7] = bytes[1];
      }*/
+
+    ArrayList<Desafio> checkLstChallenge(byte[] dados) {
+        return null;
+    }
 
 }
