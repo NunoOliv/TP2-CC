@@ -70,7 +70,7 @@ public class ListChallenge {
                 }
                 aux = aux.concat(Integer.toString(dia));
                 c.setDados(aux.getBytes(), (short) aux.getBytes().length);
-                System.out.print("Data: " + aux);
+                //System.out.print("Data: " + aux);
                 lc.addCampo(c);
 
                 c = new Campo((byte) 5); //hora HHMMSS
@@ -92,13 +92,13 @@ public class ListChallenge {
                 }
                 aux = aux.concat(Integer.toString(seg));
                 c.setDados(aux.getBytes(), (short) aux.getBytes().length);
-                System.out.print(" Hora: " + aux);
+                //System.out.print(" Hora: " + aux);
                 lc.addCampo(c);
 
                 //testes:
-                System.out.println(" Nome: " + d.getNome());
+                //System.out.println(" Nome: " + d.getNome());
             }
-            System.out.println(" NCampos: " + lc.getNCampos() + "\nTotal size: " + lc.getTotalSize());
+            //System.out.println(" NCampos: " + lc.getNCampos() + "\nTotal size: " + lc.getTotalSize());
             pdu.setnCampos(lc.getNCampos());
             pdu.setTamanho(lc.getTotalSize());
             pdu.setLista(lc.generate());
