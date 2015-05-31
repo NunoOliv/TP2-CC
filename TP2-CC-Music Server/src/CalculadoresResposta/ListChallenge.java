@@ -9,12 +9,12 @@ import java.util.Calendar;
 
 public class ListChallenge {
 
-    private final PDU pdu;
-    private final ListaCampos lc;
-    private final ArrayList<Desafio> desafios;
-    private final UserDB users;
-    private final InetAddress IP;
-    private final int port;
+    private PDU pdu;
+    private ListaCampos lc;
+    private ArrayList<Desafio> desafios;
+    private UserDB users;
+    private InetAddress IP;
+    private int port;
 
     public ListChallenge(byte[] receiveData, UserDB db, ArrayList<Desafio> desafios, InetAddress IPAddress, int portSend) {
         this.pdu = new PDU(receiveData);
@@ -36,6 +36,7 @@ public class ListChallenge {
         int ano, mes, dia, hora, min, seg;
         String aux;
 
+        lc = new ListaCampos();
         if (u != null) {
             u.incrementaMensagensRecebidas();
 
@@ -54,30 +55,54 @@ public class ListChallenge {
                 ano = d.getHora().get(Calendar.YEAR) - 2000;
                 mes = d.getHora().get(Calendar.MONTH);
                 dia = d.getHora().get(Calendar.DAY_OF_MONTH);
-                aux = Integer.toString(ano);
+                if (ano < 10) {
+                    aux = "0";
+                    aux = aux.concat(Integer.toString(ano));
+                } else {
+                    aux = Integer.toString(ano);
+                }
+                if (mes < 10) {
+                    aux = aux.concat("0");
+                }
                 aux = aux.concat(Integer.toString(mes));
+                if (dia < 10) {
+                    aux = aux.concat("0");
+                }
                 aux = aux.concat(Integer.toString(dia));
                 c.setDados(aux.getBytes(), (short) aux.getBytes().length);
+                System.out.print("Data: " + aux);
                 lc.addCampo(c);
 
                 c = new Campo((byte) 5); //hora HHMMSS
                 hora = d.getHora().get(Calendar.HOUR_OF_DAY);
                 min = d.getHora().get(Calendar.MINUTE);
                 seg = d.getHora().get(Calendar.SECOND);
-                aux = Integer.toString(hora);
+                if (hora < 10) {
+                    aux = "0";
+                    aux = aux.concat(Integer.toString(hora));
+                } else {
+                    aux = Integer.toString(hora);
+                }
+                if (min < 10) {
+                    aux = aux.concat("0");
+                }
                 aux = aux.concat(Integer.toString(min));
+                if (seg < 10) {
+                    aux = aux.concat("0");
+                }
                 aux = aux.concat(Integer.toString(seg));
                 c.setDados(aux.getBytes(), (short) aux.getBytes().length);
+                System.out.print(" Hora: " + aux);
                 lc.addCampo(c);
 
                 //testes:
-                System.out.println("Nome: " + d.getNome());
-                System.out.println("ano: " + ano + " mes: " + mes + " dia: " + dia + " hora: " + hora + " min: " + min + " seg: " + seg);
+                System.out.println(" Nome: " + d.getNome());
             }
-
+            System.out.println(" NCampos: " + lc.getNCampos() + "\nTotal size: " + lc.getTotalSize());
             pdu.setnCampos(lc.getNCampos());
             pdu.setTamanho(lc.getTotalSize());
             pdu.setLista(lc.generate());
+            
         } else {
             String err;
 

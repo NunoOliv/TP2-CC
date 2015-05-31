@@ -18,8 +18,8 @@ import java.util.Scanner;
  * @author Rafael
  */
 public class Comunicador {
-
-    private final int portSend = 9877;
+    
+    private int portSend = 9877;
     private Scanner in;
     private InetAddress IPAddress;
     private DatagramSocket clientSocket;
@@ -28,17 +28,17 @@ public class Comunicador {
     private byte[] sendData = new byte[255];
     private byte[] receiveData = new byte[255];
     private Interpretador inter;
-
+    
     public Comunicador(Interpretador i) {
         inter = i;
     }
-
+    
     public void start() {
         short label = 1;
         int i;
-
+        
         in = new Scanner(System.in);
-
+        
         try {
             clientSocket = new DatagramSocket();
             clientSocket.setSoTimeout(10000);//5 segundos
@@ -46,7 +46,7 @@ public class Comunicador {
             System.out.println("Fatal Error: " + ex.toString());
             System.exit(0);
         }
-
+        
         try {
             IPAddress = InetAddress.getByName("localhost");
         } catch (UnknownHostException ex) {
@@ -54,13 +54,12 @@ public class Comunicador {
             System.exit(0);
         }
         System.out.println("IP: " + IPAddress.toString());
-
+        
         Hello h = new Hello();
         sendData = h.generate();
-
+        
         receiveData = send(sendData);
         
-
         try {
             inter.checkOK(receiveData);
         } catch (UnknownTypeException ex) {
@@ -74,7 +73,7 @@ public class Comunicador {
             System.exit(0);
         }
     }
-
+    
     public byte[] send(byte[] send) {
         sendData = send;
         sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
@@ -82,14 +81,18 @@ public class Comunicador {
             try {
                 clientSocket.send(sendPacket);
                 System.out.println("Enviado!");
-
+                
                 receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 clientSocket.receive(receivePacket);
                 System.out.println("Resposta recebida!");
                 break;
             } catch (SocketTimeoutException e) {
                 System.out.println("Timeout!\nTentar novamente? (Y|N)");
-                char c = in.nextLine().charAt(0);
+                String aux = in.nextLine();
+                if (aux == null) {
+                    System.exit(0);
+                }
+                char c = aux.charAt(0);
                 if (c == 'N' || c == 'n') {
                     System.exit(0);
                 }
@@ -102,10 +105,10 @@ public class Comunicador {
                 System.exit(0);
             }
         }
-
+        
         return receivePacket.getData();
     }
-
+    
     public void end() {
         clientSocket.close();
         System.exit(0);

@@ -31,11 +31,11 @@ import java.util.Iterator;
  */
 public class ServerUDP {
 
-    private final UserDB db;
-    private final ArrayList<Desafio> desafios;
+    private UserDB db;
+    private ArrayList<Desafio> desafios;
 
     private int portSend = 9876;
-    private final int portReceive = 9877;
+    private int portReceive = 9877;
     private DatagramPacket receivePacket;
     private DatagramPacket sendPacket;
     private DatagramSocket serverSocketSend = null;
@@ -49,7 +49,7 @@ public class ServerUDP {
         sendData = new byte[255];
         db = new UserDB();
         desafios = new ArrayList<>();
-        inicialize();//para testes
+        //inicialize();//para testes
     }
 
     public void start() {

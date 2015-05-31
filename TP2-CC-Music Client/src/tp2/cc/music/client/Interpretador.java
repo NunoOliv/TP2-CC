@@ -90,7 +90,7 @@ public class Interpretador {
 
         pdu = new PDU(dados);
         lista = new ListaCampos(pdu.getLista(), pdu.getnCampos());
-        
+
         if (pdu.getVersao() != 0) {
             throw new VersionMissmatchException();
         }
@@ -101,8 +101,7 @@ public class Interpretador {
 
         Campo c = lista.getCampo(0);
         if ((c.getTag() & 0xff) == 255) {
-            
-            System.out.println("Tamanho: "+c.getSize()+" Tamanho Total: "+c.getTotalSize()+" Erro: " + new String(c.getDados()));
+            System.out.println("Erro: " + new String(c.getDados()));
             return false;
         }
         int i = 0;
@@ -110,7 +109,7 @@ public class Interpretador {
             c = lista.getCampo(i);
             if (c.getTag() == 7 || c.getTag() == 4 || c.getTag() == 5) {
                 //all is good
-            }else{
+            } else {
                 //unexpected field
                 System.out.println("Erro: Recebido campo inesperado!");
                 return false;
@@ -146,7 +145,49 @@ public class Interpretador {
      }*/
 
     ArrayList<Desafio> checkLstChallenge(byte[] dados) {
-        return null;
+        pdu = new PDU(dados);
+        lista = new ListaCampos(pdu.getLista(), pdu.getnCampos());
+        ArrayList<Desafio> r = new ArrayList<>();
+        int i = 0;
+        Desafio d;
+
+        Campo c = lista.getCampo(0);
+        if ((c.getTag() & 0xff) == 255) {
+            System.out.println("Erro: " + new String(c.getDados()));
+            return null;
+        }
+
+        while (i < lista.getNCampos()) {
+            d = new Desafio();
+
+            c = lista.getCampo(i);
+            i++;
+            if (c.getTag() != 7) {
+                System.out.println("Alguma coisa correu mal: Recebido pacote não esperado!");
+                return null;
+            }
+            d.setNome(new String(c.getDados()));
+
+            c = lista.getCampo(i);
+            i++;
+            if (c.getTag() != 4) {
+                System.out.println("Alguma coisa correu mal: Recebido pacote não esperado!");
+                return null;
+            }
+            d.setData(new String(c.getDados()));
+
+            c = lista.getCampo(i);
+            i++;
+            if (c.getTag() != 5) {
+                System.out.println("Alguma coisa correu mal: Recebido pacote não esperado!");
+                return null;
+            }
+            d.setHora(new String(c.getDados()));
+
+            r.add(d);
+        }
+
+        return r;
     }
 
 }

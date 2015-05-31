@@ -12,12 +12,12 @@ import java.util.Random;
 
 public class MakeChallenge {
 
-    private final PDU pdu;
+    private PDU pdu;
     private ListaCampos lc;
-    private final InetAddress ipAddress;
-    private final int port;
-    private final UserDB users;
-    private final ArrayList<Desafio> desafios;
+    private InetAddress ipAddress;
+    private int port;
+    private UserDB users;
+    private ArrayList<Desafio> desafios;
     private User u;
 
     private String nome;
@@ -43,6 +43,9 @@ public class MakeChallenge {
     private void inicia() {
         String aux;
         int ano, mes, dia, hora, min, seg;
+        
+        //System.out.println("IP Recebido: " + ipAddress + " Port: " + port);
+        
         u = users.getCliente(ipAddress, port);
         if (u == null) {//cliente não existe
             System.out.println("Um cliente tentou criar um desafio sem estar registado!");

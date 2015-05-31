@@ -13,18 +13,17 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- *
  * @author Rafael Antunes
  * @author Nuno Oliveira
- * @author Rui Pereira
+ * @author Rui Camposinhos
  */
 public class Menu {
 
-    PrintStream out;
-    Scanner in;
-    Comunicador com;
-    short label;
-    Interpretador inter;
+    private PrintStream out;
+    private Scanner in;
+    private Comunicador com;
+    private short label;
+    private Interpretador inter;
 
     public Menu(Comunicador comu, Interpretador interp) {
         out = System.out;
@@ -193,6 +192,11 @@ public class Menu {
             return;
         }
 
+        if (alcunha.length() < 1) {
+            out.print("Alcunha Inválida!");
+            return;
+        }
+
         out.print("Password: ");
         pass = in.nextLine();
         if (pass.length() > 255) {
@@ -200,10 +204,20 @@ public class Menu {
             return;
         }
 
+        if (pass.length() < 1) {
+            out.print("Password Inválida!");
+            return;
+        }
+
         out.print("Nome: ");
         nome = in.nextLine();
         if (nome.length() > 255) {
             out.println("Nome muito grande, não pode exceder 255 carateres!");
+            return;
+        }
+
+        if (nome.length() < 1) {
+            out.print("Nome Inválido!");
             return;
         }
 
@@ -320,13 +334,19 @@ public class Menu {
         clearScreen();
         out.println("*** Lista de Desafios ***");
         out.println();
-        
-        ListChallenge lc=new ListChallenge(label);
+
+        ListChallenge lc = new ListChallenge(label);
         label++;
         byte[] dados = lc.generate();
-        dados=com.send(dados);
+        dados = com.send(dados);
         ArrayList<Desafio> desafios;
-        
-        desafios=inter.checkLstChallenge(dados); //acabar...
+
+        desafios = inter.checkLstChallenge(dados);
+        if(desafios==null){
+            return;
+        }
+        for (Desafio d : desafios) {
+            System.out.println("Nome: \"" + d.getNome() + "\"  Data: \"" + d.getData() + "\" Hora: \"" + d.getHora()+"\"");
+        }
     }
 }

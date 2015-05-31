@@ -4,14 +4,22 @@ import java.util.ArrayList;
 
 public class Desafio {
 
+    private String nome;
+    private String data, hora;
     private ArrayList<Pergunta> perguntas;
 
     public Desafio() {
-        perguntas = new ArrayList<>();
+        this.perguntas = new ArrayList<>();
+        this.nome = "";
+        this.data = "";
+        this.hora = "";
     }
 
     public Desafio(ArrayList<Pergunta> perguntas) {
         this.perguntas = perguntas;
+        this.nome = "";
+        this.data = "";
+        this.hora = "";
     }
 
     public Desafio(int nMaxPerguntas) {
@@ -20,6 +28,9 @@ public class Desafio {
         } else {
             perguntas = new ArrayList<>(nMaxPerguntas);
         }
+        this.nome = "";
+        this.data = "";
+        this.hora = "";
     }
 
     public boolean addPergunta(Pergunta p) {
@@ -36,6 +47,30 @@ public class Desafio {
 
     public int getNPerguntas() {
         return perguntas.size();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public String getHora() {
+        return hora;
+    }
+
+    public void setHora(String hora) {
+        this.hora = hora;
     }
 
 }

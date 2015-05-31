@@ -38,31 +38,33 @@ public class Login {
         alcunha = new String(lc.getCampoByTag((byte) 2).getDados());
         pass = new String(lc.getCampoByTag((byte) 3).getDados());
 
-        User c = users.login(alcunha, pass);
-        if (c != null) {
+        User u = users.login(alcunha, pass);
+        if (u != null) {
             System.out.println("    Login:\n      Alcunha: " + alcunha + "\n      Pass: " + pass);
-            c.incrementaMensagensEnviadas();
-            c.incrementaMensagensRecebidas();
+            u.incrementaMensagensEnviadas();
+            u.incrementaMensagensRecebidas();
 
             pdu.setVersao((byte) 0);
             pdu.setSeguranca((byte) 0);
-            c.incrementaMensagensEnviadas();
-            pdu.setLabel(c.getnMensagensEnviadas());
+            u.incrementaMensagensEnviadas();
+            pdu.setLabel(u.getnMensagensEnviadas());
             pdu.setTipo((byte) 0);
 
             lc = new ListaCampos();
             Campo campo = new Campo((byte) 1);
-            campo.setSize((short) c.getNome().length());
-            campo.setDados(c.getNome().getBytes(), campo.getSize());
+            campo.setSize((short) u.getNome().length());
+            campo.setDados(u.getNome().getBytes(), campo.getSize());
             lc.addCampo(campo);
 
             pdu.setnCampos(lc.getNCampos());
             pdu.setTamanho(lc.getTotalSize());
             pdu.setLista(lc.generate());
 
-            c.setSessaoAtiva(true);
-            c.setEnderecoIP(this.IP);
-            c.setPort(this.port);
+            System.out.println("IP Recebido: " + IP + " Port: " + port);
+            
+            u.setSessaoAtiva(true);
+            //u.setEnderecoIP(this.IP);
+            //u.setPort(this.port);
         } else {
             System.out.println("    Login falhou:\n      Alcunha: " + alcunha + "\n      Pass: " + pass);
             pdu.setVersao((byte) 0);

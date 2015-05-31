@@ -15,27 +15,27 @@ import java.util.HashSet;
  */
 public class UserDB {
 
-    private HashSet<User> clientes;
+    private HashSet<User> users;
 
     public UserDB() {
-        clientes = new HashSet<>();
+        this.users = new HashSet<>();
     }
 
     public boolean addClient(User c) {
-        if (clientes.contains(c)) {
+        if (users.contains(c)) {
             return false;
         }
-        clientes.add(c);
+        users.add(c);
         return true;
     }
 
     public boolean addCliente(String alcunha, String pass, String nome, InetAddress ip, int port) {
-        for (User c : clientes) {
+        for (User c : users) {
             if (c.getAlcunha().equals(alcunha)) {
                 return false;
             }
         }
-        clientes.add(new User(alcunha, pass, nome, ip, port));
+        users.add(new User(alcunha, pass, nome, ip, port));
         return true;
     }
 
@@ -44,10 +44,10 @@ public class UserDB {
         ArrayList<User> r = new ArrayList<>();
         User max = null;
 
-        for (i = 0; i < clientes.size(); i++) {
+        for (i = 0; i < users.size(); i++) {
             p = 0;
             max = null;
-            for (User c : clientes) {
+            for (User c : users) {
                 if (r.contains(c)) {
                     continue;
                 }
@@ -63,16 +63,16 @@ public class UserDB {
     }
 
     public User login(String alcunha, String pass) {
-        for (User c : clientes) {
-            if (c.getAlcunha().equals(alcunha)&&c.getPass().equals(pass)) {
+        for (User c : users) {
+            if (c.getAlcunha().equals(alcunha) && c.getPass().equals(pass)) {
                 return c;
             }
         }
         return null;
     }
 
-    public String getNome(String alcunha){
-        for (User c : clientes) {
+    public String getNome(String alcunha) {
+        for (User c : users) {
             if (c.getAlcunha().equals(alcunha)) {
                 return c.getNome();
             }
@@ -81,8 +81,14 @@ public class UserDB {
     }
 
     public User getCliente(InetAddress ip, int port) {
-        for(User c:clientes){
-            if(c.getEnderecoIP().equals(ip)&&c.getPort()==port) return c;
+        if (ip == null) {
+            System.out.println("Erro: IP Nulo!");
+            return null;
+        }
+        for (User c : users) {
+            if (c.getEnderecoIP().equals(ip) && c.getPort() == port) {
+                return c;
+            }
         }
         return null;
     }

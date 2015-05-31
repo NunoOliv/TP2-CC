@@ -32,7 +32,8 @@ public class Register {
         nome = new String(lc.getCampoByTag((byte) 1).getDados());
         alcunha = new String(lc.getCampoByTag((byte) 2).getDados());
         pass = new String(lc.getCampoByTag((byte) 3).getDados());
-
+        
+        
         if (users.addCliente(alcunha, pass, nome, ipAddress, port)) {
             System.out.println("    Novo utilizador:\n      Alcunha: " + alcunha + "\n      Pass: " + pass + "\n      Nome: " + nome);
             pdu.setVersao((byte) 0);
