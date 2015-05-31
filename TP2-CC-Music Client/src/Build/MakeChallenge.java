@@ -1,25 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Build;
 
-import java.util.Arrays;
 
-/**
- *
- * @author Rafael
- */
 public class MakeChallenge {
 
-    private PDU pdu;
-    private ListaCampos lc;
+    private final PDU pdu;
+    private final ListaCampos lc;
 
-    private String nome;
-    private String dia;
-    private String hora;
-    private short label;
+    private final String nome;
+    private final String dia;
+    private final String hora;
+    private final short label;
 
     public MakeChallenge(String nome, String dia, String hora, short label) {
         this.pdu = new PDU();

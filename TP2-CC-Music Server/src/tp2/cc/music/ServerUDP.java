@@ -10,6 +10,7 @@ import DataBase.User;
 import DataBase.UserDB;
 import CalculadoresResposta.Register;
 import CalculadoresResposta.Hello;
+import CalculadoresResposta.ListChallenge;
 import CalculadoresResposta.Login;
 import CalculadoresResposta.Logout;
 import CalculadoresResposta.MakeChallenge;
@@ -30,8 +31,8 @@ import java.util.Iterator;
  */
 public class ServerUDP {
 
-    private UserDB db;
-    private ArrayList<Desafio> desafios;
+    private final UserDB db;
+    private final ArrayList<Desafio> desafios;
 
     private int portSend = 9876;
     private final int portReceive = 9877;
@@ -47,8 +48,8 @@ public class ServerUDP {
         receiveData = new byte[255];
         sendData = new byte[255];
         db = new UserDB();
-        desafios=new ArrayList<>();
-        //inicialize();//para testes
+        desafios = new ArrayList<>();
+        inicialize();//para testes
     }
 
     public void start() {
@@ -164,7 +165,7 @@ public class ServerUDP {
             case (3):
                 //Login
                 System.out.println("Tipo: LOGIN");
-                Login l = new Login(receiveData, db ,IPAddress, portSend);
+                Login l = new Login(receiveData, db, IPAddress, portSend);
                 return l.getResposta();
             case (4):
                 //Logout
@@ -182,7 +183,8 @@ public class ServerUDP {
             case (7):
                 //List chalenge
                 System.out.println("Tipo: LIST_CHALLENGES");
-                break;
+                ListChallenge lstC = new ListChallenge(receiveData, db, desafios, IPAddress, portSend);
+                return lstC.generatePDU();
             case (8):
                 //Make chalenge
                 System.out.println("Tipo: MAKE_CHALLENGE");
@@ -230,12 +232,12 @@ public class ServerUDP {
         c.setPontuacao(15);
         db.addClient(c);
 
-        ArrayList<User> users = db.topRanked();
+        /*ArrayList<User> users = db.topRanked();
         Iterator<User> ite = users.iterator();
         while (ite.hasNext()) {
             c = ite.next();
             System.out.println(c.getPontuacao());
-        }
+        }*/
 
     }
 }

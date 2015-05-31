@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package CalculadoresResposta;
 
 import DataBase.Desafio;
@@ -15,19 +10,15 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
-/**
- *
- * @author Rafael
- */
 public class MakeChallenge {
 
-    private PDU pdu;
+    private final PDU pdu;
     private ListaCampos lc;
-    private InetAddress ipAddress;
-    private int port;
-    private UserDB users;
-    private ArrayList<Desafio> desafios;
-    User u;
+    private final InetAddress ipAddress;
+    private final int port;
+    private final UserDB users;
+    private final ArrayList<Desafio> desafios;
+    private User u;
 
     private String nome;
     private GregorianCalendar data;

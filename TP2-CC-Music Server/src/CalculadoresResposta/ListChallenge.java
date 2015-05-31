@@ -9,12 +9,12 @@ import java.util.Calendar;
 
 public class ListChallenge {
 
-    private PDU pdu;
-    private ListaCampos lc;
-    private ArrayList<Desafio> desafios;
-    private UserDB users;
-    private InetAddress IP;
-    private int port;
+    private final PDU pdu;
+    private final ListaCampos lc;
+    private final ArrayList<Desafio> desafios;
+    private final UserDB users;
+    private final InetAddress IP;
+    private final int port;
 
     public ListChallenge(byte[] receiveData, UserDB db, ArrayList<Desafio> desafios, InetAddress IPAddress, int portSend) {
         this.pdu = new PDU(receiveData);
@@ -83,7 +83,7 @@ public class ListChallenge {
 
             pdu.setVersao((byte) 0);
             pdu.setSeguranca((byte) 0);
-            
+
             err = "Tentou ver a lista de desafios sem estar registado!";
             pdu.setLabel((short) 0);
             pdu.setTipo((byte) 0);
