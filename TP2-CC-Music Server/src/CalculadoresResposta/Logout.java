@@ -50,7 +50,7 @@ public class Logout {
 
             if (c == null) {
                 err = "Utilizador não está registado!";
-                pdu.setLabel((short) 2);
+                pdu.setLabel((short) 0);
             } else {
                 err = "Utilizador não estava com sessão ativa!";
                 c.setnMensagensRecebidas((short) 0);

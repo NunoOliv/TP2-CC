@@ -88,7 +88,7 @@ public class Campo {
         setSize(size);
         this.dados = new byte[size];
         System.arraycopy(dados, 0, this.dados, 0, size);
-        this.dados = dados;
+
     }
 
     public short getTotalSize() {

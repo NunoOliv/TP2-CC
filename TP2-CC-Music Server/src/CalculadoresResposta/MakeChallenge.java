@@ -43,8 +43,8 @@ public class MakeChallenge {
 
         this.ipAddress = ip;
         this.port = port;
-        
-        this.data=new GregorianCalendar();
+
+        this.data = new GregorianCalendar();
 
         inicia();
     }
@@ -110,12 +110,11 @@ public class MakeChallenge {
         desafio.setHora(data);
         desafio.addJogador(u);
         desafios.add(desafio);
-        System.out.println("Novo desafio criado: "+nome);
-        
+        System.out.println("Novo desafio criado: " + nome);
+
         //*****************
         //generateResposta
         //*****************
-        
         pdu.setVersao((byte) 0);
         pdu.setSeguranca((byte) 0);
         pdu.setLabel((short) (u.getnMensagensEnviadas() + 1));
@@ -125,8 +124,7 @@ public class MakeChallenge {
         pdu.setnCampos(lc.getNCampos());
         pdu.setTamanho(lc.getTotalSize());
         pdu.setLista(lc.generate());
-        
-        
+
     }
 
     public byte[] getResposta() {
@@ -143,14 +141,12 @@ public class MakeChallenge {
         pdu.setTipo((byte) 0);
 
         Campo campo = new Campo((byte) 255);
-        campo.setSize((short) erro.length());
-        campo.setDados(erro.getBytes(), campo.getTotalSize());
+        campo.setDados(erro.getBytes(), (short) erro.getBytes().length);
         lc.addCampo(campo);
 
         pdu.setnCampos(lc.getNCampos());
         pdu.setTamanho(lc.getTotalSize());
         pdu.setLista(lc.generate());
-
     }
 
 }

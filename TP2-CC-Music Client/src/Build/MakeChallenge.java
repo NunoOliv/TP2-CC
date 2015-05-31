@@ -38,15 +38,15 @@ public class MakeChallenge {
         Campo c;
 
         c = new Campo((byte) 7);
-        c.setDados(nome.getBytes(), (short) nome.length());
+        c.setDados(nome.getBytes(), (short) nome.getBytes().length);
         lc.addCampo(c);
 
         c = new Campo((byte) 4);
-        c.setDados(dia.getBytes(), (short) dia.length());
+        c.setDados(dia.getBytes(), (short) dia.getBytes().length);
         lc.addCampo(c);
 
         c = new Campo((byte) 5);
-        c.setDados(hora.getBytes(), (short) hora.length());
+        c.setDados(hora.getBytes(), (short) hora.getBytes().length);
         lc.addCampo(c);
 
         pdu.setVersao((byte) 0);
@@ -56,8 +56,6 @@ public class MakeChallenge {
         pdu.setnCampos(lc.getNCampos());
         pdu.setTamanho(lc.getTotalSize());
         pdu.setLista(lc.generate());
-
-        //System.out.println("Lista: " + Arrays.toString(lc.generate()) + "\nPDU com Lista: " + Arrays.toString(pdu.generatePDU()));
     }
 
     public byte[] generate() {

@@ -89,7 +89,7 @@ public class Interpretador {
 
         pdu = new PDU(dados);
         lista = new ListaCampos(pdu.getLista(), pdu.getnCampos());
-
+        
         if (pdu.getVersao() != 0) {
             throw new VersionMissmatchException();
         }
@@ -100,7 +100,8 @@ public class Interpretador {
 
         Campo c = lista.getCampo(0);
         if ((c.getTag() & 0xff) == 255) {
-            System.out.println("Erro: " + new String(c.getDados()));
+            
+            System.out.println("Tamanho: "+c.getSize()+" Tamanho Total: "+c.getTotalSize()+" Erro: " + new String(c.getDados()));
             return false;
         }
         int i = 0;
@@ -110,9 +111,10 @@ public class Interpretador {
                 //all is good
             }else{
                 //unexpected field
-                System.out.println("Erro: Recebido campo inesperado");
+                System.out.println("Erro: Recebido campo inesperado!");
                 return false;
             }
+            i++;
         }
 
         return true;

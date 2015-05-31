@@ -1,16 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Build;
 
-import java.nio.ByteBuffer;
-
-/**
- *
- * @author Rafael
- */
 public class Login {
 
     private PDU pdu;
@@ -18,8 +7,8 @@ public class Login {
     private short label;
 
     public Login(String alcunha, String pass, short label) {
-        pdu = new PDU();
-        lc = new ListaCampos();
+        this.pdu = new PDU();
+        this.lc = new ListaCampos();
         this.label = label;
 
         lc.addCampo(new Campo((byte) 2, (short) alcunha.length(), alcunha));

@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package CalculadoresResposta;
 
 import DataBase.User;
 import DataBase.UserDB;
+import java.net.InetAddress;
 
 /**
  *
@@ -20,11 +16,15 @@ public class Login {
     private PDU pdu;
     private ListaCampos lc;
     private UserDB users;
+    private InetAddress IP;
+    private int port;
 
-    public Login(byte[] pdu, UserDB users) {
+    public Login(byte[] pdu, UserDB users, InetAddress IP, int port) {
         this.users = users;
         this.pdu = new PDU(pdu);
         this.lc = new ListaCampos(this.pdu.getLista(), this.pdu.getnCampos());
+        this.IP = IP;
+        this.port = port;
 
         inicia();
     }
@@ -59,8 +59,10 @@ public class Login {
             pdu.setnCampos(lc.getNCampos());
             pdu.setTamanho(lc.getTotalSize());
             pdu.setLista(lc.generate());
-            
+
             c.setSessaoAtiva(true);
+            c.setEnderecoIP(this.IP);
+            c.setPort(this.port);
         } else {
             System.out.println("    Login falhou:\n      Alcunha: " + alcunha + "\n      Pass: " + pass);
             pdu.setVersao((byte) 0);
