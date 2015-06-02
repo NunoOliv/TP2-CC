@@ -1,11 +1,14 @@
 package tp2.cc.music.client;
 
 import Build.AcceptChallenge;
+import Build.Group;
 import Build.ListChallenge;
 import Build.Login;
 import Build.Logout;
 import Build.MakeChallenge;
+import Build.NextPackage;
 import Build.Register;
+import Build.Transmit;
 import Exception.NotOkException;
 import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
@@ -447,5 +450,26 @@ public class Menu {
 
         out.println("Espera Terminou! O jogo vai começar!");
 
+        inDesafio();
     }
+
+    private void inDesafio() {
+        Transmit t = new Transmit(label, (short) 1, desafio.getNome());
+        NextPackage np;
+        Group g = new Group();
+        byte[] piece;
+        short i = 2;
+
+        piece = com.send(t.generate());
+        g.addPiece(piece);
+        while (!g.isComplete()) {
+
+            np = new NextPackage(i);
+            i++;
+            piece = com.send(np.generatePDU());
+            g.addPiece(piece);
+        }
+
+    }
+
 }

@@ -1,15 +1,18 @@
 package tp2.cc.music;
 
 import CalculadoresResposta.AcceptChallenge;
+import CalculadoresResposta.Campo;
 import DataBase.Desafio;
 import DataBase.User;
 import DataBase.UserDB;
 import CalculadoresResposta.Register;
 import CalculadoresResposta.Hello;
 import CalculadoresResposta.ListChallenge;
+import CalculadoresResposta.ListaCampos;
 import CalculadoresResposta.Login;
 import CalculadoresResposta.Logout;
 import CalculadoresResposta.MakeChallenge;
+import CalculadoresResposta.PDU;
 import CalculadoresResposta.Split;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -25,10 +28,10 @@ import java.util.ArrayList;
  * @author Rafael
  */
 public class ServerUDP {
-
+    
     private UserDB db;
     private ArrayList<Desafio> desafios;
-
+    
     private int portSend = 9876;
     private int portReceive = 9877;
     private DatagramPacket receivePacket;
@@ -38,7 +41,7 @@ public class ServerUDP {
     private byte[] receiveData;
     private byte[] sendData;
     private InetAddress IPAddress;
-
+    
     public ServerUDP() {
         receiveData = new byte[255];
         sendData = new byte[255];
@@ -46,11 +49,9 @@ public class ServerUDP {
         desafios = new ArrayList<>();
         //inicialize();//para testes
     }
-
+    
     public void start() {
-        int i = 0, j = 0;
-        short nPacotes;
-        byte[][] aux;
+        int i = 0;
 
         //iniciar os sockets 
         try {
@@ -60,36 +61,20 @@ public class ServerUDP {
             System.out.println("Socket em utilização!");
             System.exit(0);
         }
-
+        
         while (true) {
             receiveData = new byte[255];
             sendData = new byte[255];
-            receivePacket = new DatagramPacket(receiveData, receiveData.length);
-            //fica à espera de receber um pedido
-            try {
-                serverSocketReceive.receive(receivePacket);
-            } catch (IOException ex) {
-                System.out.println("Socket em utilização!");
-                System.exit(0);
-            }
-            IPAddress = receivePacket.getAddress();
-            portSend = receivePacket.getPort();
+            
+            receiveData = receive();
+            
             System.out.println("**Pacote de dados nº" + i + " recebido do IP: " + IPAddress + " **");
             System.out.println();
-
-            receiveData = receivePacket.getData();
-
+            
             sendData = buildPDU(receiveData);
-            if (sendData.length > 48 * 1024) { //alterar para mandar 5 de cada vez, e esperar confirmação
-                Split s = new Split(sendData);
-                nPacotes = s.getNPacotes();
-                aux = s.generate();
-                j = 0;
-                while (j < nPacotes) {
-                    send(aux[j], IPAddress, portSend);
-                    j++;
-                }
-
+            
+            if (sendData.length > 48 * 1024) {
+                sendDivided();
             } else {
                 send(sendData, IPAddress, portSend);
             }
@@ -99,7 +84,21 @@ public class ServerUDP {
             i++;
         }
     }
-
+    
+    private byte[] receive() {
+        receivePacket = new DatagramPacket(receiveData, receiveData.length);
+        //fica à espera de receber um pedido
+        try {
+            serverSocketReceive.receive(receivePacket);
+        } catch (IOException ex) {
+            System.out.println("Socket em utilização!");
+            System.exit(0);
+        }
+        IPAddress = receivePacket.getAddress();
+        portSend = receivePacket.getPort();
+        return receivePacket.getData();
+    }
+    
     private void send(byte[] sendData, InetAddress ip, int portSend) {
         //criar datagramPacket
         sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
@@ -114,18 +113,18 @@ public class ServerUDP {
             System.exit(0);
         }
     }
-
+    
     public void stop() {
         serverSocketSend.close();
         serverSocketReceive.close();
     }
-
+    
     public short getLabel(byte[] data) {
         byte[] labelBytes = {data[2], data[3]};
         short label = ByteBuffer.wrap(labelBytes).order(ByteOrder.BIG_ENDIAN).getShort();
         return label;
     }
-
+    
     private byte[] buildPDU(byte[] receiveData) {
 
         //Versão 0
@@ -199,7 +198,7 @@ public class ServerUDP {
                 System.out.println("Tipo: ANSWER");
                 break;
             case (12):
-                //Retransmit
+                //transmit
                 System.out.println("Tipo: TRANSMIT");
                 break;
             case (13):
@@ -216,7 +215,7 @@ public class ServerUDP {
         }
         return null;
     }
-
+    
     private void inicialize() {
         User c = new User("Nome5", "rafa", "123");
         c.setPontuacao(5);
@@ -234,5 +233,47 @@ public class ServerUDP {
          c = ite.next();
          System.out.println(c.getPontuacao());
          }*/
+    }
+    
+    private void sendDivided() {
+        int j;
+        short nPacotes, nextPackage;
+        byte[][] aux;
+        byte[] next;
+        PDU pdu;
+        ListaCampos lc;
+        Campo c;
+        
+        Split s = new Split(sendData);
+        nPacotes = s.getNPacotes();
+        aux = s.generate();
+        j = 1;
+        
+        while (j <= nPacotes) {
+            send(aux[j - 1], IPAddress, portSend);
+            j++;
+            next = receive();
+            pdu = new PDU(next);
+            lc = new ListaCampos(pdu.getLista(), pdu.getnCampos());
+            c = lc.getCampoByTag((byte) 30);
+            nextPackage = c.byteToShort(c.getDados());
+            /*if (j >= nPacotes) {
+             //foram todos enviados
+             //send all is good
+             lc = new ListaCampos();
+             c = new Campo((byte) 30);
+                
+             pdu = new PDU((byte) 0, (byte) 0, 0, (byte) 0, nCampos, nPacotes, next);
+             break;
+             }*/
+            if (j == nextPackage) {
+                //all is good
+                System.out.println("Pacote " + j + " sincronizado!");
+            } else {
+                System.out.println("Pacote " + j + " enviado, pacote " + nextPackage + " esperado!");
+                System.exit(0);
+            }
+            
+        }
     }
 }

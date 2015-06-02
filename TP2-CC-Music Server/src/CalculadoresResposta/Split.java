@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Split {
 
-    private final PDU dadosPDU;
-    private final byte[] dados;
+    private PDU dadosPDU;
+    private byte[] dados;
     private ArrayList<PDU> listaPDU;
     private short nPacotes;
 
@@ -13,14 +13,14 @@ public class Split {
         this.dados = dados;
         dadosPDU = new PDU(dados);
         this.listaPDU = new ArrayList<>();
-        nPacotes=0;
+        nPacotes = 0;
         inicialize();
     }
-    
-    public short getNPacotes(){
+
+    public short getNPacotes() {
         return this.nPacotes;
     }
-    
+
     private void inicialize() {
         PDU pdu;
         ListaCampos lc;
@@ -75,12 +75,12 @@ public class Split {
             j++;
         }
     }
-    
-    public byte[][] generate(){
+
+    public byte[][] generate() {
         byte[][] resp = null;
-        int i=0;
-        while(i<nPacotes){
-            resp[i]=listaPDU.get(i).generatePDU();
+        int i = 0;
+        while (i < nPacotes) {
+            resp[i] = listaPDU.get(i).generatePDU();
         }
         return resp;
     }

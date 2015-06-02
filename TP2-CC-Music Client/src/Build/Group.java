@@ -13,7 +13,7 @@ public class Group {
         nPacotes = -1;
     }
 
-    private void addPiece(byte[] dados) {
+    public void addPiece(byte[] dados) {
         PDU pdu = new PDU(dados);
         ListaCampos lc = new ListaCampos(pdu.getLista(), pdu.getnCampos());
 
@@ -78,10 +78,11 @@ public class Group {
         resp = new PDU(data);
         return resp;
     }
-    
+
     /**
      * Devolve uma lista com os número dos pacotes que faltam, se não se souber
      * quantos pacotes são, devolve apenas o primeiro que se sabe que falta.
+     *
      * @return Lista com o número das peças que faltam.
      */
     public ArrayList<Integer> getMissingPieces() {
