@@ -6,6 +6,8 @@ import DataBase.UserDB;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ListChallenge {
 
@@ -33,8 +35,6 @@ public class ListChallenge {
 
     private void inicia() {
         User u = users.getCliente(IP, port);
-        int ano, mes, dia, hora, min, seg;
-        String aux;
 
         lc = new ListaCampos();
         if (u != null) {
@@ -51,47 +51,20 @@ public class ListChallenge {
                 c.setDados(d.getNome().getBytes(), (short) d.getNome().getBytes().length);
                 lc.addCampo(c);
 
+                try {
+                    d.dateSFtoIF();
+                } catch (Exception ex) {
+                    System.out.println("Fatal Error!");
+                    System.exit(0);
+                }
+
                 c = new Campo((byte) 4); //data AAMMDD
-                ano = d.getHora().get(Calendar.YEAR) - 2000;
-                mes = d.getHora().get(Calendar.MONTH);
-                dia = d.getHora().get(Calendar.DAY_OF_MONTH);
-                if (ano < 10) {
-                    aux = "0";
-                    aux = aux.concat(Integer.toString(ano));
-                } else {
-                    aux = Integer.toString(ano);
-                }
-                if (mes < 10) {
-                    aux = aux.concat("0");
-                }
-                aux = aux.concat(Integer.toString(mes));
-                if (dia < 10) {
-                    aux = aux.concat("0");
-                }
-                aux = aux.concat(Integer.toString(dia));
-                c.setDados(aux.getBytes(), (short) aux.getBytes().length);
+                c.setDados(d.getData().getBytes(), (short) d.getData().getBytes().length);
                 //System.out.print("Data: " + aux);
                 lc.addCampo(c);
 
                 c = new Campo((byte) 5); //hora HHMMSS
-                hora = d.getHora().get(Calendar.HOUR_OF_DAY);
-                min = d.getHora().get(Calendar.MINUTE);
-                seg = d.getHora().get(Calendar.SECOND);
-                if (hora < 10) {
-                    aux = "0";
-                    aux = aux.concat(Integer.toString(hora));
-                } else {
-                    aux = Integer.toString(hora);
-                }
-                if (min < 10) {
-                    aux = aux.concat("0");
-                }
-                aux = aux.concat(Integer.toString(min));
-                if (seg < 10) {
-                    aux = aux.concat("0");
-                }
-                aux = aux.concat(Integer.toString(seg));
-                c.setDados(aux.getBytes(), (short) aux.getBytes().length);
+                c.setDados(d.getHora().getBytes(), (short) d.getHora().getBytes().length);
                 //System.out.print(" Hora: " + aux);
                 lc.addCampo(c);
 
@@ -102,7 +75,7 @@ public class ListChallenge {
             pdu.setnCampos(lc.getNCampos());
             pdu.setTamanho(lc.getTotalSize());
             pdu.setLista(lc.generate());
-            
+
         } else {
             String err;
 

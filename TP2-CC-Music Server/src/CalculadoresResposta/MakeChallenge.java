@@ -7,8 +7,9 @@ import DataBase.UserDB;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MakeChallenge {
 
@@ -21,7 +22,6 @@ public class MakeChallenge {
     private User u;
 
     private String nome;
-    private GregorianCalendar data;
 
     public MakeChallenge(byte[] pdu, UserDB users, ArrayList<Desafio> desafios, InetAddress ip, int port) {
         this.pdu = new PDU(pdu);
@@ -35,17 +35,13 @@ public class MakeChallenge {
         this.ipAddress = ip;
         this.port = port;
 
-        this.data = new GregorianCalendar();
-
         inicia();
     }
 
     private void inicia() {
-        String aux;
-        int ano, mes, dia, hora, min, seg;
-        
+        String data, hora;
+
         //System.out.println("IP Recebido: " + ipAddress + " Port: " + port);
-        
         u = users.getCliente(ipAddress, port);
         if (u == null) {//cliente não existe
             System.out.println("Um cliente tentou criar um desafio sem estar registado!");
@@ -68,24 +64,13 @@ public class MakeChallenge {
         if (c == null) {
             return;
         }
-        aux = new String(c.getDados()); //formato AAMMDD
-        ano = 2000 + Integer.parseInt(aux.substring(0, 2));
-        mes = Integer.parseInt(aux.substring(2, 4));
-        dia = Integer.parseInt(aux.substring(4));
+        data = new String(c.getDados()); //formato AAMMDD
 
         c = lc.getCampoByTag((byte) 5);//hora
         if (c == null) {
             return;
         }
-        aux = new String(c.getDados()); //formato HHMMSS
-        hora = Integer.parseInt(aux.substring(0, 2));
-        min = Integer.parseInt(aux.substring(2, 4));
-        seg = Integer.parseInt(aux.substring(4));
-
-        //teste:
-        //System.out.println("ano: " + ano + " mes: " + mes + " dia: " + dia + " hora: " + hora + " min: " + min + " seg: " + seg);
-        data.clear();
-        data.set(ano, mes, dia, hora, min, seg);
+        hora = new String(c.getDados()); //formato HHMMSS
 
         Random r = new Random();
         Parser p = new Parser();
@@ -101,7 +86,17 @@ public class MakeChallenge {
         }
         Desafio desafio = new Desafio(p.getPerguntas());
         desafio.setNome(nome);
-        desafio.setHora(data);
+        try {
+            desafio.setData(data);
+            desafio.setHora(hora);
+            desafio.dateSFtoIF();
+
+            //teste:
+            //System.out.println("ano: " + ano + " mes: " + mes + " dia: " + dia + " hora: " + hora + " min: " + min + " seg: " + seg);
+        } catch (Exception ex) {
+            generateError("Data ou Hora mal formados!");
+            return;
+        }
         desafio.addJogador(u);
         desafios.add(desafio);
         System.out.println("Novo desafio criado: " + nome);
