@@ -2,7 +2,7 @@ package Build;
 
 public class ListChallenge {
 
-    private final PDU pdu;
+    private PDU pdu;
     private short label;
 
     public ListChallenge(short label) {

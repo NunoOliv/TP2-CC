@@ -1,5 +1,6 @@
 package tp2.cc.music;
 
+import CalculadoresResposta.AcceptChallenge;
 import DataBase.Desafio;
 import DataBase.User;
 import DataBase.UserDB;
@@ -187,7 +188,8 @@ public class ServerUDP {
             case (9):
                 //Accept Chalenge
                 System.out.println("Tipo: ACCEPT_CHALLENGE");
-                break;
+                AcceptChallenge ac = new AcceptChallenge(receiveData, db, desafios, IPAddress, portSend);
+                return ac.getResposta();
             case (10):
                 //Delete chalenge
                 System.out.println("Tipo: DELETE_CHALLENGE");
@@ -198,7 +200,7 @@ public class ServerUDP {
                 break;
             case (12):
                 //Retransmit
-                System.out.println("Tipo: RETRANSMIT");
+                System.out.println("Tipo: TRANSMIT");
                 break;
             case (13):
                 //List Ranking
@@ -227,11 +229,10 @@ public class ServerUDP {
         db.addClient(c);
 
         /*ArrayList<User> users = db.topRanked();
-        Iterator<User> ite = users.iterator();
-        while (ite.hasNext()) {
-            c = ite.next();
-            System.out.println(c.getPontuacao());
-        }*/
-
+         Iterator<User> ite = users.iterator();
+         while (ite.hasNext()) {
+         c = ite.next();
+         System.out.println(c.getPontuacao());
+         }*/
     }
 }

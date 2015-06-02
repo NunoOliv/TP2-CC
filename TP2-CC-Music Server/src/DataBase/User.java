@@ -163,4 +163,8 @@ public class User {
         this.nMensagensRecebidas++;
     }
 
+    public boolean equals(User u) {
+        return this.alcunha.equals(u.getAlcunha());
+    }
+
 }

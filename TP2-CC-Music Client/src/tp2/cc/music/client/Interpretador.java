@@ -126,7 +126,12 @@ public class Interpretador {
         ArrayList<Desafio> r = new ArrayList<>();
         int i = 0;
         Desafio d;
-
+        
+        if(pdu.getnCampos()==0){
+            System.out.println("Não há desafios a decorrer neste momento!");
+            return null;
+        }
+        
         Campo c = lista.getCampo(0);
         if ((c.getTag() & 0xff) == 255) {
             System.out.println("Erro: " + new String(c.getDados()));

@@ -1,2 +1,0 @@
-falar das alterações do ficheiro desafio
-servidor faz random dos desafios, aplica um deafio.txt quando se cria um desafio pelo cliente.

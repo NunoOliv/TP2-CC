@@ -1,5 +1,6 @@
 package tp2.cc.music.client;
 
+import Build.AcceptChallenge;
 import Build.ListChallenge;
 import Build.Login;
 import Build.Logout;
@@ -11,6 +12,8 @@ import Exception.VersionMissmatchException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Rafael Antunes
@@ -109,7 +112,7 @@ public class Menu {
                     listChallenge();
                     break;
                 case (3):
-                    out.println("Unsupported!");
+                    acceptChallenge();
                     break;
                 default:
                     out.println("Intruduza uma opção válida!");
@@ -342,11 +345,48 @@ public class Menu {
         ArrayList<Desafio> desafios;
 
         desafios = inter.checkLstChallenge(dados);
-        if(desafios==null){
+        if (desafios == null) {
             return;
         }
         for (Desafio d : desafios) {
-            System.out.println("Nome: \"" + d.getNome() + "\"  Data: \"" + d.getData() + "\" Hora: \"" + d.getHora()+"\"");
+            System.out.println("Nome: \"" + d.getNome() + "\"  Data: \"" + d.getData() + "\" Hora: \"" + d.getHora() + "\"");
+        }
+    }
+
+    private void acceptChallenge() {
+        String nome;
+
+        clearScreen();
+        out.println("*** Entrar num Desafio ***");
+        out.println();
+        out.print("Introduza o nome do desafio: ");
+
+        nome = in.nextLine();
+        if (nome.length() > 255) {
+            out.println("Nome muito grande, não pode exceder 255 carateres!");
+            return;
+        }
+        if (nome.length() < 1) {
+            out.print("Nome Inválido!");
+            return;
+        }
+
+        AcceptChallenge ac = new AcceptChallenge(nome, label);
+        label++;
+        byte[] dados = ac.generate();
+
+        dados = com.send(dados);
+
+        try {
+            if (inter.checkOK(dados)) {
+                out.print("Registado no desafio \"" + nome + "\" com sucesso!");
+            }
+        } catch (UnknownTypeException ex) {
+            out.println("Fatal Eror: UnknownTypeException");
+        } catch (VersionMissmatchException ex) {
+            out.println("Fatal Eror: VersionMissmatchException");
+        } catch (NotOkException ex) {
+            out.println("Fatal Eror: NotOkException");
         }
     }
 }

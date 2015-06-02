@@ -5,9 +5,6 @@ import DataBase.User;
 import DataBase.UserDB;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ListChallenge {
 
@@ -46,6 +43,7 @@ public class ListChallenge {
             pdu.setLabel(u.getnMensagensEnviadas());
             pdu.setTipo((byte) 0);
 
+            System.out.println("Desafios:");
             for (Desafio d : desafios) {
                 Campo c = new Campo((byte) 7);
                 c.setDados(d.getNome().getBytes(), (short) d.getNome().getBytes().length);
@@ -58,6 +56,12 @@ public class ListChallenge {
                     System.exit(0);
                 }
 
+                System.out.print("Nome: \"" + d.getNome() + "\" Jogadores: ");
+                for(User j:d.getJogadores()){
+                    System.out.print(j.getAlcunha()+", ");
+                }
+                System.out.println("!");
+                
                 c = new Campo((byte) 4); //data AAMMDD
                 c.setDados(d.getData().getBytes(), (short) d.getData().getBytes().length);
                 //System.out.print("Data: " + aux);
