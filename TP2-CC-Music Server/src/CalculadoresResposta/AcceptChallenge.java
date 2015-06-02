@@ -53,6 +53,8 @@ public class AcceptChallenge {
         this.nome = new String(c.getDados());
         System.out.println("Inscrição para o desafio \"" + nome + "\".");
 
+        lc = new ListaCampos();
+
         for (Desafio d : desafios) {
 
             if (d.getNome().equals(this.nome)) {
@@ -66,11 +68,17 @@ public class AcceptChallenge {
                     }
 
                 }
+                c = new Campo((byte) 4);//data
+                c.setDados(d.getData().getBytes(), (short) d.getData().getBytes().length);
+                lc.addCampo(c);
+                c = new Campo((byte) 5);//hora
+                c.setDados(d.getHora().getBytes(), (short) d.getHora().getBytes().length);
+                lc.addCampo(c);
+                
                 d.addJogador(u);
                 System.out.println("Utilizador foi inscrito no desafio.");
                 encontrou = true;
                 break;
-
             }
 
         }
@@ -82,16 +90,11 @@ public class AcceptChallenge {
         }
 
         //Generate PDU 
-        lc = new ListaCampos();
-
         pdu.setVersao((byte) 0);
         pdu.setSeguranca((byte) 0);
         pdu.setLabel(u.getnMensagensEnviadas());
         u.incrementaMensagensEnviadas();
         pdu.setTipo((byte) 0);
-
-        lc.addCampo(new Campo((byte) 0));
-        //System.out.println(lc.toString());
 
         pdu.setnCampos(lc.getNCampos());
         pdu.setTamanho(lc.getTotalSize());

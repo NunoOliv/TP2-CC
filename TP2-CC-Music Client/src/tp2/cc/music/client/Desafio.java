@@ -52,6 +52,14 @@ public class Desafio {
         this.seg = 0;
     }
 
+    public Desafio(String nome, String data, String hora) throws Exception {
+        this.perguntas = new ArrayList<>();
+        this.nome = nome;
+        this.data = data;
+        this.hora = hora;
+        this.dateSFtoIF();
+    }
+
     public boolean addPergunta(Pergunta p) {
         if (p != null) {
             return false;
@@ -259,7 +267,7 @@ public class Desafio {
             hora = hora.concat("0");
         }
         hora = hora.concat(Integer.toString(seg));
-        
+
         return true;
     }
 }

@@ -120,18 +120,18 @@ public class Interpretador {
         return true;
     }
 
-    ArrayList<Desafio> checkLstChallenge(byte[] dados) {
+    public ArrayList<Desafio> checkLstChallenge(byte[] dados) {
         pdu = new PDU(dados);
         lista = new ListaCampos(pdu.getLista(), pdu.getnCampos());
         ArrayList<Desafio> r = new ArrayList<>();
         int i = 0;
         Desafio d;
-        
-        if(pdu.getnCampos()==0){
+
+        if (pdu.getnCampos() == 0) {
             System.out.println("Não há desafios a decorrer neste momento!");
             return null;
         }
-        
+
         Campo c = lista.getCampo(0);
         if ((c.getTag() & 0xff) == 255) {
             System.out.println("Erro: " + new String(c.getDados()));
@@ -181,4 +181,41 @@ public class Interpretador {
         return r;
     }
 
+    public String[] checkAcceptChallenge(byte[] dados) throws VersionMissmatchException, UnknownTypeException, NotOkException {
+        String[] resp = new String[2];
+
+        pdu = new PDU(dados);
+        lista = new ListaCampos(pdu.getLista(), pdu.getnCampos());
+
+        if (pdu.getVersao() != 0) {
+            throw new VersionMissmatchException();
+        }
+
+        if (pdu.getTipo() != 0) {
+            throw new UnknownTypeException();
+        }
+
+        //System.out.println(lista.toString());
+        Campo c = lista.getCampo(0);
+        if ((c.getTag() & 0xff) == 255) {
+            System.out.println("Erro: " + new String(c.getDados()));
+            throw new NotOkException();
+        }
+        if (c.getTag() == 4) { //data
+            resp[0] = new String(c.getDados());
+        } else {
+            System.out.println("Erro: Recebido campo inesperado!");
+            throw new NotOkException();
+        }
+
+        c = lista.getCampo(1);
+        if (c.getTag() == 5) {//hora
+            resp[1] = new String(c.getDados());
+        } else {
+            System.out.println("Erro: Recebido campo inesperado!");
+            throw new NotOkException();
+        }
+
+        return resp;
+    }
 }

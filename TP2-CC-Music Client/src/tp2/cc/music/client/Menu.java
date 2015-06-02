@@ -11,6 +11,7 @@ import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +28,7 @@ public class Menu {
     private Comunicador com;
     private short label;
     private Interpretador inter;
+    private Desafio desafio;
 
     public Menu(Comunicador comu, Interpretador interp) {
         out = System.out;
@@ -323,6 +325,17 @@ public class Menu {
         try {
             if (inter.checkMkChallenge(dados)) {
                 out.println("Desafio criado!");
+                desafio = new Desafio();
+                desafio.setNome(nome);
+                try {
+                    desafio.setData(data);
+                    desafio.setHora(hora);
+                    desafio.dateSFtoIF();
+                } catch (Exception ex) {
+                    out.println("FATAL ERROR: Data inválida!");
+                    System.exit(0);
+                }
+                waitForMatch();
                 return;
             }
             out.println("Desafio não foi criado!");
@@ -354,7 +367,7 @@ public class Menu {
     }
 
     private void acceptChallenge() {
-        String nome;
+        String nome, data, hora;
 
         clearScreen();
         out.println("*** Entrar num Desafio ***");
@@ -378,15 +391,61 @@ public class Menu {
         dados = com.send(dados);
 
         try {
-            if (inter.checkOK(dados)) {
-                out.print("Registado no desafio \"" + nome + "\" com sucesso!");
-            }
+            String[] dataEhora = inter.checkAcceptChallenge(dados);
+            data = dataEhora[0];
+            hora = dataEhora[1];
+            desafio = new Desafio(nome, data, hora);
+            desafio.dateSFtoIF();
+            out.print("Registado no desafio \"" + nome + "\" com sucesso!");
+            waitForMatch();
         } catch (UnknownTypeException ex) {
             out.println("Fatal Eror: UnknownTypeException");
         } catch (VersionMissmatchException ex) {
             out.println("Fatal Eror: VersionMissmatchException");
         } catch (NotOkException ex) {
-            out.println("Fatal Eror: NotOkException");
+        } catch (Exception ex) {
+            out.println("FATAL ERROR: " + ex.getMessage());
+            System.exit(0);
         }
+    }
+
+    private synchronized void waitForMatch() {
+        /*out.println("Tempo atual: " + Calendar.getInstance().get(Calendar.YEAR) + "-" + (Calendar.getInstance().get(Calendar.MONTH) + 1)
+         + "-" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "   " + Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+         + "-" + Calendar.getInstance().get(Calendar.MINUTE) + "-" + Calendar.getInstance().get(Calendar.SECOND));
+
+         out.println("Tempo de Jogo: " + desafio.getAno() + "-" + desafio.getMes() + "-" + desafio.getDia()
+         + "   " + desafio.getHor() + "-" + desafio.getMin() + "-" + desafio.getSeg());
+
+         out.println("Diferença de Anos: " + (desafio.getAno() - Calendar.getInstance().get(Calendar.YEAR)));
+         out.println("Diferença de Meses: " + (desafio.getMes() - (Calendar.getInstance().get(Calendar.MONTH) + 1)));
+         out.println("Diferença de Dias: " + (desafio.getDia() - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
+         out.println("Diferença de Horas: " + (desafio.getHor() - Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
+         out.println("Diferença de Minutos: " + (desafio.getMin() - Calendar.getInstance().get(Calendar.MINUTE)));
+         out.println("Diferença de Segundos: " + (desafio.getSeg() - Calendar.getInstance().get(Calendar.SECOND)));*/
+        out.println("À espera que o desafio começe...");
+
+        int tempo = 0;
+
+        tempo += (356 * 24 * 60 * 60) * (desafio.getAno() - Calendar.getInstance().get(Calendar.YEAR));
+        tempo += (30 * 24 * 60 * 60) * (desafio.getMes() - (Calendar.getInstance().get(Calendar.MONTH) + 1));
+        tempo += (24 * 60 * 60) * (desafio.getDia() - Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        tempo += (60 * 60) * (desafio.getHor() - Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+        tempo += (60) * (desafio.getMin() - Calendar.getInstance().get(Calendar.MINUTE));
+        tempo += desafio.getSeg() - Calendar.getInstance().get(Calendar.SECOND);
+        out.println("Tempo de Espera: " + tempo + " segundos...");
+
+        if (tempo < 0) {
+            out.println("FATAL ERROR: Tempo negativo!");
+            System.exit(0);
+        }
+        try {
+            wait(tempo * 1000);
+
+        } catch (InterruptedException ex) {
+        }
+
+        out.println("Espera Terminou! O jogo vai começar!");
+
     }
 }

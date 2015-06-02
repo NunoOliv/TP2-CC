@@ -1,3 +1,4 @@
 falar das alterações do ficheiro desafio
 servidor faz random dos desafios, aplica um deafio.txt quando se cria um desafio pelo cliente.
 Retransmint passa a Transmit, que envia o numero da resposta que quer!
+Accept Challenge envez de devolver ok, devolve a data e a hora do desafio!

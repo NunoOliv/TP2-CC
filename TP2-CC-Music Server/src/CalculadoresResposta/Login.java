@@ -63,8 +63,8 @@ public class Login {
             System.out.println("IP Recebido: " + IP + " Port: " + port);
             
             u.setSessaoAtiva(true);
-            //u.setEnderecoIP(this.IP);
-            //u.setPort(this.port);
+            u.setEnderecoIP(this.IP);
+            u.setPort(this.port);
         } else {
             System.out.println("    Login falhou:\n      Alcunha: " + alcunha + "\n      Pass: " + pass);
             pdu.setVersao((byte) 0);
