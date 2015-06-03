@@ -7,3 +7,5 @@ Campo 30 como "Tag" do PDU definido como NextPackage (pacote esperado).
 Tipo 30 como NextPackage (pacote esperado).
 Divide-se o pdu gigante em frações, e encapsulam-se usando outros PDUs.
 
+Tamanhos passam a ser em int, em vez de short
+

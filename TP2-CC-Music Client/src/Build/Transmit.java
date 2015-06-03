@@ -8,7 +8,6 @@ public class Transmit {
     private short label;
     private short pergunta;
     private String nome;
-    private short piece;
 
     public Transmit(short label, short pergunta, String nomeDesafio) {
         this.pdu = new PDU();
@@ -17,7 +16,6 @@ public class Transmit {
         this.label = label;
         this.pergunta = pergunta;
         this.nome = nomeDesafio;
-        this.piece = piece;
 
         inicia();
     }
@@ -34,6 +32,7 @@ public class Transmit {
 
         c = new Campo((byte) 10); //numero da pergunta a enviar
         c.setDados(c.shortToByte(pergunta), (short) c.shortToByte(pergunta).length);
+        lc.addCampo(c);
 
         pdu.setnCampos(lc.getNCampos());
         pdu.setTamanho(lc.getTotalSize());

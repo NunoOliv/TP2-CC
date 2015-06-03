@@ -14,6 +14,7 @@ import CalculadoresResposta.Logout;
 import CalculadoresResposta.MakeChallenge;
 import CalculadoresResposta.PDU;
 import CalculadoresResposta.Split;
+import CalculadoresResposta.Transmit;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -28,10 +29,10 @@ import java.util.ArrayList;
  * @author Rafael
  */
 public class ServerUDP {
-    
+
     private UserDB db;
     private ArrayList<Desafio> desafios;
-    
+
     private int portSend = 9876;
     private int portReceive = 9877;
     private DatagramPacket receivePacket;
@@ -41,7 +42,7 @@ public class ServerUDP {
     private byte[] receiveData;
     private byte[] sendData;
     private InetAddress IPAddress;
-    
+
     public ServerUDP() {
         receiveData = new byte[255];
         sendData = new byte[255];
@@ -49,7 +50,7 @@ public class ServerUDP {
         desafios = new ArrayList<>();
         //inicialize();//para testes
     }
-    
+
     public void start() {
         int i = 0;
 
@@ -61,19 +62,20 @@ public class ServerUDP {
             System.out.println("Socket em utilização!");
             System.exit(0);
         }
-        
+
         while (true) {
             receiveData = new byte[255];
             sendData = new byte[255];
-            
+
             receiveData = receive();
-            
+
             System.out.println("**Pacote de dados nº" + i + " recebido do IP: " + IPAddress + " **");
             System.out.println();
-            
+
             sendData = buildPDU(receiveData);
-            
+
             if (sendData.length > 48 * 1024) {
+                System.out.println("A dividir em PDU's mais pequenos...");
                 sendDivided();
             } else {
                 send(sendData, IPAddress, portSend);
@@ -84,7 +86,7 @@ public class ServerUDP {
             i++;
         }
     }
-    
+
     private byte[] receive() {
         receivePacket = new DatagramPacket(receiveData, receiveData.length);
         //fica à espera de receber um pedido
@@ -98,7 +100,7 @@ public class ServerUDP {
         portSend = receivePacket.getPort();
         return receivePacket.getData();
     }
-    
+
     private void send(byte[] sendData, InetAddress ip, int portSend) {
         //criar datagramPacket
         sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, portSend);
@@ -113,18 +115,18 @@ public class ServerUDP {
             System.exit(0);
         }
     }
-    
+
     public void stop() {
         serverSocketSend.close();
         serverSocketReceive.close();
     }
-    
+
     public short getLabel(byte[] data) {
         byte[] labelBytes = {data[2], data[3]};
         short label = ByteBuffer.wrap(labelBytes).order(ByteOrder.BIG_ENDIAN).getShort();
         return label;
     }
-    
+
     private byte[] buildPDU(byte[] receiveData) {
 
         //Versão 0
@@ -200,7 +202,8 @@ public class ServerUDP {
             case (12):
                 //transmit
                 System.out.println("Tipo: TRANSMIT");
-                break;
+                Transmit t = new Transmit(receiveData, desafios);
+                return t.getResposta();
             case (13):
                 //List Ranking
                 System.out.println("Tipo: LIST_RANKING");
@@ -215,7 +218,7 @@ public class ServerUDP {
         }
         return null;
     }
-    
+
     private void inicialize() {
         User c = new User("Nome5", "rafa", "123");
         c.setPontuacao(5);
@@ -234,7 +237,7 @@ public class ServerUDP {
          System.out.println(c.getPontuacao());
          }*/
     }
-    
+
     private void sendDivided() {
         int j;
         short nPacotes, nextPackage;
@@ -243,12 +246,12 @@ public class ServerUDP {
         PDU pdu;
         ListaCampos lc;
         Campo c;
-        
+
         Split s = new Split(sendData);
         nPacotes = s.getNPacotes();
         aux = s.generate();
         j = 1;
-        
+
         while (j <= nPacotes) {
             send(aux[j - 1], IPAddress, portSend);
             j++;
@@ -273,7 +276,7 @@ public class ServerUDP {
                 System.out.println("Pacote " + j + " enviado, pacote " + nextPackage + " esperado!");
                 System.exit(0);
             }
-            
+
         }
     }
 }

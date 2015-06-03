@@ -3,7 +3,7 @@ package tp2.cc.music.client;
 import Exception.InvalidSetOfAnswersException;
 import java.util.ArrayList;
 
-class Pergunta {
+public class Pergunta {
 
     private String pergunta;
     private ArrayList<String> respostas;
@@ -54,6 +54,10 @@ class Pergunta {
         return imagem;
     }
 
+    public void setRespCerta(int r) {
+        this.respCerta = r;
+    }
+
     public void setImagem(String imagem) {
         this.imagem = imagem;
     }
@@ -72,6 +76,18 @@ class Pergunta {
 
     public boolean testaResposta(int tentativa) {
         return (tentativa == this.respCerta);
+    }
+
+    public String getResposta(int numero) {
+        return this.respostas.get(numero - 1);
+    }
+
+    public boolean addResposta(String resposta) {
+        if (this.respostas.size() >= 3) {
+            return false;
+        }
+        this.respostas.add(resposta);
+        return true;
     }
 
 }

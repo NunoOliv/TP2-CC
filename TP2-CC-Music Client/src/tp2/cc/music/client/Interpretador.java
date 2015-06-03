@@ -11,7 +11,12 @@ import Build.PDU;
 import Exception.NotOkException;
 import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -217,5 +222,58 @@ public class Interpretador {
         }
 
         return resp;
+    }
+
+    public Pergunta checkTransmit(byte[] dados, Desafio desafio, short pergunta) {
+        pdu = new PDU(dados);
+        lista = new ListaCampos(pdu.getLista(), pdu.getnCampos());
+        Pergunta p = null;
+        FileOutputStream fos = null;
+
+        //System.out.println(lista.toString());
+        Campo c = lista.getCampo(0); // pergunta ou erro
+        if ((c.getTag() & 0xff) == 255) {
+            System.out.println("Erro: " + new String(c.getDados()));
+            return null;
+        }
+        p = new Pergunta(new String(c.getDados()));
+
+        c = lista.getCampo(1); //1ª resposta
+        p.addResposta(new String(c.getDados()));
+
+        c = lista.getCampo(2);//2ª resposta
+        p.addResposta(new String(c.getDados()));
+
+        c = lista.getCampo(3);//3ª resposta
+        p.addResposta(new String(c.getDados()));
+
+        c = lista.getCampo(4);//respost Certa
+        p.setRespCerta(c.byteToShort(c.getDados()));
+
+        c = lista.getCampo(5); //imagem
+        try {
+            fos = new FileOutputStream("image.jpg");
+            fos.write(c.getDados());
+            fos.close();
+        } catch (IOException ex) {
+            System.out.println("FATAL ERROR: FileOutputStream Falhou na imagem!");
+            System.exit(0);
+        }
+
+        System.out.println("Leitura da imagem terminou com sucesso!");
+
+        c = lista.getCampo(6); //musica
+        try {
+            fos = new FileOutputStream("music.mp3");
+            fos.write(c.getDados());
+            fos.close();
+        } catch (IOException ex) {
+            System.out.println("FATAL ERROR: FileOutputStream falhou na musica!");
+            System.exit(0);
+        }
+
+        System.out.println("Leitura da musica terminou com sucesso!");
+
+        return p;
     }
 }

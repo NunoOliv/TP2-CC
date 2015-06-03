@@ -9,6 +9,7 @@ import Build.MakeChallenge;
 import Build.NextPackage;
 import Build.Register;
 import Build.Transmit;
+import Exception.MissingPieciesException;
 import Exception.NotOkException;
 import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
@@ -454,20 +455,47 @@ public class Menu {
     }
 
     private void inDesafio() {
-        Transmit t = new Transmit(label, (short) 1, desafio.getNome());
+        Transmit t;
         NextPackage np;
         Group g = new Group();
         byte[] piece;
         short i = 2;
+        short pergunta = 1;
+        Pergunta p = null;
 
-        piece = com.send(t.generate());
-        g.addPiece(piece);
-        while (!g.isComplete()) {
-
-            np = new NextPackage(i);
-            i++;
-            piece = com.send(np.generatePDU());
+        while (true) {
+            t = new Transmit(label, pergunta, desafio.getNome());
+            piece = com.send(t.generate());
             g.addPiece(piece);
+            out.println("Recebido o pacote: 1");
+            while (!g.isComplete()) {
+                np = new NextPackage(i);
+                i++;
+                piece = com.send(np.generatePDU());
+                g.addPiece(piece);
+                out.println("Recebido o pacote: " + (i - 1));
+            }
+            out.println("Todos os pacotes foram recebidos.");
+
+            try {
+                p = inter.checkTransmit(g.generate().generatePDU(), desafio, pergunta);
+                if (p == null) {
+                    System.out.println("FATAL ERROR: Pergunta == null");
+                    System.exit(0);
+                }
+            } catch (MissingPieciesException ex) {
+                out.println("FATAL ERROR: Faltam alguns pacotes!");
+                System.exit(0);
+            }
+
+            out.println("Pergunta " + pergunta + "!");
+            out.println(p.getPergunta());
+            out.println("1 - " + p.getResposta(1));
+            out.println("2 - " + p.getResposta(2));
+            out.println("3 - " + p.getResposta(3));
+            in.nextLine();
+
+            pergunta++;
         }
 
     }

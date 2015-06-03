@@ -2,15 +2,15 @@ package DataBase;
 
 import java.util.ArrayList;
 
-class Pergunta {
+public class Pergunta {
 
     private String pergunta;
     private ArrayList<String> respostas;
     private int respCerta;
     private String musica; //path para a musica
     private String imagem; //path para a imagem
-    
-    public Pergunta(){
+
+    public Pergunta() {
         this.pergunta = "";
         this.respostas = new ArrayList<>(3);
         this.respCerta = -1;
@@ -46,7 +46,6 @@ class Pergunta {
         return respCerta;
     }
 
-  
     public String getMusica() {
         return musica;
     }
@@ -63,7 +62,11 @@ class Pergunta {
         this.imagem = imagem;
     }
 
-    public boolean setRespostas(ArrayList<String> r, int respCerta){
+    public void setRespCerta(int r) {
+        this.respCerta = r;
+    }
+
+    public boolean setRespostas(ArrayList<String> r, int respCerta) {
         if (r.size() != 3 || respCerta > 3 || respCerta < 1) {
             return false;
         }
@@ -78,6 +81,18 @@ class Pergunta {
 
     public boolean testaResposta(int tentativa) {
         return (tentativa == this.respCerta);
+    }
+
+    public String getResposta(int numero) {
+        return this.respostas.get(numero - 1);
+    }
+
+    public boolean addResposta(String resposta) {
+        if (this.respostas.size() >= 3) {
+            return false;
+        }
+        this.respostas.add(resposta);
+        return true;
     }
 
 }

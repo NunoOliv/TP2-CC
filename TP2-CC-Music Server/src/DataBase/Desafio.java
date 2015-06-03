@@ -1,7 +1,6 @@
 package DataBase;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -301,4 +300,7 @@ public class Desafio {
         return true;
     }
 
+    public Pergunta getPergunta(short numero) {
+        return this.perguntas.get(numero - 1);
+    }
 }
