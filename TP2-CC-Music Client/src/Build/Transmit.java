@@ -6,10 +6,10 @@ public class Transmit {
     private ListaCampos lc;
 
     private short label;
-    private short pergunta;
+    private int pergunta;
     private String nome;
 
-    public Transmit(short label, short pergunta, String nomeDesafio) {
+    public Transmit(short label, int pergunta, String nomeDesafio) {
         this.pdu = new PDU();
         this.lc = new ListaCampos();
 
@@ -27,11 +27,11 @@ public class Transmit {
         pdu.setTipo((byte) 12);
 
         Campo c = new Campo((byte) 7);//nome do desafio
-        c.setDados(nome.getBytes(), (short) nome.getBytes().length);
+        c.setDados(nome.getBytes());
         lc.addCampo(c);
 
         c = new Campo((byte) 10); //numero da pergunta a enviar
-        c.setDados(c.shortToByte(pergunta), (short) c.shortToByte(pergunta).length);
+        c.setDados(c.IntToByte(pergunta));
         lc.addCampo(c);
 
         pdu.setnCampos(lc.getNCampos());

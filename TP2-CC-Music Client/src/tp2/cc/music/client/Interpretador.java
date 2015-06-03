@@ -11,12 +11,9 @@ import Build.PDU;
 import Exception.NotOkException;
 import Exception.UnknownTypeException;
 import Exception.VersionMissmatchException;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -224,7 +221,7 @@ public class Interpretador {
         return resp;
     }
 
-    public Pergunta checkTransmit(byte[] dados, Desafio desafio, short pergunta) {
+    public Pergunta checkTransmit(byte[] dados, Desafio desafio, int pergunta) {
         pdu = new PDU(dados);
         lista = new ListaCampos(pdu.getLista(), pdu.getnCampos());
         Pergunta p = null;
@@ -248,7 +245,7 @@ public class Interpretador {
         p.addResposta(new String(c.getDados()));
 
         c = lista.getCampo(4);//respost Certa
-        p.setRespCerta(c.byteToShort(c.getDados()));
+        p.setRespCerta(c.byteToInt(c.getDados()));
 
         c = lista.getCampo(5); //imagem
         try {

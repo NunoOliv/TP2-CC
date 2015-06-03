@@ -1,21 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Build;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-/**
- *
- * @author Rafael
- */
 public class Campo {
 
     private byte tag;
-    private short size;
+    private int size;
     private byte[] dados;
 
     public Campo() {
@@ -30,27 +21,27 @@ public class Campo {
         this.dados = null;
     }
 
-    public Campo(byte campo, short size, String dados) {
+    public Campo(byte campo, int size, String dados) {
         this.tag = campo;
         this.size = size;
-        this.dados= new byte[size];
+        this.dados = new byte[size];
         System.arraycopy(dados.getBytes(), 0, this.dados, 0, size);
     }
 
-    public Campo(byte campo, short size, byte[] dados) {
+    public Campo(byte campo, int size, byte[] dados) {
         this.tag = campo;
         this.size = size;
-        this.dados= new byte[size];
+        this.dados = new byte[size];
         System.arraycopy(dados, 0, this.dados, 0, size);
     }
 
     public Campo(byte[] data) {
         this.tag = data[0];
-        byte[] aux = new byte[2];
-        System.arraycopy(data, 1, aux, 0, 2);
-        this.size = byteToShort(aux);
-        this.dados= new byte[size];
-        System.arraycopy(data, 3, this.dados, 0, size);
+        byte[] aux = new byte[4];
+        System.arraycopy(data, 1, aux, 0, 4);
+        this.size = byteToInt(aux);
+        this.dados = new byte[size];
+        System.arraycopy(data, 5, this.dados, 0, size);
     }
 
     public Campo(Campo c) {
@@ -67,11 +58,11 @@ public class Campo {
         this.tag = campo;
     }
 
-    public short getSize() {
+    public int getSize() {
         return size;
     }
 
-    public void setSize(short size) {
+    public void setSize(int size) {
         this.size = size;
     }
 
@@ -84,37 +75,39 @@ public class Campo {
         return resp;
     }
 
-    public void setDados(byte[] dados, short size) {
-        setSize(size);
+    public void setDados(byte[] dados) {
+        setSize(dados.length);
         this.dados = new byte[size];
         System.arraycopy(dados, 0, this.dados, 0, size);
 
     }
 
-    public short getTotalSize() {
-        return (short) (this.size + 3);
+    public int getTotalSize() {
+        return (this.size + 5);
     }
 
     public byte[] generate() {
-        byte[] resp = new byte[this.size + 3];
+        byte[] resp = new byte[this.getTotalSize()];
         resp[0] = this.tag;
-        byte[] buff = shortToByte(this.size);
+        byte[] buff = IntToByte(this.size);
         resp[1] = buff[0];
         resp[2] = buff[1];
+        resp[3] = buff[2];
+        resp[4] = buff[3];
         if (this.dados != null) {
-            System.arraycopy(this.dados, 0, resp, 3, this.size);
+            System.arraycopy(this.dados, 0, resp, 5, this.size);
         }
         return resp;
     }
 
-    public byte[] shortToByte(short size) {
-        byte[] bytes = ByteBuffer.allocate(2).putShort(size).array();
+    public byte[] IntToByte(int size) {
+        byte[] bytes = ByteBuffer.allocate(2).putInt(size).array();
         return bytes;
     }
 
-    public short byteToShort(byte[] data) {
+    public int byteToInt(byte[] data) {
         byte[] sizeBytes = {data[0], data[1]};
-        return ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getShort();
+        return ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getInt();
     }
 
     public String toString() {

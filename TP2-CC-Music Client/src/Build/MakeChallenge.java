@@ -1,6 +1,4 @@
-
 package Build;
-
 
 public class MakeChallenge {
 
@@ -29,15 +27,15 @@ public class MakeChallenge {
         Campo c;
 
         c = new Campo((byte) 7);
-        c.setDados(nome.getBytes(), (short) nome.getBytes().length);
+        c.setDados(nome.getBytes());
         lc.addCampo(c);
 
         c = new Campo((byte) 4);
-        c.setDados(dia.getBytes(), (short) dia.getBytes().length);
+        c.setDados(dia.getBytes());
         lc.addCampo(c);
 
         c = new Campo((byte) 5);
-        c.setDados(hora.getBytes(), (short) hora.getBytes().length);
+        c.setDados(hora.getBytes());
         lc.addCampo(c);
 
         pdu.setVersao((byte) 0);

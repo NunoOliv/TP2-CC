@@ -46,7 +46,7 @@ public class ListChallenge {
             System.out.println("Desafios:");
             for (Desafio d : desafios) {
                 Campo c = new Campo((byte) 7);
-                c.setDados(d.getNome().getBytes(), (short) d.getNome().getBytes().length);
+                c.setDados(d.getNome().getBytes());
                 lc.addCampo(c);
 
                 try {
@@ -63,12 +63,12 @@ public class ListChallenge {
                 System.out.println("!");
                 
                 c = new Campo((byte) 4); //data AAMMDD
-                c.setDados(d.getData().getBytes(), (short) d.getData().getBytes().length);
+                c.setDados(d.getData().getBytes());
                 //System.out.print("Data: " + aux);
                 lc.addCampo(c);
 
                 c = new Campo((byte) 5); //hora HHMMSS
-                c.setDados(d.getHora().getBytes(), (short) d.getHora().getBytes().length);
+                c.setDados(d.getHora().getBytes());
                 //System.out.print(" Hora: " + aux);
                 lc.addCampo(c);
 
@@ -90,7 +90,7 @@ public class ListChallenge {
             pdu.setLabel((short) 0);
             pdu.setTipo((byte) 0);
 
-            lc.addCampo(new Campo((byte) 255, (short) err.getBytes().length, err.getBytes()));
+            lc.addCampo(new Campo((byte) 255, err.getBytes().length, err.getBytes()));
 
             pdu.setnCampos(lc.getNCampos());
             pdu.setTamanho(lc.getTotalSize());

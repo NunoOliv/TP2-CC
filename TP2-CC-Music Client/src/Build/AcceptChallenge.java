@@ -21,7 +21,7 @@ public class AcceptChallenge {
         pdu.setTipo((byte) 9);
 
         Campo c = new Campo((byte) 7);
-        c.setDados(nome.getBytes(), (short) nome.getBytes().length);
+        c.setDados(nome.getBytes());
         lc.addCampo(c);
 
         pdu.setnCampos(lc.getNCampos());

@@ -69,10 +69,10 @@ public class AcceptChallenge {
 
                 }
                 c = new Campo((byte) 4);//data
-                c.setDados(d.getData().getBytes(), (short) d.getData().getBytes().length);
+                c.setDados(d.getData().getBytes());
                 lc.addCampo(c);
                 c = new Campo((byte) 5);//hora
-                c.setDados(d.getHora().getBytes(), (short) d.getHora().getBytes().length);
+                c.setDados(d.getHora().getBytes());
                 lc.addCampo(c);
                 
                 d.addJogador(u);
@@ -112,7 +112,7 @@ public class AcceptChallenge {
         pdu.setTipo((byte) 0);
 
         Campo campo = new Campo((byte) 255);
-        campo.setDados(erro.getBytes(), (short) erro.getBytes().length);
+        campo.setDados(erro.getBytes());
         lc.addCampo(campo);
 
         pdu.setnCampos(lc.getNCampos());

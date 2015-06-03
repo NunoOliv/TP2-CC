@@ -239,8 +239,8 @@ public class ServerUDP {
     }
 
     private void sendDivided() {
-        int j;
-        short nPacotes, nextPackage;
+        int j, nextPackage;
+        short nPacotes;
         byte[][] aux;
         byte[] next;
         PDU pdu;
@@ -259,7 +259,7 @@ public class ServerUDP {
             pdu = new PDU(next);
             lc = new ListaCampos(pdu.getLista(), pdu.getnCampos());
             c = lc.getCampoByTag((byte) 30);
-            nextPackage = c.byteToShort(c.getDados());
+            nextPackage = c.byteToInt(c.getDados());
             /*if (j >= nPacotes) {
              //foram todos enviados
              //send all is good

@@ -52,8 +52,7 @@ public class Login {
 
             lc = new ListaCampos();
             Campo campo = new Campo((byte) 1);
-            campo.setSize((short) u.getNome().length());
-            campo.setDados(u.getNome().getBytes(), campo.getSize());
+            campo.setDados(u.getNome().getBytes());
             lc.addCampo(campo);
 
             pdu.setnCampos(lc.getNCampos());
@@ -75,8 +74,7 @@ public class Login {
             lc = new ListaCampos();
             Campo campo = new Campo((byte) 255);
             String err = "Login failed!";
-            campo.setSize((short) err.length());
-            campo.setDados(err.getBytes(), campo.getSize());
+            campo.setDados(err.getBytes());
             lc.addCampo(campo);
 
             pdu.setnCampos(lc.getNCampos());

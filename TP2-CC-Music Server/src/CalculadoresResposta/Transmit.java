@@ -3,16 +3,14 @@ package CalculadoresResposta;
 import DataBase.*;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
-import sun.misc.IOUtils;
 
 public class Transmit {
 
     private PDU pdu;
     private ListaCampos lc;
     private Desafio d;
-    private short pergunta;
+    private int pergunta;
     private ArrayList<Desafio> desafios;
     private Pergunta p;
 
@@ -47,7 +45,7 @@ public class Transmit {
         }
 
         c = lc.getCampoByTag((byte) 10); //pergunta
-        pergunta = c.byteToShort(c.getDados());
+        pergunta = c.byteToInt(c.getDados());
 
         if (d.getNPerguntas() < pergunta) {
             System.out.println("Pedido de número de pergunta inexistente no desafio!");
@@ -70,36 +68,36 @@ public class Transmit {
         lc = new ListaCampos();
 
         c = new Campo((byte) 11); //pergunta
-        c.setDados(p.getPergunta().getBytes(), (short) p.getPergunta().getBytes().length);
+        c.setDados(p.getPergunta().getBytes());
         lc.addCampo(c);
 
         c = new Campo((byte) 13); //1ª resposta
-        c.setDados(p.getResposta(1).getBytes(), (short) p.getResposta(1).getBytes().length);
+        c.setDados(p.getResposta(1).getBytes());
         lc.addCampo(c);
 
         c = new Campo((byte) 13); //2ª resposta
-        c.setDados(p.getResposta(2).getBytes(), (short) p.getResposta(2).getBytes().length);
+        c.setDados(p.getResposta(2).getBytes());
         lc.addCampo(c);
 
         c = new Campo((byte) 13); //3ª resposta
-        c.setDados(p.getResposta(3).getBytes(), (short) p.getResposta(3).getBytes().length);
+        c.setDados(p.getResposta(3).getBytes());
         lc.addCampo(c);
 
         c = new Campo((byte) 14); //resposta certa
-        c.setDados(c.shortToByte((short) p.getRespCerta()), (short) c.shortToByte((short) p.getRespCerta()).length);
+        c.setDados(c.IntToByte(p.getRespCerta()));
         lc.addCampo(c);
 
         c = new Campo((byte) 16); //imagem
         aux = convertFileToByte("imagens/" + p.getImagem());
-        System.out.println("Tamasnho da imagem: " + aux.length + " Em formato short: " + ((short) aux.length));
-        c.setDados(aux, (short) aux.length);
+        System.out.println("Tamasnho da imagem: " + aux.length);
+        c.setDados(aux);
         lc.addCampo(c);
         System.out.println("Imagem transformada em array de bytes!");
 
         c = new Campo((byte) 18); //musica
         aux = convertFileToByte("musica/" + p.getMusica());
-        System.out.println("Tamasnho da imusica: " + aux.length + " Em formato short: " + ((short) aux.length));
-        c.setDados(aux, (short) aux.length);
+        System.out.println("Tamasnho da imusica: " + aux.length);
+        c.setDados(aux);
         lc.addCampo(c);
         System.out.println("Musica transformada em array de bytes!");
 
@@ -124,7 +122,7 @@ public class Transmit {
         pdu.setTipo((byte) 0);
 
         Campo campo = new Campo((byte) 255);
-        campo.setDados(erro.getBytes(), (short) erro.getBytes().length);
+        campo.setDados(erro.getBytes());
         lc.addCampo(campo);
 
         pdu.setnCampos(lc.getNCampos());

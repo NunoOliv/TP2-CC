@@ -16,7 +16,7 @@ public class Logout {
         pdu.setLabel(label);
         pdu.setTipo((byte) 4);
         pdu.setnCampos((byte) 0);
-        pdu.setTamanho((short) 0);
+        pdu.setTamanho(0);
         pdu.setLista(null);
 
         return pdu.generatePDU();

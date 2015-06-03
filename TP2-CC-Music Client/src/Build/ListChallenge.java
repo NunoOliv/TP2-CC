@@ -16,7 +16,7 @@ public class ListChallenge {
         pdu.setLabel(this.label);
         pdu.setTipo((byte) 7);
         pdu.setnCampos((byte) 0);
-        pdu.setTamanho((short) 0);
+        pdu.setTamanho(0);
         pdu.setLista(null);
 
         return pdu.generatePDU();

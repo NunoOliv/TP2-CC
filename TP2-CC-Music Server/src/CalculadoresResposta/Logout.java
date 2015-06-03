@@ -23,16 +23,16 @@ public class Logout {
     }
 
     private void incia() {
-        User c = users.getCliente(ip, port);
-        if (c != null && c.isSessaoAtiva()) {
-            c.setnMensagensRecebidas((short) 0);
-            c.setSessaoAtiva(false);
+        User u = users.getCliente(ip, port);
+        if (u != null && u.isSessaoAtiva()) {
+            u.setnMensagensRecebidas((short) 0);
+            u.setSessaoAtiva(false);
 
             pdu.setVersao((byte) 0);
             pdu.setSeguranca((byte) 0);
-            c.incrementaMensagensEnviadas();
-            pdu.setLabel(c.getnMensagensEnviadas());
-            c.setnMensagensEnviadas((short) 0);
+            u.incrementaMensagensEnviadas();
+            pdu.setLabel(u.getnMensagensEnviadas());
+            u.setnMensagensEnviadas((short) 0);
             pdu.setTipo((byte) 0);
 
             lc.addCampo(new Campo((byte) 0));
@@ -41,27 +41,29 @@ public class Logout {
             pdu.setTamanho(lc.getTotalSize());
             pdu.setLista(lc.generate());
 
-            System.out.println(c.getAlcunha() + " desconectou-se.");
+            System.out.println(u.getAlcunha() + " desconectou-se.");
         } else {
             String err;
 
             pdu.setVersao((byte) 0);
             pdu.setSeguranca((byte) 0);
 
-            if (c == null) {
+            if (u == null) {
                 err = "Utilizador não está registado!";
                 pdu.setLabel((short) 0);
             } else {
                 err = "Utilizador não estava com sessão ativa!";
-                c.setnMensagensRecebidas((short) 0);
-                c.setSessaoAtiva(false);
-                c.incrementaMensagensEnviadas();
-                pdu.setLabel(c.getnMensagensEnviadas());
-                c.setnMensagensEnviadas((short) 0);
+                u.setnMensagensRecebidas((short) 0);
+                u.setSessaoAtiva(false);
+                u.incrementaMensagensEnviadas();
+                pdu.setLabel(u.getnMensagensEnviadas());
+                u.setnMensagensEnviadas((short) 0);
             }
             pdu.setTipo((byte) 0);
 
-            lc.addCampo(new Campo((byte) 255, (short) err.length(), err.getBytes()));
+            Campo c = new Campo((byte) 255);
+            c.setDados(err.getBytes());
+            lc.addCampo(c);
 
             pdu.setnCampos(lc.getNCampos());
             pdu.setTamanho(lc.getTotalSize());

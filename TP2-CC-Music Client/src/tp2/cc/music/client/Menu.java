@@ -17,8 +17,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Rafael Antunes
@@ -459,8 +457,7 @@ public class Menu {
         NextPackage np;
         Group g = new Group();
         byte[] piece;
-        short i = 2;
-        short pergunta = 1;
+        int i = 2, pergunta = 1;
         Pergunta p = null;
 
         while (true) {

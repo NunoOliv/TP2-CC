@@ -14,6 +14,7 @@ public class Split {
         dadosPDU = new PDU(dados);
         this.listaPDU = new ArrayList<>();
         nPacotes = 0;
+        
         inicialize();
     }
 
@@ -25,8 +26,7 @@ public class Split {
         PDU pdu;
         ListaCampos lc;
         Campo c;
-        int i = 0;
-        short j = 0;
+        int i = 0, j = 0;
         byte[] aux;
 
         while (i < dados.length) {
@@ -40,8 +40,8 @@ public class Split {
             lc = new ListaCampos();
 
             c = new Campo((byte) 17);
-            aux = c.shortToByte(j);
-            c.setDados(aux, (byte) aux.length);
+            aux = c.IntToByte(j);
+            c.setDados(aux);
             lc.addCampo(c);
 
             if (j != nPacotes - 1) {// se nao for o último
@@ -53,7 +53,7 @@ public class Split {
             if (j != nPacotes - 1) {// se nao for o último
                 System.arraycopy(dados, i, aux, 0, 48 * 1024);
                 i += 48 * 1024;
-                c.setDados(aux, (byte) aux.length);
+                c.setDados(aux);
             } else {
                 int x = 0;
                 while (i < dados.length) {
@@ -61,7 +61,7 @@ public class Split {
                     i++;
                     x++;
                 }
-                c.setDados(aux, (byte) aux.length);
+                c.setDados(aux);
             }
 
             pdu = new PDU(this.dadosPDU.getVersao(),

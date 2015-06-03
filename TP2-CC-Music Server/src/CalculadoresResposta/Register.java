@@ -57,8 +57,7 @@ public class Register {
             lc = new ListaCampos();
             Campo c = new Campo((byte) 255);
             String err = "Alcunha em uso!";
-            c.setSize((short) err.length());
-            c.setDados(err.getBytes(), c.getSize());
+            c.setDados(err.getBytes());
             lc.addCampo(c);
 
             pdu.setnCampos(lc.getNCampos());

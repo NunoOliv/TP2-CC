@@ -22,8 +22,6 @@ public class User {
     private short nMensagensRecebidas;
     private short nMensagensEnviadas;
     private boolean sessaoAtiva;
-    //private short label=0;
-    //private ;
 
     public User(String n, String a, String p) {
         this.nome = n;

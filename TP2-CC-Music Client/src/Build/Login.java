@@ -11,8 +11,13 @@ public class Login {
         this.lc = new ListaCampos();
         this.label = label;
 
-        lc.addCampo(new Campo((byte) 2, (short) alcunha.length(), alcunha));
-        lc.addCampo(new Campo((byte) 3, (short) pass.length(), pass));
+        Campo c = new Campo((byte) 2);
+        c.setDados(alcunha.getBytes());
+        lc.addCampo(c);
+
+        c = new Campo((byte) 3);
+        c.setDados(pass.getBytes());
+        lc.addCampo(c);
     }
 
     public byte[] generate() {

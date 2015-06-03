@@ -22,7 +22,7 @@ public class Group {
             System.out.println("Não faz parte deste PDU!");
             return;
         }
-        short a = c.byteToShort(c.getDados());
+        int a = c.byteToInt(c.getDados());
 
         c = lc.getCampo(1);
         if (c.getTag() != 254) {

@@ -271,7 +271,7 @@ public class Desafio {
         return true;
     }
 
-    public Pergunta getPergunta(short numero) {
+    public Pergunta getPergunta(int numero) {
         return this.perguntas.get(numero - 1);
     }
 

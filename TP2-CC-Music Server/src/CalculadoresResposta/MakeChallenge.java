@@ -128,7 +128,7 @@ public class MakeChallenge {
         pdu.setTipo((byte) 0);
 
         Campo campo = new Campo((byte) 255);
-        campo.setDados(erro.getBytes(), (short) erro.getBytes().length);
+        campo.setDados(erro.getBytes());
         lc.addCampo(campo);
 
         pdu.setnCampos(lc.getNCampos());
