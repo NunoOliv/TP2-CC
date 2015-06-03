@@ -26,7 +26,7 @@ public class Comunicador {
     private DatagramPacket receivePacket;
     private DatagramPacket sendPacket;
     private byte[] sendData = new byte[255];
-    private byte[] receiveData = new byte[255];
+    private byte[] receiveData = new byte[60000];
     private Interpretador inter;
 
     public Comunicador(Interpretador i) {
@@ -79,7 +79,7 @@ public class Comunicador {
                 clientSocket.send(sendPacket);
                 System.out.println("Enviado!");
 
-                receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                receivePacket = new DatagramPacket(receiveData, 60000);
                 clientSocket.receive(receivePacket);
                 System.out.println("Resposta recebida!");
                 break;

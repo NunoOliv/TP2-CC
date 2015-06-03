@@ -107,7 +107,6 @@ public class ServerUDP {
         if (sendPacket == null) {
             return;
         }
-        //enviar resposta
         try {
             serverSocketSend.send(sendPacket);
         } catch (IOException ex) {
@@ -252,13 +251,20 @@ public class ServerUDP {
         aux = s.generate();
         j = 1;
 
+        System.out.println("Pacotes divididos com sucesso!");
+
         while (j <= nPacotes) {
+            //System.out.println("A enviar o pacote " + j);
             send(aux[j - 1], IPAddress, portSend);
             j++;
+            if (j > nPacotes) {//é o último
+                break;
+            }
             next = receive();
             pdu = new PDU(next);
             lc = new ListaCampos(pdu.getLista(), pdu.getnCampos());
             c = lc.getCampoByTag((byte) 30);
+
             nextPackage = c.byteToInt(c.getDados());
             /*if (j >= nPacotes) {
              //foram todos enviados
@@ -271,12 +277,13 @@ public class ServerUDP {
              }*/
             if (j == nextPackage) {
                 //all is good
-                System.out.println("Pacote " + j + " sincronizado!");
+                //System.out.println("Pacote " + (j - 1) + " sincronizado!");
             } else {
                 System.out.println("Pacote " + j + " enviado, pacote " + nextPackage + " esperado!");
                 System.exit(0);
             }
 
         }
+
     }
 }

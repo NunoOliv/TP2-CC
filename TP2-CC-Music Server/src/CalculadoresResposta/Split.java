@@ -1,20 +1,20 @@
 package CalculadoresResposta;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Split {
 
     private PDU dadosPDU;
     private byte[] dados;
-    private ArrayList<PDU> listaPDU;
+    private HashMap<Integer, PDU> listaPDU;
     private short nPacotes;
 
     public Split(byte[] dados) {
         this.dados = dados;
         dadosPDU = new PDU(dados);
-        this.listaPDU = new ArrayList<>();
+        this.listaPDU = new HashMap<>();
         nPacotes = 0;
-        
+
         inicialize();
     }
 
@@ -26,7 +26,7 @@ public class Split {
         PDU pdu;
         ListaCampos lc;
         Campo c;
-        int i = 0, j = 0;
+        int i = 0, j = 1;
         byte[] aux;
 
         while (i < dados.length) {
@@ -34,27 +34,33 @@ public class Split {
             i += 48 * 1024;
         }
 
+        System.out.println("Número de pacotes: " + nPacotes + " Tamanho do PDU: " + dados.length);
+
         i = 0;
 
-        while (j < nPacotes) {
+        while (j <= nPacotes) {
+            //System.out.println("A tratar do pacote " + j);
             lc = new ListaCampos();
 
-            c = new Campo((byte) 17);
+            c = new Campo((byte) 17); //número do bloco
             aux = c.IntToByte(j);
             c.setDados(aux);
             lc.addCampo(c);
 
-            if (j != nPacotes - 1) {// se nao for o último
+            if (j != nPacotes) {// se nao for o último
                 c = new Campo((byte) 254);//a lista continua...
                 lc.addCampo(c);
             }
 
+            aux = new byte[49 * 1024];
             c = new Campo((byte) 19);// define-se 19 como dados gerais!
-            if (j != nPacotes - 1) {// se nao for o último
+            if (j != nPacotes) {// se nao for o último
+                //System.out.println("Não é o último.");
                 System.arraycopy(dados, i, aux, 0, 48 * 1024);
                 i += 48 * 1024;
                 c.setDados(aux);
             } else {
+                //System.out.println("É o último.");
                 int x = 0;
                 while (i < dados.length) {
                     aux[x] = dados[i];
@@ -63,6 +69,9 @@ public class Split {
                 }
                 c.setDados(aux);
             }
+            lc.addCampo(c);
+
+            //System.out.println("Tamanho do PDU: " + lc.getTotalSize());
 
             pdu = new PDU(this.dadosPDU.getVersao(),
                     this.dadosPDU.getSeguranca(),
@@ -71,17 +80,25 @@ public class Split {
                     lc.getNCampos(),
                     lc.getTotalSize(),
                     lc.generate());
-            listaPDU.add(j, pdu);
+            //System.out.println("PDU= " + pdu);
+            listaPDU.put(j, pdu);
             j++;
+            //System.out.println("Concluído!\n");
         }
     }
 
     public byte[][] generate() {
-        byte[][] resp = null;
+        byte[][] resp = new byte[nPacotes][];
+        PDU p;
         int i = 0;
-        while (i < nPacotes) {
-            resp[i] = listaPDU.get(i).generatePDU();
+        System.out.println("A guardar os pacotes na matriz...");
+        for (int j : listaPDU.keySet()) {
+
+            p = listaPDU.get(j);
+            resp[i] = p.generatePDU();
+            i++;
         }
+        System.out.println("Concluído!");
         return resp;
     }
 

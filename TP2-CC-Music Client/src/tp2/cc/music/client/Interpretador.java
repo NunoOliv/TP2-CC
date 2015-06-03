@@ -228,26 +228,32 @@ public class Interpretador {
         FileOutputStream fos = null;
 
         //System.out.println(lista.toString());
-        Campo c = lista.getCampo(0); // pergunta ou erro
-        if ((c.getTag() & 0xff) == 255) {
+        Campo c = lista.getCampoByTag((byte) 255); //erro
+        if (c != null) {
             System.out.println("Erro: " + new String(c.getDados()));
             return null;
         }
+        c = lista.getCampoByTag((byte) 11); //pergunta
         p = new Pergunta(new String(c.getDados()));
 
         c = lista.getCampo(1); //1ª resposta
+        System.out.println("Resp1: " + new String(c.getDados()));
         p.addResposta(new String(c.getDados()));
 
         c = lista.getCampo(2);//2ª resposta
+        System.out.println("Resp2: " + new String(c.getDados()));
         p.addResposta(new String(c.getDados()));
 
         c = lista.getCampo(3);//3ª resposta
+        System.out.println("Resp3: " + new String(c.getDados()));
         p.addResposta(new String(c.getDados()));
 
         c = lista.getCampo(4);//respost Certa
+        System.out.println("Resposta Certa: " + c.byteToInt(c.getDados()));
         p.setRespCerta(c.byteToInt(c.getDados()));
 
         c = lista.getCampo(5); //imagem
+        System.out.println("Tag: " + c.getTag());
         try {
             fos = new FileOutputStream("image.jpg");
             fos.write(c.getDados());
@@ -259,7 +265,9 @@ public class Interpretador {
 
         System.out.println("Leitura da imagem terminou com sucesso!");
 
-        c = lista.getCampo(6); //musica
+        c = lista.getCampoByTag((byte) 18); //musica tag:18
+        System.out.println("Campo Musica: " + c);
+        System.out.println("Tag: " + c.getTag());
         try {
             fos = new FileOutputStream("music.mp3");
             fos.write(c.getDados());

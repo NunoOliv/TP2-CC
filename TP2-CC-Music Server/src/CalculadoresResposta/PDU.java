@@ -48,7 +48,7 @@ public class PDU {
         this.nCampos = nCampos;
         this.tamanho = tamanho;
         this.lista = new byte[tamanho];
-        System.arraycopy(lista, 10, this.lista, 0, tamanho);
+        System.arraycopy(lista, 0, this.lista, 0, tamanho);
     }
 
     public PDU() {

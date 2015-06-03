@@ -2,39 +2,39 @@ package Build;
 
 import Exception.MissingPieciesException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Group {
 
-    private ArrayList<PDU> listaPDU;
+    private HashMap<Integer, PDU> listaPDU;
     private int nPacotes;
 
     public Group() {
-        listaPDU = new ArrayList<>();
+        listaPDU = new HashMap<>();
         nPacotes = -1;
     }
 
     public void addPiece(byte[] dados) {
+
         PDU pdu = new PDU(dados);
         ListaCampos lc = new ListaCampos(pdu.getLista(), pdu.getnCampos());
 
-        Campo c = lc.getCampo(0);
-        if (c.getTag() != 17) { //se nao tiver o campo 17
-            System.out.println("Não faz parte deste PDU!");
-            return;
-        }
+        //System.out.println("Não faz parte deste PDU!");
+        Campo c = lc.getCampoByTag((byte) 17);
         int a = c.byteToInt(c.getDados());
 
-        c = lc.getCampo(1);
-        if (c.getTag() != 254) {
-            nPacotes = a + 1;
-        } else {
-            c = lc.getCampo(2);
+        c = lc.getCampoByTag((byte) 254);
+        if (c == null) {
+            //é o último
+            nPacotes = a;
         }
-        if (c.getTag() != 19) {// se nao tiver o campo 19
+
+        c = lc.getCampoByTag((byte) 19);
+        if (c == null) {// se nao tiver o campo 19
             System.out.println("Não faz parte deste PDU!");
             return;
         } else {
-            listaPDU.add(a, pdu);
+            listaPDU.put(a, pdu);
         }
     }
 
@@ -43,11 +43,8 @@ public class Group {
             return false;
         }
 
-        int i = 0;
-        while (i < nPacotes) {
-            if (listaPDU.get(i) == null) {
-                return false;
-            }
+        if (listaPDU.size() != nPacotes) {
+            return false;
         }
         return true;
     }
@@ -57,22 +54,20 @@ public class Group {
             throw new MissingPieciesException();
         }
 
-        int i = 0;
+        int i = 1, j = 0;
         ListaCampos lc;
         Campo c;
-        byte[] data = null;
+        byte[] data = new byte[4 * 1024 * 1024]; // 4 MB
         PDU resp;
 
-        while (i < nPacotes) {
+        while (i <= nPacotes) {
+
             lc = new ListaCampos(listaPDU.get(i).getLista(), listaPDU.get(i).getnCampos());
+            c = lc.getCampoByTag((byte) 19);
 
-            if (i == nPacotes - 1) {//se for o último
-                c = lc.getCampo(1);
-            } else { // se não for o último
-                c = lc.getCampo(2);
-            }
-
-            System.arraycopy(c.getDados(), 0, data, i * c.getSize(), c.getSize());
+            System.arraycopy(c.getDados(), 0, data, j, c.getSize());
+            j += c.getSize();
+            i++;
         }
 
         resp = new PDU(data);

@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 
-
 public class PDU {
 
     //private byte[] pdu;
@@ -27,7 +26,7 @@ public class PDU {
         nCampos = pdu[5];
         tamanho = getSize(pdu);
         lista = new byte[this.tamanho];
-        //copia conteudo do pdu desde a pos.8 adiante
+        //copia conteudo do pdu desde a pos.10 adiante
         System.arraycopy(pdu, 10, this.lista, 0, this.tamanho);
     }
 
@@ -49,7 +48,7 @@ public class PDU {
         this.nCampos = nCampos;
         this.tamanho = tamanho;
         this.lista = new byte[tamanho];
-        System.arraycopy(lista, 10, this.lista, 0, tamanho);
+        System.arraycopy(lista, 0, this.lista, 0, tamanho);
     }
 
     public PDU() {

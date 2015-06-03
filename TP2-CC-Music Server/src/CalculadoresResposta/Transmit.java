@@ -89,14 +89,14 @@ public class Transmit {
 
         c = new Campo((byte) 16); //imagem
         aux = convertFileToByte("imagens/" + p.getImagem());
-        System.out.println("Tamasnho da imagem: " + aux.length);
+        System.out.println("Tamanho da imagem: " + aux.length);
         c.setDados(aux);
         lc.addCampo(c);
         System.out.println("Imagem transformada em array de bytes!");
 
         c = new Campo((byte) 18); //musica
         aux = convertFileToByte("musica/" + p.getMusica());
-        System.out.println("Tamasnho da imusica: " + aux.length);
+        System.out.println("Tamanho da imusica: " + aux.length);
         c.setDados(aux);
         lc.addCampo(c);
         System.out.println("Musica transformada em array de bytes!");

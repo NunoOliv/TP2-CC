@@ -412,19 +412,6 @@ public class Menu {
     }
 
     private synchronized void waitForMatch() {
-        /*out.println("Tempo atual: " + Calendar.getInstance().get(Calendar.YEAR) + "-" + (Calendar.getInstance().get(Calendar.MONTH) + 1)
-         + "-" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "   " + Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-         + "-" + Calendar.getInstance().get(Calendar.MINUTE) + "-" + Calendar.getInstance().get(Calendar.SECOND));
-
-         out.println("Tempo de Jogo: " + desafio.getAno() + "-" + desafio.getMes() + "-" + desafio.getDia()
-         + "   " + desafio.getHor() + "-" + desafio.getMin() + "-" + desafio.getSeg());
-
-         out.println("Diferença de Anos: " + (desafio.getAno() - Calendar.getInstance().get(Calendar.YEAR)));
-         out.println("Diferença de Meses: " + (desafio.getMes() - (Calendar.getInstance().get(Calendar.MONTH) + 1)));
-         out.println("Diferença de Dias: " + (desafio.getDia() - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
-         out.println("Diferença de Horas: " + (desafio.getHor() - Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
-         out.println("Diferença de Minutos: " + (desafio.getMin() - Calendar.getInstance().get(Calendar.MINUTE)));
-         out.println("Diferença de Segundos: " + (desafio.getSeg() - Calendar.getInstance().get(Calendar.SECOND)));*/
         out.println("À espera que o desafio começe...");
 
         int tempo = 0;
@@ -442,7 +429,11 @@ public class Menu {
             System.exit(0);
         }
         try {
-            wait(tempo * 1000);
+            while (tempo > 0) {
+                wait(1000);
+                tempo -= 1;
+                out.println("Tempo de Espera: " + tempo + " segundos...");
+            }
 
         } catch (InterruptedException ex) {
         }
@@ -463,15 +454,18 @@ public class Menu {
         while (true) {
             t = new Transmit(label, pergunta, desafio.getNome());
             piece = com.send(t.generate());
+            //System.out.println("Tamanho: " + piece.length);
             g.addPiece(piece);
-            out.println("Recebido o pacote: 1");
+            //out.println("Recebido o pacote: 1");
             while (!g.isComplete()) {
                 np = new NextPackage(i);
                 i++;
                 piece = com.send(np.generatePDU());
                 g.addPiece(piece);
-                out.println("Recebido o pacote: " + (i - 1));
+                //out.println("Recebido o pacote: " + (i - 1));
             }
+            //np = new NextPackage(i);
+            //com.send(np.generatePDU());
             out.println("Todos os pacotes foram recebidos.");
 
             try {
