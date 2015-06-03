@@ -99,34 +99,14 @@ public class ListaCampos {
     }
 
     public byte[] IntToByte(int size) {
-        byte[] bytes = ByteBuffer.allocate(2).putInt(size).array();
+        byte[] bytes = ByteBuffer.allocate(4).putInt(size).array();
         return bytes;
     }
 
     public int byteToInt(byte[] data) {
-        byte[] sizeBytes = {data[0], data[1]};
+        byte[] sizeBytes = {data[0], data[1], data[2], data[3]};
         return ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getInt();
     }
-
-    //falta introduzir dados dos campos (cabeçalho)
-    /*public byte[][] splitFile(String filePath, int splitSize) throws IOException {
-        File source = new File(filePath);
-        long totSize = source.length();
-        int nParts = (int) (totSize / splitSize) + 1; //ex: splitSize = 48kBytes = 48*1024
-        byte[][] ret = new byte[nParts][splitSize];
-        InputStream input = null;
-        int i = 0;
-
-        try {
-            input = new FileInputStream(source);
-            while (input.read(ret[i], 0, splitSize) > 0) {
-                i++;
-            }
-        } finally {
-            input.close();
-        }
-        return ret;
-    }*/
 
     @Override
     public String toString() {

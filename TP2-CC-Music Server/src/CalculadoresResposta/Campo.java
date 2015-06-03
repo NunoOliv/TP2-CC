@@ -101,12 +101,12 @@ public class Campo {
     }
 
     public byte[] IntToByte(int size) {
-        byte[] bytes = ByteBuffer.allocate(2).putInt(size).array();
+        byte[] bytes = ByteBuffer.allocate(4).putInt(size).array();
         return bytes;
     }
 
     public int byteToInt(byte[] data) {
-        byte[] sizeBytes = {data[0], data[1]};
+        byte[] sizeBytes = {data[0], data[1], data[2], data[3]};
         return ByteBuffer.wrap(sizeBytes).order(ByteOrder.BIG_ENDIAN).getInt();
     }
 
