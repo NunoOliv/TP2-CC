@@ -94,7 +94,7 @@ public class Transmit {
         lc.addCampo(c);
         System.out.println("Imagem transformada em array de bytes!");
 
-        c = new Campo((byte) 18); //musica
+        /*c = new Campo((byte) 18); //musica
         aux = convertFileToByte("musica/" + p.getMusica());
         System.out.println("Tamanho da imusica: " + aux.length);
         c.setDados(aux);
@@ -105,7 +105,7 @@ public class Transmit {
         pdu.setnCampos(lc.getNCampos());
         pdu.setLista(lc.generate());
 
-        System.out.println("PDU criado!");
+        System.out.println("PDU criado!");*/
     }
 
     public byte[] getResposta() {

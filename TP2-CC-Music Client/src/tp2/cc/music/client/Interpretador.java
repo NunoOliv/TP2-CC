@@ -265,7 +265,7 @@ public class Interpretador {
 
         System.out.println("Leitura da imagem terminou com sucesso!");
 
-        c = lista.getCampoByTag((byte) 18); //musica tag:18
+        /*c = lista.getCampoByTag((byte) 18); //musica tag:18
         System.out.println("Campo Musica: " + c);
         System.out.println("Tag: " + c.getTag());
         try {
@@ -277,7 +277,7 @@ public class Interpretador {
             System.exit(0);
         }
 
-        System.out.println("Leitura da musica terminou com sucesso!");
+        System.out.println("Leitura da musica terminou com sucesso!");*/
 
         return p;
     }
