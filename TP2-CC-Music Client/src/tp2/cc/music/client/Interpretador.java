@@ -226,6 +226,7 @@ public class Interpretador {
         lista = new ListaCampos(pdu.getLista(), pdu.getnCampos());
         Pergunta p = null;
         FileOutputStream fos = null;
+        int tamanhoSoFar=0;
 
         //System.out.println(lista.toString());
         Campo c = lista.getCampoByTag((byte) 255); //erro
@@ -233,25 +234,26 @@ public class Interpretador {
             System.out.println("Erro: " + new String(c.getDados()));
             return null;
         }
+        //tamanhoSoFar+=c.getTotalSize();
         c = lista.getCampoByTag((byte) 11); //pergunta
         p = new Pergunta(new String(c.getDados()));
-
+tamanhoSoFar+=c.getTotalSize();
         c = lista.getCampo(1); //1ª resposta
         System.out.println("Resp1: " + new String(c.getDados()));
         p.addResposta(new String(c.getDados()));
-
+tamanhoSoFar+=c.getTotalSize();
         c = lista.getCampo(2);//2ª resposta
         System.out.println("Resp2: " + new String(c.getDados()));
         p.addResposta(new String(c.getDados()));
-
+tamanhoSoFar+=c.getTotalSize();
         c = lista.getCampo(3);//3ª resposta
         System.out.println("Resp3: " + new String(c.getDados()));
         p.addResposta(new String(c.getDados()));
-
+tamanhoSoFar+=c.getTotalSize();
         c = lista.getCampo(4);//respost Certa
         System.out.println("Resposta Certa: " + c.byteToInt(c.getDados()));
         p.setRespCerta(c.byteToInt(c.getDados()));
-
+tamanhoSoFar+=c.getTotalSize();
         c = lista.getCampo(5); //imagem
         System.out.println("Tag: " + c.getTag());
         try {
@@ -262,10 +264,10 @@ public class Interpretador {
             System.out.println("FATAL ERROR: FileOutputStream Falhou na imagem!");
             System.exit(0);
         }
+tamanhoSoFar+=c.getTotalSize();
+        System.out.println("Leitura da imagem terminou com sucesso! Acabou +/- na posicao "+tamanhoSoFar);
 
-        System.out.println("Leitura da imagem terminou com sucesso!");
-
-        /*c = lista.getCampoByTag((byte) 18); //musica tag:18
+        c = lista.getCampoByTag((byte) 18); //musica tag:18
         System.out.println("Campo Musica: " + c);
         System.out.println("Tag: " + c.getTag());
         try {
@@ -277,7 +279,7 @@ public class Interpretador {
             System.exit(0);
         }
 
-        System.out.println("Leitura da musica terminou com sucesso!");*/
+        System.out.println("Leitura da musica terminou com sucesso!");
 
         return p;
     }
