@@ -52,7 +52,6 @@ e-mail: \{a72625, a67711, a67649\}@alunos.uminho.pt
 O presente relatório descreve a implementação de um jogo multi-utilizador online, com 
 questões sobre músicas reproduzidas em tempo real. Foi implementada uma arquitectura 
 com um servidor e multi-utilizadores, conectados numa rede local e com troca de datagramas UDP.
-
 \end{abstract}
 
 \section{Introdução}
@@ -60,8 +59,8 @@ No presente trabalho pretende-se implementar um jogo multi-utilizador online, co
 questões sobre músicas reproduzidas em tempo real.\\
 
 Pretende-se implementar um sistema distribuído, com comunicações TCP entre servidores e 
-comunicações UDP entre clientes e servidores, que procure otimizar a utilização da 
-largura de banda, por transmissão seletiva, fiável e com controlo de fluxo e de erros 
+comunicações UDP entre clientes e servidores, que procure optimizar a utilização da 
+largura de banda, por transmissão selectiva, fiável e com controlo de fluxo e de erros 
 (figura \ref{fig:arq}).
 
 \begin{figure}
@@ -73,13 +72,13 @@ largura de banda, por transmissão seletiva, fiável e com controlo de fluxo e d
 \end{figure} 
 
 \section{Hipóteses Alternativas ao Enunciado}
-De uma forma geral foram adotadas todas as hipóteses referidas no enunciado, 
+De uma forma geral foram adoptadas todas as hipóteses referidas no enunciado, 
 salvo raras excepções.\\
 
 Seguidamente listam-se algumas das alterações implementadas:
 \begin{itemize}
-\item No ficheiro de base de dados foi adotado um separador diferente para os campos. 
-		Alternativamente à vírgula (",") foi adotado um ponto e vírgula (";"), de forma a 
+\item No ficheiro de base de dados foi adoptado um separador diferente para os campos. 
+		Alternativamente à vírgula (",") foi adoptado um ponto e vírgula (";"), de forma a 
 		evitar conflitos com o texto que pudesse incluir vírgulas.
 \item Nos tipos de pedidos dos clientes para os servidores, foi ignorado o pedido 
 		\verb!RETRANSMIT!, tendo-se em alternativa implementado um pedido \verb!TRANSMIT!, 
@@ -92,7 +91,7 @@ Seguidamente listam-se algumas das alterações implementadas:
 \end{itemize}
 
 \section{Implementação}
-Todo o código desenvolvido para o presente projeto foi realizado com a linguagem de 
+Todo o código desenvolvido para o presente projecto foi realizado com a linguagem de 
 programação \emph{java}.\\
 
 Foram utilizadas várias bibliotecas auxiliares, sendo de destacar a biblioteca 
@@ -101,7 +100,7 @@ Foram utilizadas várias bibliotecas auxiliares, sendo de destacar a biblioteca
 utilizada para criar conexões do tipo UDP.
 
 \subsection{Arquitectura do Sistema}
-Para o presente projeto foram desenvolvidas duas aplicações:
+Para o presente projecto foram desenvolvidas duas aplicações:
 \begin{enumerate}
 \item Uma aplicação para clientes, designada \verb!TP2-CC-MusicClient!.
 \item Uma aplicação para servidores, designada \verb!TP2-CC-MusicServer!.
@@ -146,11 +145,24 @@ public class PDU {
 
 
 \subsection{Outros Detalhes}
-.........A DESENVOLVER......\\
-estratégia de comunicação STOP-AND-WAIT\\
-Divide-se o pdu gigante em frações, e encapsulam-se usando outros PDUs.\\
-servidor faz random dos desafios, aplica um deafio.txt quando se cria um desafio pelo cliente.\\
-Tamanhos passam a ser em int, em vez de short... short não aguenta o tamanho da musica...
+De forma a controlar o fluxo entre servidor e clientes foi implementada uma 
+estratégia de comunicação do tipo Stop-and-Wait, i.e., após envio de um pacote, 
+o servidor espera confirmação do cliente para envio do pacote seguinte. Trata-se 
+de uma técnica simples, mas que permite um controlo eficaz. De forma a ultrapassar 
+as situações de erro (pacotes/confirmações perdidas) foi implementado um controlo 
+por Time-Out no cliente. Após enviar uma confirmação, o cliente espera 20s pelo 
+próximo pacote. Caso não o receba, reenvia confirmação de forma a forçar o reenvio 
+do pacote perdido.\\
+
+A escolha dos desafios pelo servidor é efectuada de forma aleatória. 
+Sempre que é criado um desafio novo pelo cliente, o servidor escolhe de forma aleatória 
+um dos desafios contidos na sua base de dados.\\
+
+.........em curso..........
+Divide-se o pdu gigante em fracções, e encapsulam-se usando outros PDUs.\\
+
+Tamanhos passam a ser em int, em vez de short... short não aguenta o tamanho da musica...\\
+.........em curso..........
 
 \section{Testes e Resultados}
 A aplicação dos clientes é corrida em ambiente shell, com recurso a menus de opções. 
@@ -159,17 +171,30 @@ Seguidamente apresentam-se alguns outputs do cliente e servidor.
 \include{testes}
 
 \section{Conclusão e Trabalho Futuro}
-.........A DESENVOLVER......\\
-Falta de tempo\\
-Multi servidor e ligações TCP entre servidores\\
-Todas as respostas?\\
-Envio correta da musica?\\
+No presente trabalho foram discutidas as principais questões relacionadas com a 
+implementação de uma comunicação servidor-cliente, por intermédio de UDP. 
+Foram descritas as estratégias adoptadas, o controlo de erros e de fluxo, 
+os tipos de estruturas de dados utilizadas e apresentados alguns exemplos de aplicação.\\
+
+%Trabalho futuro
+Devido a dificuldades relacionadas com o prazo de entrega do trabalho, não foi possível 
+completar alguns dos objectivos propostos, designadamente:
+\begin{itemize}
+\item Não foi possível implementar conexões multi-servidores através de TCP.
+\item Não foi possível ultrapassar algumas dificuldades relacionadas com a 
+	partição dos PDUs de maior tamanho, por exemplo no envio de músicas.
+\item Não foram implementadas todos os tipos de resposta do servidor.
+\end{itemize}
+
+De referir também, que o protocolo de controlo de fluxo poderia ser melhorado através da 
+utilização de uma janela deslizante, optimizando o número de mensagens trocadas entre 
+servidor e cliente.
 
 \section*{Acknowledgments}
 O presente trabalho foi realizado no âmbito da unidade curricular de Comunicações por Computador, 
 ano lectivo de 2014/2015, da Licenciatura em Engenharia Informática, da Universidade do Minho.
 
 \bibliographystyle{splncs}
-\bibliography{CC-2015-TP2-Grxx}
+\bibliography{CC-2015-TP2-CamposinhosAntunesOliveira}
 
 \end{document}
