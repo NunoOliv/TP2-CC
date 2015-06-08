@@ -1,0 +1,3 @@
+Para resolver o problema do limite de tamanho de um PDU criamos 2 classes, uma no cliente outra no servidor, que separam o PDU em Arrays de Bytes mais pequenos e são encapsulados noutros PDU's, e o inverso.
+Estes PDU's tem um campo que é o número do bloco, um campo com o byte 254, para informar que não é o último, e um campo com o byte 19, cujos dados são o array de bytes do PDU gigante respetivo.
+No cliente, Estes PDU são agrupados e os dados dos respetivos campos com o byte 19 são concatenados e na sua totalidade regeneram o PDU original.
