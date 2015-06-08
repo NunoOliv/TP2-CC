@@ -1,11 +1,11 @@
-falar das alterações do ficheiro desafio
-servidor faz random dos desafios, aplica um deafio.txt quando se cria um desafio pelo cliente.
-Retransmint passa a Transmit, que envia o numero da resposta que quer!
-Accept Challenge envez de devolver ok, devolve a data e a hora do desafio!
-Campo 19 como "Tag" do PDU definido como "Dados Gerais".
-Campo 30 como "Tag" do PDU definido como NextPackage (pacote esperado).
-Tipo 30 como NextPackage (pacote esperado).
-Divide-se o pdu gigante em frações, e encapsulam-se usando outros PDUs.
++ falar das alterações do ficheiro desafio
++ servidor faz random dos desafios, aplica um deafio.txt quando se cria um desafio pelo cliente.
++ Retransmint passa a Transmit, que envia o numero da resposta que quer!
++ Accept Challenge em vez de devolver ok, devolve a data e a hora do desafio!
++ Campo 19 como "Tag" do PDU definido como "Dados Gerais".
++ Campo 30 como "Tag" do PDU definido como NextPackage (pacote esperado).
 
-Tamanhos passam a ser em int, em vez de short... short não aguenta o tamanho da musica...
++ Divide-se o pdu gigante em frações, e encapsulam-se usando outros PDUs.
+
++ Tamanhos passam a ser em int, em vez de short... short não aguenta o tamanho da musica...
 

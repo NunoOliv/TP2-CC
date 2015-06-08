@@ -1,5 +1,7 @@
 \documentclass{llncs}
 \usepackage{times}
+\usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
 \usepackage{a4}
@@ -15,69 +17,159 @@
 \usepackage{url}
 %\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
 
+\setlength\parindent{0pt}
+
+\usepackage{listings}
+%LISTING - GENERAL
+\lstset{
+  language=java,
+	basicstyle=\scriptsize,
+	numbers=left,
+	tab=,
+	tabsize=2,
+	numberstyle=\tiny,
+	numbersep=5pt,
+	breaklines=true,
+  frame=tB
+}
+
 
 \begin{document}
 \mainmatter
-\title{Comunica��es por Computador --- Trabalho Pr�tico 2}
-\subtitle{Desenho e Implementa��o de um Jogo Distribu�do na Internet}
+\title{Comunicações por Computador --- Trabalho Prático 2}
+\subtitle{Desenho e Implementação de um Jogo Distribuído na Internet}
 \titlerunning{CC-TP2}
 \author{Rui Camposinhos \and Carlos Rafael Antunes \and Nuno Oliveira}
 \authorrunning{Camposinhos R. \and Antunes C. \and Oliveira N.}
 \institute{
-Universidade do Minho, Departamento de  Inform�tica, 4710-057 Braga, Portugal\\
+Universidade do Minho, Departamento de  Informática, 4710-057 Braga, Portugal\\
 e-mail: \{a72625, a67711, a67649\}@alunos.uminho.pt
 }
 \date{}
 \maketitle
 
 \begin{abstract}
-A FAZER...
+O presente relatório descreve a implementação de um jogo multi-utilizador online, com 
+questões sobre músicas reproduzidas em tempo real. Foi implementada uma arquitectura 
+com um servidor e multi-utilizadores, conectados numa rede local e com troca de datagramas UDP.
+
 \end{abstract}
 
-\section{Introdu��o}
-A FAZER...
+\section{Introdução}
+No presente trabalho pretende-se implementar um jogo multi-utilizador online, com 
+questões sobre músicas reproduzidas em tempo real.\\
 
+Pretende-se implementar um sistema distribuído, com comunicações TCP entre servidores e 
+comunicações UDP entre clientes e servidores, que procure otimizar a utilização da 
+largura de banda, por transmissão seletiva, fiável e com controlo de fluxo e de erros 
+(figura \ref{fig:arq}).
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=8cm]{Componentes.jpg} 
+\includegraphics[width=10cm]{arq.png} 
 \end{center}
-\caption{Exemplo de imagem}
-\label{fig:exemplo}
+\caption{Arquitetura do sistema a implementar (de acordo com o enunciado \cite{enun})}
+\label{fig:arq}
 \end{figure} 
 
-\section{Hip�teses Alternativas ao Enunciado}
-A FAZER...
+\section{Hipóteses Alternativas ao Enunciado}
+De uma forma geral foram adotadas todas as hipóteses referidas no enunciado, 
+salvo raras excepções.\\
 
-\section{Implementa��o}
-C�digo em java
+Seguidamente listam-se algumas das alterações implementadas:
+\begin{itemize}
+\item No ficheiro de base de dados foi adotado um separador diferente para os campos. 
+		Alternativamente à vírgula (",") foi adotado um ponto e vírgula (";"), de forma a 
+		evitar conflitos com o texto que pudesse incluir vírgulas.
+\item Nos tipos de pedidos dos clientes para os servidores, foi ignorado o pedido 
+		\verb!RETRANSMIT!, tendo-se em alternativa implementado um pedido \verb!TRANSMIT!, 
+		com o número da resposta pretendido.
+\item No pedido \verb!ACCEPT_CHALLENGE! é devolvida a data e hora do desafio, em alternativa 
+		a um simples \verb!OK!.
+\item Foram acrescentados dois campos aos tipos de resposta dos servidores para os clientes: 
+		Campo 19 - definido como uma etiqueta (tag) do PDU para dados gerais;
+		Campo 30 - definido com \verb!NEXT_PACKAGE! (pacote esperado).
+\end{itemize}
+
+\section{Implementação}
+Todo o código desenvolvido para o presente projeto foi realizado com a linguagem de 
+programação \emph{java}.\\
+
+Foram utilizadas várias bibliotecas auxiliares, sendo de destacar a biblioteca 
+\verb!java.net! e em particular a classe \verb!DatagramPacket! 
+\footnote{\url{http://download.java.net/jdk7/archive/b123/docs/api/java/net/DatagramPacket.html}}, 
+utilizada para criar conexões do tipo UDP.
 
 \subsection{Arquitectura do Sistema}
-Multi Servidor
-Multi Clientes por Servidor
+Para o presente projeto foram desenvolvidas duas aplicações:
+\begin{enumerate}
+\item Uma aplicação para clientes, designada \verb!TP2-CC-MusicClient!.
+\item Uma aplicação para servidores, designada \verb!TP2-CC-MusicServer!.
+\end{enumerate}
+
+Não foi possível concluir a etapa de implementação das ligações TCP multi-servidor. 
+Assim, a arquitectura do sistema implementada permite unicamente uma única instância de 
+servidor (uma única rede local), com vários clientes a este conectados. As ligações 
+cliente/servidor são todas realizadas por UDP.
 
 \subsection{Estruturas de Dados}
-Classes utilizadas
-Estruturas de dados principais: PDU, ...
-Servidor, Clientes, outras
+As principais estruturas de dados implementadas foram: \verb!Campo!, \verb!ListaCampos! e
+\verb!PDU!.
 
-\subsection{Bibliotecas Auxiliares}
-A FAZER...????
+Para tal foram criadas classes, com o mesmo nome, que seguidamente se detalham.
+
+\begin{lstlisting}[caption={Classe Campo}, label={code:campo}]
+public class Campo {
+    private byte tag; /*numero do tipo de resposta*/ 
+    private int size; /* tamanho dos dados*/
+    private byte[] dados; /* array de dados*/
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Classe ListaCampos}, label={code:ListaCampos}]
+public class ListaCampos {
+    private ArrayList<Campo> lista; /*lista com todos os campos da mensagem a enviar*/
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Classe PDU}, label={code:PDU}]
+public class PDU {
+    private byte versao; /*codigo da versao - por omissao 0*/
+    private byte seguranca; /*seguranca - por omissao 0*/
+    private short label; /*identificacao do pedido*/
+    private byte tipo; /*codigo do tipo de pedido - ex:0->REPLY*/
+    private byte nCampos; /* numero de campos seguintes*/
+    private int tamanho; /*tamanho da lista de campos*/
+    private byte[] lista; /*lista de campos*/
+}
+\end{lstlisting}
+
 
 \subsection{Outros Detalhes}
-A FAZER...?????
+.........A DESENVOLVER......\\
+estratégia de comunicação STOP-AND-WAIT\\
+Divide-se o pdu gigante em frações, e encapsulam-se usando outros PDUs.\\
+servidor faz random dos desafios, aplica um deafio.txt quando se cria um desafio pelo cliente.\\
+Tamanhos passam a ser em int, em vez de short... short não aguenta o tamanho da musica...
 
 \section{Testes e Resultados}
-Snap shots e inputs de verbatim
+A aplicação dos clientes é corrida em ambiente shell, com recurso a menus de opções. 
+Seguidamente apresentam-se alguns outputs do cliente e servidor.
 
-\section{Conclus�o e Trabalho Futuro}
+\include{testes}
 
+\section{Conclusão e Trabalho Futuro}
+.........A DESENVOLVER......\\
+Falta de tempo\\
+Multi servidor e ligações TCP entre servidores\\
+Todas as respostas?\\
+Envio correta da musica?\\
 
 \section*{Acknowledgments}
-O presente trabalho foi realizado no �mbito da unidade curricular de Comunica��es por Computador, 
-ano lectivo de 2014/2015, da Licenciatura em Engenharia Inform�tica, da Universidade do Minho.
+O presente trabalho foi realizado no âmbito da unidade curricular de Comunicações por Computador, 
+ano lectivo de 2014/2015, da Licenciatura em Engenharia Informática, da Universidade do Minho.
 
 \bibliographystyle{splncs}
-\bibliography{CC-2015-TP2-Grxx.tex}
+\bibliography{CC-2015-TP2-Grxx}
 
 \end{document}

@@ -1,0 +1,152 @@
+\begin{multicols}{2}{
+\scriptsize
+Inicializaçao do Cliente:
+\begin{verbatim}
+*** CC-Music ***
+
+*** Menu Principal ***
+
+1-Login
+2-Registar
+0-Sair
+
+Opçao: 
+\end{verbatim}
+
+Registo de novo utilizador:
+\begin{verbatim}
+*** Registar ***
+
+Introduza os seus dados:
+Nickname: rui
+Password: pass
+Nome: rui pedro
+Enviado!
+Resposta recebida!
+OK!
+\end{verbatim}
+
+Resposta do servidor:
+\begin{verbatim}
+**Pacote de dados n.1 **
+
+Versao correta.
+Sem segurança.
+Label: 1
+Tipo: REGISTER
+    Novo utilizador:
+      Alcunha: rui
+      Pass: pass
+      Nome: rui pedro
+Resposta enviada!
+
+**Pacote de dados n.1 tratado **
+\end{verbatim}
+
+Login do cliente:
+\begin{verbatim}
+
+*** Login ***
+
+
+Nickname: rui
+Password: pass
+Enviado!
+Resposta recebida!
+Bem vindo rui pedro!
+\end{verbatim}
+
+Resposta do servidor:
+\begin{verbatim}
+**Pacote de dados n.2 recebido **
+
+Versao correta.
+Sem segurança.
+Label: 2
+Tipo: LOGIN
+    Login:
+      Alcunha: rui
+      Pass: pass
+IP Recebido: /127.0.0.1 Port: 54029
+Resposta enviada!
+
+**Pacote de dados n.2 tratado **
+\end{verbatim}
+
+Menu Principal Cliente:
+\begin{verbatim}
+*** CC-Music ***
+
+*** Menu Principal ***
+
+1-Criar novo desafio
+2-Listar os desafios atuais
+3-Entrar num desafio
+0-Sair
+
+Opçao: 
+\end{verbatim}
+
+Novo desafio:
+\begin{verbatim}
+*** Criar novo desafio ***
+
+Introduza o nome do desafio: teste
+Introduza a data (AAMMDD): 150608
+Introduza a hora (HHMMSS): 180000
+Enviado!
+Resposta recebida!
+Desafio criado!
+À espera que o desafio começe...
+Tempo de Espera: 443 segundos...
+Tempo de Espera: 442 segundos...
+\end{verbatim}
+
+Resposta do servidor:
+\begin{verbatim}
+**Pacote de dados n.4 recebido**
+
+Versao correta.
+Sem seguranca.
+Label: 4
+Tipo: MAKE_CHALLENGE
+Desafio escolhido: 1
+A ler o ficheiro desafio-000001.txt
+Ficheiro lido com sucesso!
+Novo desafio criado: teste
+Resposta enviada!
+**Pacote de dados n.4 tratado **
+\end{verbatim}
+
+Envio da perfunta 1 do desafio pelo servidor:
+\begin{verbatim}
+**Pacote de dados n.5 recebido **
+
+Versao correta.
+Sem segurança.
+Label: 5
+Tipo: TRANSMIT
+Pedido para a pergunta 1 do desafio "teste".
+Pergunta: Quem canta esta cancao?
+Respostas: 
+[Robert Smith, Bono Vox, Ninguem, 
+     e uma musica instrumental] 
+Resposta Certa: 3
+Path da Imagem: 000001.jpg
+Path da Musica: 000001.mp3
+Tamanho da imagem: 105039
+Imagem transformada em array de bytes!
+Tamanho da imusica: 2411752
+Musica transformada em array de bytes!
+PDU criado!
+A dividir em PDU's mais pequenos...
+Número de pacotes: 52 Tamanho do PDU: 2516927
+A guardar os pacotes na matriz...
+Concluido!
+Pacotes divididos com sucesso!
+Resposta enviada!
+
+**Pacote de dados n.5 tratado **
+\end{verbatim}
+}
+\end{multicols}
