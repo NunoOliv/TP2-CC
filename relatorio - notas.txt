@@ -9,3 +9,5 @@
 
 + Tamanhos passam a ser em int, em vez de short... short não aguenta o tamanho da musica...
 
+Falar de sistema Timeout
+
