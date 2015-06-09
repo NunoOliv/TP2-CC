@@ -17,7 +17,7 @@ public class ListaCampos {
         this.lista = new ArrayList<>();
     }
 
-    public ListaCampos(byte[] data, short nCampos) {
+public ListaCampos(byte[] data, short nCampos) {
         lista = new ArrayList<>();
         int i = 0, j = 0;
 

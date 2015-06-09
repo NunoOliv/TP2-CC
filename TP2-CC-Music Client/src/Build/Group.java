@@ -19,6 +19,8 @@ public class Group {
         PDU pdu = new PDU(dados);
         ListaCampos lc = new ListaCampos(pdu.getLista(), pdu.getnCampos());
 
+        
+        
         //System.out.println("Não faz parte deste PDU!");
         Campo c = lc.getCampoByTag((byte) 17);
         int a = c.byteToInt(c.getDados());
@@ -57,7 +59,7 @@ public class Group {
         int i = 1, j = 0;
         ListaCampos lc;
         Campo c;
-        byte[] data = new byte[4 * 1024 * 1024]; // 4 MB
+        byte[] data = new byte[5 * 1024 * 1024]; // 4 MB
         PDU resp;
 
         while (i <= nPacotes) {
