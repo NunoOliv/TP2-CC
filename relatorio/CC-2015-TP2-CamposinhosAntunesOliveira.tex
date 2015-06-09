@@ -58,10 +58,10 @@ com um servidor e multi-utilizadores, conectados numa rede local e com troca de 
 No presente trabalho pretende-se implementar um jogo multi-utilizador online, com 
 questões sobre músicas reproduzidas em tempo real.\\
 
-Pretende-se implementar um sistema distribuído, com comunicações TCP entre servidores e 
-comunicações UDP entre clientes e servidores, que procure optimizar a utilização da 
-largura de banda, por transmissão selectiva, fiável e com controlo de fluxo e de erros 
-(figura \ref{fig:arq}).
+Com base nos requisitos definidos por \cite{enun}, o sistema deverá ser distribuído, 
+com comunicações TCP entre servidores e comunicações UDP entre clientes e servidores, 
+que procure optimizar a utilização da largura de banda, por transmissão selectiva, 
+fiável e com controlo de fluxo e de erros (figura \ref{fig:arq}).
 
 \begin{figure}
 \begin{center}
@@ -73,9 +73,7 @@ largura de banda, por transmissão selectiva, fiável e com controlo de fluxo e 
 
 \section{Hipóteses Alternativas ao Enunciado}
 De uma forma geral foram adoptadas todas as hipóteses referidas no enunciado, 
-salvo raras excepções.\\
-
-Seguidamente listam-se algumas das alterações implementadas:
+salvo raras excepções que seguidamente se detalham:
 \begin{itemize}
 \item No ficheiro de base de dados foi adoptado um separador diferente para os campos. 
 		Alternativamente à vírgula (",") foi adoptado um ponto e vírgula (";"), de forma a 
@@ -107,7 +105,7 @@ Para o presente projecto foram desenvolvidas duas aplicações:
 \end{enumerate}
 
 Não foi possível concluir a etapa de implementação das ligações TCP multi-servidor. 
-Assim, a arquitectura do sistema implementada permite unicamente uma única instância de 
+Assim, a arquitectura do sistema implementada permite criar uma única instância de 
 servidor (uma única rede local), com vários clientes a este conectados. As ligações 
 cliente/servidor são todas realizadas por UDP.
 
@@ -115,7 +113,27 @@ cliente/servidor são todas realizadas por UDP.
 As principais estruturas de dados implementadas foram: \verb!Campo!, \verb!ListaCampos! e
 \verb!PDU!.
 
-Para tal foram criadas classes, com o mesmo nome, que seguidamente se detalham.
+Para tal foram criadas classes, com o mesmo nome, que seguidamente se detalham. 
+A classe principal é a classe \verb!PDU!, com definição de variáveis e tamanhos 
+adequados a todos os campos que definem o datagrama.
+
+\begin{lstlisting}[caption={Classe PDU}, label={code:PDU}]
+public class PDU {
+    private byte versao; /*codigo da versao - por omissao 0*/
+    private byte seguranca; /*seguranca - por omissao 0*/
+    private short label; /*identificacao do pedido*/
+    private byte tipo; /*codigo do tipo de pedido - ex:0->REPLY*/
+    private byte nCampos; /* numero de campos seguintes*/
+    private int tamanho; /*tamanho da lista de campos*/
+    private byte[] lista; /*lista de campos*/
+}
+\end{lstlisting}
+
+A lista de campos, acima tratada como um array de bytes para uma maior abstracção, 
+requer um maior detalhamento. Pelo exposto, foi criada a classe \verb!Campo! e
+\verb!ListaCampos! que permite codificar cada componente da lista de campos de 
+forma correcta e sistemática. Posteriormente, na criação do PDU é feita uma conversão 
+do \verb!ArrayList<Campo>! para o array de bytes final pretendido.
 
 \begin{lstlisting}[caption={Classe Campo}, label={code:campo}]
 public class Campo {
@@ -131,19 +149,6 @@ public class ListaCampos {
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption={Classe PDU}, label={code:PDU}]
-public class PDU {
-    private byte versao; /*codigo da versao - por omissao 0*/
-    private byte seguranca; /*seguranca - por omissao 0*/
-    private short label; /*identificacao do pedido*/
-    private byte tipo; /*codigo do tipo de pedido - ex:0->REPLY*/
-    private byte nCampos; /* numero de campos seguintes*/
-    private int tamanho; /*tamanho da lista de campos*/
-    private byte[] lista; /*lista de campos*/
-}
-\end{lstlisting}
-
-
 \subsection{Outros Detalhes}
 De forma a controlar o fluxo entre servidor e clientes foi implementada uma 
 estratégia de comunicação do tipo Stop-and-Wait, i.e., após envio de um pacote, 
@@ -152,17 +157,21 @@ de uma técnica simples, mas que permite um controlo eficaz. De forma a ultrapas
 as situações de erro (pacotes/confirmações perdidas) foi implementado um controlo 
 por Time-Out no cliente. Após enviar uma confirmação, o cliente espera 20s pelo 
 próximo pacote. Caso não o receba, reenvia confirmação de forma a forçar o reenvio 
-do pacote perdido.\\
+do pacote perdido. Pode também optar por não reenviar e terminar o processo.\\
 
 A escolha dos desafios pelo servidor é efectuada de forma aleatória. 
 Sempre que é criado um desafio novo pelo cliente, o servidor escolhe de forma aleatória 
 um dos desafios contidos na sua base de dados.\\
 
-.........em curso..........
-Divide-se o pdu gigante em fracções, e encapsulam-se usando outros PDUs.\\
-
-Tamanhos passam a ser em int, em vez de short... short não aguenta o tamanho da musica...\\
-.........em curso..........
+Para resolver o problema do limite de tamanho de um PDU foram criadas duas classes, uma no 
+cliente e outra no servidor, que separam o PDU com tamanho excessivo em arrays de bytes de 
+tamanho mais reduzido. Estes blocos são encapsulados em instâncias da classe PDU. 
+A operação inversa de desencapsulamento e agregação também é realizada, como seguidamente se descreve. 
+Os fragmentos do PDU original têm um campo que é o número do bloco, um campo com o byte 254 - informação 
+de que não se trata do último bloco -, e um campo com o byte 19 - dados com o array 
+de bytes do PDU original respectivo (PDU com tamanho excessivo). 
+No cliente, os blocos do PDU são agrupados e os dados dos respectivos campos - com o byte 
+19 - são concatenados, regenerando o PDU original.
 
 \section{Testes e Resultados}
 A aplicação dos clientes é corrida em ambiente shell, com recurso a menus de opções. 
